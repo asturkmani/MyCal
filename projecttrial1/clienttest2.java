@@ -21,8 +21,10 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
 import java.time.Month;
+import java.util.Vector;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.JTree;
 import javax.swing.JTextArea;
 
@@ -39,6 +41,8 @@ public class clienttest2 {
 	private theClient clientz;
 	String currentUser = null;
 	private JTextField addfriendField;
+	private JTextField wheretextField;
+	private JTextField whentextField;
 	
 
 	/**
@@ -99,9 +103,52 @@ public class clienttest2 {
 		btnAddFriend.setBounds(34, 59, 117, 29);
 		homePanel.add(btnAddFriend);
 		
-		JTextArea friendlist = new JTextArea();
-		friendlist.setBounds(322, 46, 1, 16);
-		homePanel.add(friendlist);
+		wheretextField = new JTextField();
+		wheretextField.setBounds(24, 149, 134, 28);
+		homePanel.add(wheretextField);
+		wheretextField.setColumns(10);
+		
+		JLabel whereLabel = new JLabel("Where?");
+		whereLabel.setBounds(63, 126, 61, 16);
+		homePanel.add(whereLabel);
+		
+		whentextField = new JTextField();
+		whentextField.setBounds(170, 149, 134, 28);
+		homePanel.add(whentextField);
+		whentextField.setColumns(10);
+		
+		JLabel whenLabel = new JLabel("When?");
+		whenLabel.setBounds(204, 126, 61, 16);
+		homePanel.add(whenLabel);
+		
+		JLabel lblNewLabel = new JLabel("Invite Friends");
+		lblNewLabel.setBounds(322, 126, 85, 16);
+		homePanel.add(lblNewLabel);
+		
+		JList friendList = new JList();
+		friendList.setBounds(401, 149, -71, 28);
+		homePanel.add(friendList);
+		
+		JButton btnCreateEvent = new JButton("Create Event!");
+		btnCreateEvent.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Vector<String> friends = new Vector<String>();
+				
+				try {
+					friends = theClient.friendList(currentUser);
+				} catch (Exception e1) {
+					
+					e1.printStackTrace();
+				}
+				
+				friendList.add
+				
+				
+			}
+		});
+		btnCreateEvent.setBounds(148, 203, 117, 29);
+		homePanel.add(btnCreateEvent);
 		homePanel.setVisible(false);
 		
 		JPanel signupPanel = new JPanel();
