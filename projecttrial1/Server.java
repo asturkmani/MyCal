@@ -271,4 +271,19 @@ public class Server {
  	   return "success";
  	   
     }
+    public static Vector<String> friendlist(Vector<String> data, Connection conn) throws SQLException {
+ 	   Vector<String> friendlist = new Vector<String>();
+ 	   PreparedStatement stmt;
+ 	   stmt=conn.prepareStatement("select user2 from friends_with where user1=?");
+ 	   stmt.setString(1, data.get(0));
+ 	   
+ 	   ResultSet friendlistRS;
+ 	   friendlistRS=stmt.executeQuery();
+ 	   
+ 	   while(friendlistRS.next()){
+ 		   friendlist.add(friendlistRS.getString(0));
+ 	   }
+ 	
+ 	   return friendlist;
+    }
 }
