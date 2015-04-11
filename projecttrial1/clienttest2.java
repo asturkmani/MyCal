@@ -48,7 +48,7 @@ public class clienttest2 {
 	private JTextField addfriendField;
 	private JTextField wheretextField;
 	private JTextField whentextField;
-	Vector<String> homies = null;
+	Vector<String> homies = new Vector<String>();
 	
 
 	/**
@@ -146,13 +146,13 @@ public class clienttest2 {
 					e1.printStackTrace();
 				}
 				
-				System.out.println("kolayri" + friends);
-			DefaultListModel model = new DefaultListModel();
+	//			System.out.println("kolayri" + friends);
+	//		DefaultListModel model = new DefaultListModel();
 			
-			while(!friends.isEmpty()){
-				model.addElement(friends.firstElement());
-				friends.remove(0);
-			}
+		//	while(!friends.isEmpty()){
+		//		model.addElement(friends.firstElement());
+		//		friends.remove(0);
+	//		}
 			
 				
 			}
