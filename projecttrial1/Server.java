@@ -86,13 +86,6 @@ public class Server {
             {
 
                 String verb; //verb is the keyword that defines what operation is being done
-                												// e.g. LOGIN or SIGNUP..
-              //  ServerSocket welcomeSocket = new ServerSocket(6780); //socket
-
-                 //  Socket connectionSocket = welcomeSocket.accept(); //accept a connection
-                 //  BufferedReader inFromClient =
-                 //     new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-                 //  DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
                   
                    
                    verb = inFromClient.readLine().toLowerCase(); //the client side sends a keyword based on the desired operation
@@ -277,5 +270,20 @@ public class Server {
  	   
  	   return "success";
  	   
+    }
+    public static Vector<String> friendlist(Vector<String> data, Connection conn) throws SQLException {
+ 	   Vector<String> friendlist = new Vector<String>();
+ 	   PreparedStatement stmt;
+ 	   stmt=conn.prepareStatement("select user2 from friends_with where user1=?");
+ 	   stmt.setString(1, data.get(0));
+ 	   
+ 	   ResultSet friendlistRS;
+ 	   friendlistRS=stmt.executeQuery();
+ 	   
+ 	   while(friendlistRS.next()){
+ 		   friendlist.add(friendlistRS.getString(0));
+ 	   }
+ 	
+ 	   return friendlist;
     }
 }
