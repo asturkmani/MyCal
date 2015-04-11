@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 
 import java.awt.CardLayout;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -142,8 +143,15 @@ public class clienttest2 {
 					e1.printStackTrace();
 				}
 				
-				friendList.add
-				
+				System.out.println("kolayri" + friends);
+//			DefaultListModel model = new DefaultListModel();
+//			
+//			while(!friends.isEmpty()){
+//				model.addElement(friends.firstElement());
+//				friends.remove(0);
+//			}
+//			
+//			friendList.setModel(model);
 				
 			}
 		});

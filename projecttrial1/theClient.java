@@ -97,19 +97,33 @@ public static void addfriend(String username1, String username2) throws Exceptio
 }
 
 public static Vector<String> friendList(String username) throws Exception{
+	Vector<String> data = new Vector<String>(); //create a vector of strings to send back to gui 
+	String response=null;
 	
 	Socket clientSocket = new Socket("localhost", 6780);
 	  
 	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-	  ObjectInputStream inFromServer = new ObjectInputStream(new ObjectInputStream(clientSocket.getInputStream()));
-		
-	  outToServer.writeBytes("friendlist\n");
-	  outToServer.writeBytes(username + "\n");
-	 
-	  Vector <String> datain = new Vector<String>(); //this is the list of friends coming from the server
 	  
-	  datain = (Vector<String>) inFromServer.readObject();
-	  return datain;
+	  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	
+	  
+	  outToServer.writeBytes("FRIENDLIST\n"); //added the keyword or "verb"
+	  outToServer.writeBytes(username + "\n\n"); //send the username
+	
+	  response = inFromServer.readLine();
+	
+	  while (!response.equals("stopz")){
+		  //System.out.println(response);
+		  data.add(response);
+		  response = inFromServer.readLine();
+		  
+	  }
+	  
+	  if (!data.isEmpty()){
+		  return data;
+	  }
+	  else return null;
+	  
 	  
 	
 	

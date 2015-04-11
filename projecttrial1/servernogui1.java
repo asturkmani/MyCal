@@ -18,7 +18,7 @@ class servernogui1
             BufferedReader inFromClient =
                new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
             DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-           ObjectOutputStream outToClient2 = new ObjectOutputStream(connectionSocket.getOutputStream());
+          // ObjectOutputStream outToClient2 = new ObjectOutputStream(connectionSocket.getOutputStream());
             
             
             verb = inFromClient.readLine().toLowerCase(); //the client side sends a keyword based on the desired operation
@@ -88,7 +88,12 @@ class servernogui1
             case "friendlist":
             	Vector<String> friendlist = new Vector<String>();
             	friendlist=friendlist(input, conn);
-            	outToClient2.writeObject(friendlist);
+            	//outToClient2.writeObject(friendlist);
+            	for (String str : friendlist){
+            		outToClient.writeBytes(str + "\n");
+            		returnz="stopz"; //here this signals the client to stop reading because we dont know how long the list of friends is
+            	}
+            	break;
             	
             default: outToClient.writeBytes("Everything Failed!\n"); //this should never come because 'login' and 'signup' are
             																//defined by the client side application and not the user
@@ -201,6 +206,7 @@ class servernogui1
    
    public static Vector<String> friendlist(Vector<String> data, Connection conn) throws SQLException {
 	   Vector<String> friendlist = new Vector<String>();
+	  
 	   PreparedStatement stmt;
 	   stmt=conn.prepareStatement("select user2 from friends_with where user1=?");
 	   stmt.setString(1, data.get(0));
@@ -209,9 +215,11 @@ class servernogui1
 	   friendlistRS=stmt.executeQuery();
 	   
 	   while(friendlistRS.next()){
-		   friendlist.add(friendlistRS.getString(0));
+		   friendlist.add(friendlistRS.getString(1));
 	   }
 	
+	   System.out.println("hello");
+	   System.out.println(friendlist);
 	   return friendlist;
    }
    
