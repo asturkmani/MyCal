@@ -86,13 +86,6 @@ public class Server {
             {
 
                 String verb; //verb is the keyword that defines what operation is being done
-                												// e.g. LOGIN or SIGNUP..
-              //  ServerSocket welcomeSocket = new ServerSocket(6780); //socket
-
-                 //  Socket connectionSocket = welcomeSocket.accept(); //accept a connection
-                 //  BufferedReader inFromClient =
-                 //     new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-                 //  DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
                   
                    
                    verb = inFromClient.readLine().toLowerCase(); //the client side sends a keyword based on the desired operation
