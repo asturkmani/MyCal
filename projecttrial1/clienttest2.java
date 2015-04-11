@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 
 import java.awt.CardLayout;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -47,6 +48,7 @@ public class clienttest2 {
 	private JTextField addfriendField;
 	private JTextField wheretextField;
 	private JTextField whentextField;
+	Vector<String> homies = null;
 	
 
 	/**
@@ -129,6 +131,7 @@ public class clienttest2 {
 		lblNewLabel.setBounds(322, 126, 85, 16);
 		homePanel.add(lblNewLabel);
 		
+		
 		JButton btnCreateEvent = new JButton("Create Event!");
 		btnCreateEvent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -137,20 +140,27 @@ public class clienttest2 {
 				
 				try {
 					friends = theClient.friendList(currentUser);
+					homies = friends;
 				} catch (Exception e1) {
 					
 					e1.printStackTrace();
 				}
 				
-				//friendList.add
-				
+				System.out.println("kolayri" + friends);
+			DefaultListModel model = new DefaultListModel();
+			
+			while(!friends.isEmpty()){
+				model.addElement(friends.firstElement());
+				friends.remove(0);
+			}
+			
 				
 			}
 		});
 		btnCreateEvent.setBounds(148, 203, 117, 29);
 		homePanel.add(btnCreateEvent);
-			
-		JList friendList = new JList(data);
+		
+		JList<String> friendList = new JList<String>(homies);
 		//friendList.setBounds(316, 149, 92, 28);
 		//homePanel.add(friendList);
 		
