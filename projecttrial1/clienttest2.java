@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import java.awt.CardLayout;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -27,6 +28,9 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JTree;
 import javax.swing.JTextArea;
+
+import java.awt.List;
+import java.awt.ScrollPane;
 
 public class clienttest2 {
 
@@ -125,10 +129,6 @@ public class clienttest2 {
 		lblNewLabel.setBounds(322, 126, 85, 16);
 		homePanel.add(lblNewLabel);
 		
-		JList friendList = new JList();
-		friendList.setBounds(401, 149, -71, 28);
-		homePanel.add(friendList);
-		
 		JButton btnCreateEvent = new JButton("Create Event!");
 		btnCreateEvent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -142,14 +142,22 @@ public class clienttest2 {
 					e1.printStackTrace();
 				}
 				
-				friendList.add
+				//friendList.add
 				
 				
 			}
 		});
 		btnCreateEvent.setBounds(148, 203, 117, 29);
 		homePanel.add(btnCreateEvent);
-		homePanel.setVisible(false);
+			
+		JList friendList = new JList(data);
+		//friendList.setBounds(316, 149, 92, 28);
+		//homePanel.add(friendList);
+		
+		 JScrollPane scrollPane = new JScrollPane();
+		 scrollPane.getViewport().setView(friendList);
+		 scrollPane.setBounds(316, 154, 92, 78);
+		 homePanel.add(scrollPane);
 		
 		JPanel signupPanel = new JPanel();
 		frame.getContentPane().add(signupPanel, "name_215725519007162");
