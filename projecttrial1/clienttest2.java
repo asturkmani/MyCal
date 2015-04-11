@@ -164,10 +164,10 @@ public class clienttest2 {
 		//friendList.setBounds(316, 149, 92, 28);
 		//homePanel.add(friendList);
 		
-		 JScrollPane scrollPane = new JScrollPane();
-		 scrollPane.getViewport().setView(friendList);
-		 scrollPane.setBounds(316, 154, 92, 78);
-		 homePanel.add(scrollPane);
+//		 JScrollPane scrollPane = new JScrollPane();
+//		 scrollPane.getViewport().setView(friendList);
+//		 scrollPane.setBounds(316, 154, 92, 78);
+//		 homePanel.add(scrollPane);
 		
 		JPanel signupPanel = new JPanel();
 		frame.getContentPane().add(signupPanel, "name_215725519007162");
