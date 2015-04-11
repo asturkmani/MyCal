@@ -1,4 +1,4 @@
-//package projecttrial1;
+package projecttrial1;
 
 import java.awt.EventQueue;
 
@@ -23,6 +23,8 @@ import javax.swing.DefaultComboBoxModel;
 import java.time.Month;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JTree;
+import javax.swing.JTextArea;
 
 public class clienttest2 {
 
@@ -35,6 +37,8 @@ public class clienttest2 {
 	private JTextField emailFieldSignup;
 	private JPasswordField passwordFieldSignup;
 	private theClient clientz;
+	String currentUser = null;
+	private JTextField addfriendField;
 	
 
 	/**
@@ -73,6 +77,31 @@ public class clienttest2 {
 		
 		JPanel homePanel = new JPanel();
 		frame.getContentPane().add(homePanel, "name_215723342773900");
+		homePanel.setLayout(null);
+		
+		addfriendField = new JTextField();
+		addfriendField.setBounds(24, 19, 134, 28);
+		homePanel.add(addfriendField);
+		addfriendField.setColumns(10);
+		
+		JButton btnAddFriend = new JButton("Add Friend!");
+		btnAddFriend.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					theClient.addfriend(currentUser, addfriendField.getText()); //call the addfriend function
+					
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnAddFriend.setBounds(34, 59, 117, 29);
+		homePanel.add(btnAddFriend);
+		
+		JTextArea friendlist = new JTextArea();
+		friendlist.setBounds(322, 46, 1, 16);
+		homePanel.add(friendlist);
 		homePanel.setVisible(false);
 		
 		JPanel signupPanel = new JPanel();
@@ -193,6 +222,7 @@ public class clienttest2 {
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				currentUser = usernameFieldLogin.getText();
 				boolean temp=false;
 				//clientz.login(usernameField., passwordField.getPassword());
 				try {
@@ -204,8 +234,11 @@ public class clienttest2 {
 				
 				
 				if (temp){
-					homePanel.setVisible(true);
-					loginPanel.setVisible(false);
+					homePanel.setVisible(true); //go to home page
+					loginPanel.setVisible(false); //hide login page
+				
+					//now we will populate a text area with list of friends
+					theclient.populate(currentUser);
 					
 					
 				}

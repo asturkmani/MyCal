@@ -1,4 +1,4 @@
-//package projecttrial1;
+package projecttrial1;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
@@ -13,7 +13,7 @@ class clientnogui1
 							//note 0 gives a login and any other integer gives a sign up
 	
 	
-	Socket clientSocket = new Socket("localhost", 6781);
+	Socket clientSocket = new Socket("localhost", 6780);
 	  
 	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
 	  

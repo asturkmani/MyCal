@@ -1,4 +1,4 @@
-//package projecttrial1;
+package projecttrial1;
 
 import java.sql.*;
 

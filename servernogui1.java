@@ -1,4 +1,4 @@
-//package projecttrial1;
+package projecttrial1;
 import java.io.*;
 import java.net.*;
 import java.sql.*;
@@ -79,6 +79,10 @@ class servernogui1
                   	
             case "signup": returnz=signup(input, conn);	//signup operation, call the signup function
             break;
+            
+            case "addfriend":
+            	returnz=addfriend(input, conn);
+            	break;
             	
             default: outToClient.writeBytes("Everything Failed!\n"); //this should never come because 'login' and 'signup' are
             																//defined by the client side application and not the user
@@ -154,7 +158,6 @@ class servernogui1
 	  
    
 	   PreparedStatement stmt; //again to avoid sql injection
-	   ResultSet rs;
 	   
 	   stmt = conn.prepareStatement("insert into user values (?, ?, ?, ?, ?, ?)");
 	   stmt.setString(1, data.get(0));//username
@@ -170,6 +173,23 @@ class servernogui1
 
 	  
 	   return "Success"; //always return this because we wouldn't reach this if we got an SQL exception
+	   
+   }
+   
+   public static String addfriend(Vector<String> data, Connection conn) throws SQLException {
+	   PreparedStatement stmt1,stmt2;
+	   
+	   stmt1=conn.prepareStatement("insert into friends_with values (?,?)");
+	   stmt1.setString(1, data.get(0));
+	   stmt1.setString(2, data.get(1));
+	   stmt1.execute();
+	   
+	   stmt2=conn.prepareStatement("insert into friends_with values (?,?)");
+	   stmt2.setString(1, data.get(1));
+	   stmt2.setString(2, data.get(0));
+	   stmt2.execute();
+	   
+	   return "success";
 	   
    }
    
