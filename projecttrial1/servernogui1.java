@@ -18,7 +18,8 @@ class servernogui1
             BufferedReader inFromClient =
                new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
             DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-           
+           ObjectOutputStream outToClient2 = new ObjectOutputStream(connectionSocket.getOutputStream());
+            
             
             verb = inFromClient.readLine().toLowerCase(); //the client side sends a keyword based on the desired operation
             
@@ -83,6 +84,11 @@ class servernogui1
             case "addfriend":
             	returnz=addfriend(input, conn);
             	break;
+            	
+            case "friendlist":
+            	Vector<String> friendlist = new Vector<String>();
+            	friendlist=friendlist(input, conn);
+            	outToClient2.writeObject(friendlist);
             	
             default: outToClient.writeBytes("Everything Failed!\n"); //this should never come because 'login' and 'signup' are
             																//defined by the client side application and not the user
@@ -192,6 +198,23 @@ class servernogui1
 	   return "success";
 	   
    }
+   
+   public static Vector<String> friendlist(Vector<String> data, Connection conn) throws SQLException {
+	   Vector<String> friendlist = new Vector<String>();
+	   PreparedStatement stmt;
+	   stmt=conn.prepareStatement("select user2 from friends_with where user1=?");
+	   stmt.setString(1, data.get(0));
+	   
+	   ResultSet friendlistRS;
+	   friendlistRS=stmt.executeQuery();
+	   
+	   while(friendlistRS.next()){
+		   friendlist.add(friendlistRS.getString(0));
+	   }
+	
+	   return friendlist;
+   }
+   
    
    
    

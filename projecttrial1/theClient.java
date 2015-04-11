@@ -1,9 +1,8 @@
 package projecttrial1;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.*;
+import java.util.Vector;
 
 public class theClient {
 	
@@ -97,6 +96,26 @@ public static void addfriend(String username1, String username2) throws Exceptio
 	
 }
 
+public static Vector<String> friendList(String username) throws Exception{
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	  
+	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+	  ObjectInputStream inFromServer = new ObjectInputStream(new ObjectInputStream(clientSocket.getInputStream()));
+		
+	  outToServer.writeBytes("friendlist\n");
+	  outToServer.writeBytes(username + "\n");
+	 
+	  Vector <String> datain = new Vector<String>(); //this is the list of friends coming from the server
+	  
+	  datain = (Vector<String>) inFromServer.readObject();
+	  return datain;
+	  
+	
+	
 }
+}
+
+
 
 
