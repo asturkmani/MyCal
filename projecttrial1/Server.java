@@ -11,7 +11,7 @@ import java.util.Vector;
 
 public class Server {
 
-    private int port = 6781;
+    private int port = 6780;
     private ServerSocket serverSocket;
 
     public Server() throws ClassNotFoundException {}
@@ -87,7 +87,7 @@ public class Server {
 
                 String verb; //verb is the keyword that defines what operation is being done
                 												// e.g. LOGIN or SIGNUP..
-              //  ServerSocket welcomeSocket = new ServerSocket(6781); //socket
+              //  ServerSocket welcomeSocket = new ServerSocket(6780); //socket
 
                  //  Socket connectionSocket = welcomeSocket.accept(); //accept a connection
                  //  BufferedReader inFromClient =
@@ -166,6 +166,15 @@ public class Server {
                 		   e.printStackTrace();
                 	   }
                    break;
+                   
+                   case "addfriend":
+                	   try {
+                		   returnz=addfriend(input, conn);
+                	   }
+                	   catch (SQLException e){
+                		   e.printStackTrace();
+                	   }
+                   	break;
                    	
                    default: outToClient.writeBytes("Everything Failed!\n"); //this should never come because 'login' and 'signup' are
                    																//defined by the client side application and not the user
@@ -252,5 +261,21 @@ public class Server {
  				
  			
  				
+    }
+    public static String addfriend(Vector<String> data, Connection conn) throws SQLException {
+ 	   PreparedStatement stmt1,stmt2;
+ 	   
+ 	   stmt1=conn.prepareStatement("insert into friends_with values (?,?)");
+ 	   stmt1.setString(1, data.get(0));
+ 	   stmt1.setString(2, data.get(1));
+ 	   stmt1.execute();
+ 	   
+ 	   stmt2=conn.prepareStatement("insert into friends_with values (?,?)");
+ 	   stmt2.setString(1, data.get(1));
+ 	   stmt2.setString(2, data.get(0));
+ 	   stmt2.execute();
+ 	   
+ 	   return "success";
+ 	   
     }
 }
