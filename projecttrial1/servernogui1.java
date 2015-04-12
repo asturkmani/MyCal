@@ -216,6 +216,7 @@ class servernogui1
 	   
 	   while(friendlistRS.next()){
 		   friendlist.add(friendlistRS.getString(1));
+		   System.out.println(friendlistRS.getString(1));
 	   }
 	
 	   System.out.println("hello");

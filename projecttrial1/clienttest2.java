@@ -75,6 +75,7 @@ public class clienttest2 {
 	 */
 	private void initialize() {
 		
+		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -126,32 +127,30 @@ public class clienttest2 {
 		lblNewLabel.setBounds(322, 126, 85, 16);
 		homePanel.add(lblNewLabel);
 		
-		JList friendList = new JList();
-		friendList.setBounds(401, 149, -71, 28);
-		homePanel.add(friendList);
 		
 		JButton btnCreateEvent = new JButton("Create Event!");
 		btnCreateEvent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				Vector<String> friends = new Vector<String>();
-				
-				try {
-					friends = theClient.friendList(currentUser);
-				} catch (Exception e1) {
-					
-					e1.printStackTrace();
-				}
-				
-				System.out.println("kolayri" + friends);
-//			DefaultListModel model = new DefaultListModel();
-//			
-//			while(!friends.isEmpty()){
-//				model.addElement(friends.firstElement());
-//				friends.remove(0);
-//			}
-//			
-//			friendList.setModel(model);
+			
+
+Vector<String> friends = new Vector<String>();
+		
+		try {
+			friends = theClient.friendList(currentUser);
+		} catch (Exception e1) {
+			
+			e1.printStackTrace();
+		}
+		
+		System.out.println("kolayri" + friends);
+		String [] temp = friends.toArray(new String[friends.size()]);
+		
+		JList friendList = new JList(temp);
+		friendList.setBounds(401, 149, -71, 28);
+		homePanel.add(friendList);
+		
+		
+		
 				
 			}
 		});
@@ -300,7 +299,19 @@ public class clienttest2 {
 				
 				
 			}
+			
+			
+			
+			
+			
+			
 		});
+		
+		
+		
+		
+		
+		
 		btnLogin.setBounds(194, 212, 117, 29);
 		loginPanel.add(btnLogin);
 		
