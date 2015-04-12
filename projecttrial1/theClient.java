@@ -98,7 +98,7 @@ public static void addfriend(String username1, String username2) throws Exceptio
 
 public static Vector<String> friendList(String username) throws Exception{
 	Vector<String> data = new Vector<String>(); //create a vector of strings to send back to gui 
-	String response=null;
+	String response= new String();;
 	
 	Socket clientSocket = new Socket("localhost", 6780);
 	  
@@ -113,8 +113,9 @@ public static Vector<String> friendList(String username) throws Exception{
 	  response = inFromServer.readLine();
 	
 	  while (!response.equals("stopz")){
-		  //System.out.println(response);
+		  System.out.println("in the loop");
 		  data.add(response);
+		  System.out.println(data);
 		  response = inFromServer.readLine();
 		  
 	  }

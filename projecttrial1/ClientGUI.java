@@ -8,7 +8,6 @@ import java.awt.CardLayout;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -30,10 +29,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTree;
 import javax.swing.JTextArea;
 
-import java.awt.List;
-import java.awt.ScrollPane;
-
-public class clienttest2 {
+public class ClientGUI {
 
 	private JFrame frame;
 	private JTextField usernameFieldLogin;
@@ -48,8 +44,6 @@ public class clienttest2 {
 	private JTextField addfriendField;
 	private JTextField wheretextField;
 	private JTextField whentextField;
-	Vector<String> homies = new Vector<String>();
-	
 
 	/**
 	 * Launch the application.
@@ -58,7 +52,7 @@ public class clienttest2 {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					clienttest2 window = new clienttest2();
+					ClientGUI window = new ClientGUI();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -70,7 +64,7 @@ public class clienttest2 {
 	/**
 	 * Create the application.
 	 */
-	public clienttest2() {
+	public ClientGUI() {
 		clientz = new theClient();
 		initialize();
 	}
@@ -79,6 +73,7 @@ public class clienttest2 {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
 		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
@@ -135,16 +130,13 @@ public class clienttest2 {
 		JButton btnCreateEvent = new JButton("Create Event!");
 		btnCreateEvent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				Vector<String> friends = new Vector<String>();
-				
-				try {
-					friends = theClient.friendList(currentUser);
-					homies = friends;
-				} catch (Exception e1) {
-					
-					e1.printStackTrace();
-				}
+			
+
+Vector<String> friends = new Vector<String>();
+		
+		try {
+			friends = theClient.friendList(currentUser);
+		} catch (Exception e1) {
 				
 	//			System.out.println("kolayri" + friends);
 	//		DefaultListModel model = new DefaultListModel();
@@ -154,20 +146,26 @@ public class clienttest2 {
 		//		friends.remove(0);
 	//		}
 			
+			e1.printStackTrace();
+		}
+		
+		System.out.println("kolayri" + friends);
+		String [] temp = friends.toArray(new String[friends.size()]);
+		
+		JList friendList = new JList(temp);
+		friendList.setBounds(401, 149, -71, 28);
+		homePanel.add(friendList);
+		
+		
+		
 				
 			}
 		});
 		btnCreateEvent.setBounds(148, 203, 117, 29);
 		homePanel.add(btnCreateEvent);
+
+		homePanel.setVisible(false);
 		
-		JList<String> friendList = new JList<String>(homies);
-		//friendList.setBounds(316, 149, 92, 28);
-		//homePanel.add(friendList);
-		
-//		 JScrollPane scrollPane = new JScrollPane();
-//		 scrollPane.getViewport().setView(friendList);
-//		 scrollPane.setBounds(316, 154, 92, 78);
-//		 homePanel.add(scrollPane);
 		
 		JPanel signupPanel = new JPanel();
 		frame.getContentPane().add(signupPanel, "name_215725519007162");
@@ -310,7 +308,19 @@ public class clienttest2 {
 				
 				
 			}
+			
+			
+			
+			
+			
+			
 		});
+		
+		
+		
+		
+		
+		
 		btnLogin.setBounds(194, 212, 117, 29);
 		loginPanel.add(btnLogin);
 		
