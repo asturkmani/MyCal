@@ -3,6 +3,7 @@ package projecttrial1;
 
 import java.awt.EventQueue;
 
+
 import javax.swing.JFrame;
 
 import java.awt.CardLayout;
@@ -29,6 +30,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JTree;
 import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
 
 public class ClientGUI {
 
@@ -45,6 +47,7 @@ public class ClientGUI {
 	private JTextField addfriendField;
 	private JTextField wheretextField;
 	private JTextField whentextField;
+	Vector<String> friends = new Vector<String>();
 
 	/**
 	 * Launch the application.
@@ -128,42 +131,16 @@ public class ClientGUI {
 		homePanel.add(lblNewLabel);
 		
 		
+		
+		// Create an event. List of friends should be preloaded by login time, additionally
+		// scrollable list of friends should be placed on homepage already.
 		JButton btnCreateEvent = new JButton("Create Event!");
 		btnCreateEvent.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			
-
-				Vector<String> friends = new Vector<String>();
-		
-		try {
-			friends = theClient.friendList(currentUser);
-		} catch (Exception e1) {
-				
-	//			System.out.println("kolayri" + friends);
-	//		DefaultListModel model = new DefaultListModel();
-			
-		//	while(!friends.isEmpty()){
-		//		model.addElement(friends.firstElement());
-		//		friends.remove(0);
-	//		}
-			
-			e1.printStackTrace();
-		}
-		
-		System.out.println("Friends of"+currentUser+" are: " + friends);
-		String [] temp = friends.toArray(new String[friends.size()]);
-		
-		JList friendList = new JList(temp);
-		friendList.setBounds(401, 149, -71, 28);
-		homePanel.add(friendList);
-		
-		
-		
-				
-			}
+			public void actionPerformed(ActionEvent e) {/*include code to be executed when event is created*/			}
 		});
 		btnCreateEvent.setBounds(148, 203, 117, 29);
 		homePanel.add(btnCreateEvent);
+
 
 		homePanel.setVisible(false);
 		
@@ -298,11 +275,24 @@ public class ClientGUI {
 				
 				
 				if (temp){
-					homePanel.setVisible(true); //go to home page
-					loginPanel.setVisible(false); //hide login page
-				
-					//now we will populate a text area with list of friends
-					//theClient.populate(currentUser);
+					// create the list of friends			
+					try {friends = theClient.friendList(currentUser);
+					
+					// Create Scrollable list of friends.
+					JScrollPane scrollPane = new JScrollPane();
+					scrollPane.setBounds(316, 149, 85, 83);
+					homePanel.add(scrollPane);
+					//wrape JScrollPane around JList
+					JList<String> list = new JList<String>(friends);
+					scrollPane.setViewportView(list);
+					
+					//transition to homepanel
+					loginPanel.setVisible(false);
+					homePanel.setVisible(true);
+					
+					
+					} catch (Exception e1) {e1.printStackTrace();}
+
 					
 					
 				}
