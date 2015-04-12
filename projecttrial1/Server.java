@@ -273,6 +273,7 @@ public class Server {
     }
     public static Vector<String> friendlist(Vector<String> data, Connection conn) throws SQLException {
  	   Vector<String> friendlist = new Vector<String>();
+ 	  
  	   PreparedStatement stmt;
  	   stmt=conn.prepareStatement("select user2 from friends_with where user1=?");
  	   stmt.setString(1, data.get(0));
@@ -281,9 +282,11 @@ public class Server {
  	   friendlistRS=stmt.executeQuery();
  	   
  	   while(friendlistRS.next()){
- 		   friendlist.add(friendlistRS.getString(0));
+ 		   friendlist.add(friendlistRS.getString(1));
  	   }
  	
+ 	   System.out.println("hello");
+ 	   System.out.println(friendlist);
  	   return friendlist;
     }
 }

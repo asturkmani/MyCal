@@ -44,7 +44,6 @@ public class clienttest2 {
 	private JTextField addfriendField;
 	private JTextField wheretextField;
 	private JTextField whentextField;
-	
 
 	/**
 	 * Launch the application.
@@ -138,6 +137,14 @@ Vector<String> friends = new Vector<String>();
 		try {
 			friends = theClient.friendList(currentUser);
 		} catch (Exception e1) {
+				
+	//			System.out.println("kolayri" + friends);
+	//		DefaultListModel model = new DefaultListModel();
+			
+		//	while(!friends.isEmpty()){
+		//		model.addElement(friends.firstElement());
+		//		friends.remove(0);
+	//		}
 			
 			e1.printStackTrace();
 		}
@@ -156,7 +163,9 @@ Vector<String> friends = new Vector<String>();
 		});
 		btnCreateEvent.setBounds(148, 203, 117, 29);
 		homePanel.add(btnCreateEvent);
+
 		homePanel.setVisible(false);
+		
 		
 		JPanel signupPanel = new JPanel();
 		frame.getContentPane().add(signupPanel, "name_215725519007162");
