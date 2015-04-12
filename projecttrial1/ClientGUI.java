@@ -1,5 +1,6 @@
 package projecttrial1;
 
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -132,7 +133,7 @@ public class ClientGUI {
 			public void actionPerformed(ActionEvent e) {
 			
 
-Vector<String> friends = new Vector<String>();
+				Vector<String> friends = new Vector<String>();
 		
 		try {
 			friends = theClient.friendList(currentUser);
@@ -149,7 +150,7 @@ Vector<String> friends = new Vector<String>();
 			e1.printStackTrace();
 		}
 		
-		System.out.println("kolayri" + friends);
+		System.out.println("Friends of"+currentUser+" are: " + friends);
 		String [] temp = friends.toArray(new String[friends.size()]);
 		
 		JList friendList = new JList(temp);

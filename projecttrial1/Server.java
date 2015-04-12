@@ -205,7 +205,7 @@ public class Server {
             }
             try
             {
-                System.out.println("closing socket");
+                //System.out.println("closing socket");
                 inFromClient.close();
                 outToClient.close();
                 socket.close();
@@ -302,6 +302,7 @@ public class Server {
    }
    
    public static Vector<String> friendlist(Vector<String> data, Connection conn) throws SQLException {
+	   // Acquire vector of friends with user1 from SQL database
  	   Vector<String> friendlist = new Vector<String>();
  	  
  	   PreparedStatement stmt;
@@ -309,14 +310,17 @@ public class Server {
  	   stmt.setString(1, data.get(0));
  	   
  	   ResultSet friendlistRS;
+ 	   //execute query to obtain friends. store in ResultSet
  	   friendlistRS=stmt.executeQuery();
  	   
+ 	   //copy friends into vector
  	   while(friendlistRS.next()){
  		   friendlist.add(friendlistRS.getString(1));
- 		   System.out.println(friendlistRS.getString(1));
+ 		   //System.out.println(friendlistRS.getString(1));
  	   }
  	
- 	   System.out.println("hello");
+ 	   System.out.println("Friends of " + data.get(0));
+ 	   // print out friends of user1 (data.get(0))
  	   System.out.println(friendlist);
  	   return friendlist;
     }
