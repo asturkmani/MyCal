@@ -184,6 +184,13 @@ public class Server {
                    	}
                    	break;
                    	
+                   case "createevent":
+                	   try{
+                		   returnz=createevent(input, conn);
+                	   } catch (SQLException e) {
+   						// TODO Auto-generated catch block
+   						e.printStackTrace();
+   					}
                    default: outToClient.writeBytes("Everything Failed!\n"); //this should never come because 'login' and 'signup' are
                    																//defined by the client side application and not the user
                    																//so they are supposed to be fool-proof. but in case
@@ -324,4 +331,24 @@ public class Server {
  	   System.out.println(friendlist);
  	   return friendlist;
     }
+
+   
+   
+   
+   
+ 
+ public static String createevent(Vector<String> data, Connection conn) throws SQLException {
+	 
+// 
+//	 PreparedStatement stmt; //to avoid sql injection.
+//	 
+//	stmt=conn.prepareStatement("insert into event values(?,?,?,?)");
+//	stmt.setString(1, data.get(0));
+//	stmt.setString(1, data.get(1));
+//	stmt.setString(1, data.get(2));
+//	stmt.setString(1, data.get(3));
+//	
+	return "Success";
+ }
+ 
 }

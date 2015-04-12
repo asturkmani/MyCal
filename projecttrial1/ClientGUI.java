@@ -46,7 +46,6 @@ public class ClientGUI {
 	String currentUser = null;
 	private JTextField addfriendField;
 	private JTextField wheretextField;
-	private JTextField whentextField;
 	Vector<String> friends = new Vector<String>();
 
 	/**
@@ -80,7 +79,7 @@ public class ClientGUI {
 		
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 577, 443);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
@@ -109,37 +108,74 @@ public class ClientGUI {
 		homePanel.add(btnAddFriend);
 		
 		wheretextField = new JTextField();
-		wheretextField.setBounds(24, 149, 134, 28);
+		wheretextField.setBounds(24, 149, 99, 28);
 		homePanel.add(wheretextField);
 		wheretextField.setColumns(10);
 		
 		JLabel whereLabel = new JLabel("Where?");
-		whereLabel.setBounds(63, 126, 61, 16);
+		whereLabel.setBounds(24, 126, 61, 16);
 		homePanel.add(whereLabel);
 		
-		whentextField = new JTextField();
-		whentextField.setBounds(170, 149, 134, 28);
-		homePanel.add(whentextField);
-		whentextField.setColumns(10);
-		
 		JLabel whenLabel = new JLabel("When?");
-		whenLabel.setBounds(204, 126, 61, 16);
+		whenLabel.setBounds(173, 126, 61, 16);
 		homePanel.add(whenLabel);
 		
 		JLabel lblNewLabel = new JLabel("Invite Friends");
-		lblNewLabel.setBounds(322, 126, 85, 16);
+		lblNewLabel.setBounds(456, 126, 85, 16);
 		homePanel.add(lblNewLabel);
 		
 		
+		
+		
+		JComboBox comboBoxHour = new JComboBox();
+		comboBoxHour.setModel(new DefaultComboBoxModel(new String[] {"00","01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"}));;
+		comboBoxHour.setBounds(135, 151, 99, 27);
+		homePanel.add(comboBoxHour);
+		
+		JComboBox comboBoxMinute = new JComboBox();
+		comboBoxMinute.setModel(new DefaultComboBoxModel(new String[] {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59"}));;		
+		comboBoxMinute.setBounds(246, 151, 85, 27);
+		homePanel.add(comboBoxMinute);
+		
+		JComboBox comboBoxDayEvent = new JComboBox();
+		comboBoxDayEvent.setModel(new DefaultComboBoxModel(new String[] {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"}));
+		comboBoxDayEvent.setBounds(135, 182, 72, 27);
+		homePanel.add(comboBoxDayEvent);
+		
+		JComboBox comboBoxMonthEvent = new JComboBox();
+		comboBoxMonthEvent.setModel(new DefaultComboBoxModel(new String[] {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"}));
+		comboBoxMonthEvent.setBounds(214, 182, 72, 27);
+		homePanel.add(comboBoxMonthEvent);
+		
+		JComboBox comboBoxYearEvent = new JComboBox();
+		comboBoxYearEvent.setToolTipText("Year");
+		comboBoxYearEvent.setModel(new DefaultComboBoxModel(new String[] {"1920", "1921", "1922", "1923", "1924", "1925", "1926", "1927", "1928", "1929", "1930", "1931", "1932", "1933", "1934", "1935", "1936", "1937", "1938", "1939", "1940", "1941", "1942", "1943", "1944", "1945", "1946", "1947", "1948", "1949", "1950", "1951", "1952", "1953", "1954", "1955", "1956", "1957", "1958", "1959", "1960", "1961", "1962", "1963", "1964", "1965", "1966", "1967", "1968", "1969", "1970", "1971", "1972", "1973", "1974", "1975", "1976", "1977", "1978", "1979", "1980", "1981", "1982", "1983", "1984", "1985", "1986", "1987", "1988", "1989", "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015"}));
+		comboBoxYearEvent.setBounds(289, 182, 85, 27);
+		homePanel.add(comboBoxYearEvent );
 		
 		// Create an event. List of friends should be preloaded by login time, additionally
 		// scrollable list of friends should be placed on homepage already.
 		JButton btnCreateEvent = new JButton("Create Event!");
 		btnCreateEvent.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {/*include code to be executed when event is created*/			}
+			public void actionPerformed(ActionEvent e) {
+				
+				String time = new String();
+				time = comboBoxHour.getSelectedItem().toString() + ":" + comboBoxMinute.getSelectedItem().toString();
+				String date = new String();
+				date = comboBoxYearEvent.getSelectedItem().toString() + "-" + comboBoxMonthEvent.getSelectedItem().toString() + "-" + comboBoxDayEvent.getSelectedItem().toString();
+				
+				
+				
+			}
 		});
-		btnCreateEvent.setBounds(148, 203, 117, 29);
+		btnCreateEvent.setBounds(148, 243, 117, 29);
 		homePanel.add(btnCreateEvent);
+		
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(455, 149, 86, 123);
+		homePanel.add(scrollPane);
+		
 
 
 		homePanel.setVisible(false);
@@ -277,12 +313,8 @@ public class ClientGUI {
 				if (temp){
 					// create the list of friends			
 					try {friends = theClient.friendList(currentUser);
-					
-					// Create Scrollable list of friends.
-					JScrollPane scrollPane = new JScrollPane();
-					scrollPane.setBounds(316, 149, 85, 83);
-					homePanel.add(scrollPane);
-					//wrape JScrollPane around JList
+				
+					// Create list and wrap scrollPane around it
 					JList<String> list = new JList<String>(friends);
 					scrollPane.setViewportView(list);
 					
