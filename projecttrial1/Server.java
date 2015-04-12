@@ -81,7 +81,7 @@ public class Server {
             {
                 return;
             }
-            //work
+            // Start editing server functions from here
             try 
             {
 
@@ -169,6 +169,21 @@ public class Server {
                 	   }
                    	break;
                    	
+                   case "friendlist":
+                   	Vector<String> friendlist = new Vector<String>();
+                   	try {
+						friendlist=friendlist(input, conn);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                   	//outToClient2.writeObject(friendlist);
+                   	for (String str : friendlist){
+                   		outToClient.writeBytes(str + "\n");
+                   		returnz="stopz"; //here this signals the client to stop reading because we dont know how long the list of friends is
+                   	}
+                   	break;
+                   	
                    default: outToClient.writeBytes("Everything Failed!\n"); //this should never come because 'login' and 'signup' are
                    																//defined by the client side application and not the user
                    																//so they are supposed to be fool-proof. but in case
@@ -178,6 +193,10 @@ public class Server {
                    }
                    
                    outToClient.writeBytes(returnz + "\n"); //send back the response, followed by a line break 
+                   
+                   
+                   
+                   // Do not edit lines below this.
                    
             }
             catch (IOException k)
@@ -198,80 +217,91 @@ public class Server {
     }
     
     
-    // Create functions here
-    
-    // Sign up function
-    public static String signup(Vector<String> data, Connection conn) throws SQLException {
-  	  
-    	   
- 	   PreparedStatement stmt; //again to avoid sql injection
- 	   ResultSet rs;
- 	   
- 	   stmt = conn.prepareStatement("insert into user values (?, ?, ?, ?, ?, ?)");
- 	   stmt.setString(1, data.get(0));//username
- 	   stmt.setString(2, data.get(1));//password
- 	   stmt.setString(3, data.get(2));//email
- 	   stmt.setString(4, data.get(3));//first name
- 	   stmt.setString(5, data.get(4));//last name
- 	   stmt.setString(6, data.get(5));//date of birth (should be written with caution, sql is very picky here)
- 	   
- 	   
- 	    stmt.execute(); //execute this statement (note we used execute not execute query because we are inserting) 
- 	   				
+    // Create functions here.
+   public static String login(Vector<String> data, Connection conn) throws SQLException {
+	   
+	   PreparedStatement stmt;	//using prepared statement to protect from SQL injection
+	   ResultSet rs;
+	   stmt = conn.prepareStatement("select username from user where username = ? AND password = ?"); //this sql query
+	   //is supposed to return just one or none rows since username is a primary key and we would only have one result (if any)
+	   stmt.setString(1, data.get(0)); //data.get(0) would be the username
+	   stmt.setString(2, data.get(1)); //data.get(1) would be the password
+	   
+	   
+	   
+	   
+	   rs = stmt.executeQuery(); //execute the statement
+	   
+	   				
+		
+		
+		
+		if(!rs.next())		//the resultset would have a 'next' only if there is 1+ rows, i.e. if we got a match
+		
+			return "fail"; //if not return fail
+			
+		
+		
+		else return "success"; //if we do have a result return success
+				
+			
+				
+   }
 
- 	  
- 	   return "Success"; //always return this because we wouldn't reach this if we got an SQL exception
- 	   
-    }
-    
-    
-    // Login function
-    public static String login(Vector<String> data, Connection conn) throws SQLException {
- 	   
- 	   PreparedStatement stmt;	//using prepared statement to protect from SQL injection
- 	   ResultSet rs;
- 	   stmt = conn.prepareStatement("select username from user where username = ? AND password = ?"); //this sql query
- 	   //is supposed to return just one or none rows since username is a primary key and we would only have one result (if any)
- 	   stmt.setString(1, data.get(0)); //data.get(0) would be the username
- 	   stmt.setString(2, data.get(1)); //data.get(1) would be the password
- 	   
- 	   
- 	   
- 	   
- 	   rs = stmt.executeQuery(); //execute the statement
- 	   
- 	   				
- 		
- 		
- 		
- 		if(!rs.next())		//the resultset would have a 'next' only if there is 1+ rows, i.e. if we got a match
- 		
- 			return "fail"; //if not return fail
- 			
- 		
- 		
- 		else return "success"; //if we do have a result return success
- 				
- 			
- 				
-    }
-    public static String addfriend(Vector<String> data, Connection conn) throws SQLException {
- 	   PreparedStatement stmt1,stmt2;
- 	   
- 	   stmt1=conn.prepareStatement("insert into friends_with values (?,?)");
- 	   stmt1.setString(1, data.get(0));
- 	   stmt1.setString(2, data.get(1));
- 	   stmt1.execute();
- 	   
- 	   stmt2=conn.prepareStatement("insert into friends_with values (?,?)");
- 	   stmt2.setString(1, data.get(1));
- 	   stmt2.setString(2, data.get(0));
- 	   stmt2.execute();
- 	   
- 	   return "success";
- 	   
-    }
-    public static Vector<String> friendlist(Vector<String> data, Connection conn) throws SQLException {
+	
+
+   
+   
+   
+   
+ 
+
+	   
+	   
+	   
+   
+
+   
+   public static String signup(Vector<String> data, Connection conn) throws SQLException {
+	  
+   
+	   PreparedStatement stmt; //again to avoid sql injection
+	   
+	   stmt = conn.prepareStatement("insert into user values (?, ?, ?, ?, ?, ?)");
+	   stmt.setString(1, data.get(0));//username
+	   stmt.setString(2, data.get(1));//password
+	   stmt.setString(3, data.get(2));//email
+	   stmt.setString(4, data.get(3));//first name
+	   stmt.setString(5, data.get(4));//last name
+	   stmt.setString(6, data.get(5));//date of birth (should be written with caution, sql is very picky here)
+	   
+	   
+	    stmt.execute(); //execute this statement (note we used execute not execute query because we are inserting) 
+	   				
+
+	  
+	   return "Success"; //always return this because we wouldn't reach this if we got an SQL exception
+	   
+   }
+   
+   public static String addfriend(Vector<String> data, Connection conn) throws SQLException {
+	   PreparedStatement stmt1,stmt2;
+	   
+	   stmt1=conn.prepareStatement("insert into friends_with values (?,?)");
+	   stmt1.setString(1, data.get(0));
+	   stmt1.setString(2, data.get(1));
+	   stmt1.execute();
+	   
+	   stmt2=conn.prepareStatement("insert into friends_with values (?,?)");
+	   stmt2.setString(1, data.get(1));
+	   stmt2.setString(2, data.get(0));
+	   stmt2.execute();
+	   
+	   return "success";
+	   
+   }
+   
+   public static Vector<String> friendlist(Vector<String> data, Connection conn) throws SQLException {
  	   Vector<String> friendlist = new Vector<String>();
  	  
  	   PreparedStatement stmt;
@@ -283,6 +313,7 @@ public class Server {
  	   
  	   while(friendlistRS.next()){
  		   friendlist.add(friendlistRS.getString(1));
+ 		   System.out.println(friendlistRS.getString(1));
  	   }
  	
  	   System.out.println("hello");
