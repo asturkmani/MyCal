@@ -180,6 +180,7 @@ public class ClientGUI2 {
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { // Log in the user
 				boolean temp=false;
+				currentUser = username.getText();
 				try {
 					temp=theClient.login(username.getText(), password.getText());
 				} catch (Exception e1) {
@@ -195,12 +196,37 @@ public class ClientGUI2 {
 				try {
 					friends = theClient.friendList(currentUser);
 					events = theClient.eventList(currentUser);
-
 			
 				// populate the list and wrap scrollPane around it
 					listOfFriends = new JList<String>(friends);
 					friendsScroll.setViewportView(listOfFriends);
 					
+					// split event data into multiple columns
+					
+					// some temp variables
+					String tempString = new String();
+					// row vector
+					Vector<String> rowI = new Vector<String>();
+					// vector of vectors to contain all rows
+					Vector<Vector<String>> rowData = new Vector<Vector<String>>();
+					for(int i=0; i<events.size();i++){
+						// get each event.
+						tempString = events.get(i);
+//						System.out.println(tempString);
+						// split each event into place & time based on "&"
+						String [] temp1 = tempString.split("&");
+						// add place into vector
+						rowI.add(temp1[0]);
+						String [] temp2 = temp1[1].split(" ");
+						rowI.add(temp2[1]);
+						rowI.add(temp2[2]);
+//						System.out.println(rowI);
+						//System.out.println(rowI);
+						rowData.add(rowI);
+						System.out.println(rowData);
+						rowI = new Vector<String>();
+						
+					}
 					// create column names
 					Vector<String> columnNames = new Vector<String>();
 					columnNames.add("Place");
@@ -208,14 +234,10 @@ public class ClientGUI2 {
 					columnNames.add("Time");
 
 					
-					listOfEvents = new JTable(events, columnNames);
+					listOfEvents = new JTable(rowData, columnNames);
 					
 					eventsScroll.setViewportView(listOfEvents);
 					
-//				 list = new JList<String>(friends);
-//				 listevents = new JList<String>(events);
-//				scrollPane.setViewportView(list);
-//				scrollPane_1.setViewportView(listevents);
 				
 				
 				//transition to homepanel
