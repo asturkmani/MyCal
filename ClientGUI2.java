@@ -4,12 +4,14 @@ import javax.swing.JFrame;
 
 import java.awt.CardLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
 import javax.swing.JTextArea;
 
+import java.awt.Graphics;
 import java.awt.TextField;
 import java.awt.Button;
 import java.awt.event.ActionListener;
@@ -30,6 +32,12 @@ import javax.swing.JTable;
 
 import java.sql.ResultSet;
 
+import javax.swing.UIManager;
+import javax.swing.ImageIcon;
+import javax.swing.JPasswordField;
+import javax.swing.border.Border;
+import java.awt.Font;
+
 public class ClientGUI2 {
 
 	private JFrame frame;
@@ -40,19 +48,19 @@ public class ClientGUI2 {
 	private JTextField lastNameS;
 	private JTextField emailS;
 	private JTextField username;
-	private JTextField password;
-	String currentUser = null;
+	private String currentUser = null;
 	private theClient clientz;
-	Vector<String> friends = new Vector<String>();
-	Vector<String> events = new Vector<String>();
+	private Vector<String> friends = new Vector<String>();
+	private Vector<String> events = new Vector<String>();
 	
 	//list of friends and table of events
-	JList<String> listOfFriends = new JList<String>();
+	private JList<String> listOfFriends = new JList<String>();
 	private JTable listOfEvents;
-	JScrollPane eventsScroll = new JScrollPane();
-	JScrollPane friendsScroll = new JScrollPane();
+	private JScrollPane eventsScroll = new JScrollPane();
+	private JScrollPane friendsScroll = new JScrollPane();
 	
-	JPanel HomePanel = new JPanel();
+	private JPanel HomePanel = new JPanel();
+	private JPasswordField passwordLogIn;
 
 
 	/**
@@ -82,22 +90,35 @@ public class ClientGUI2 {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		try {
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		
+		
+		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 368, 451);
+		frame.getContentPane().setBackground(new Color(250, 248, 245));
+		frame.setBounds(100, 100, 320, 480);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
 		JPanel LogInPanel = new JPanel();
+		LogInPanel.setBackground(new Color(250, 248, 245));
 		frame.getContentPane().add(LogInPanel, "name_17457643716363");
 		LogInPanel.setLayout(null);
 		
 		JPanel SignUpPanel = new JPanel();
+		SignUpPanel.setBackground(new Color(250, 248, 245));
 		frame.getContentPane().add(SignUpPanel, "name_18858334609441");
 		SignUpPanel.setLayout(null);
 		
 		// ---------------- SIGN UP PANEL -------------------- //
 		JLabel Welcome = new JLabel("Enter your details below!");
-		Welcome.setBounds(77, 40, 222, 16);
+		Welcome.setBounds(95, 41, 163, 16);
 		SignUpPanel.add(Welcome);
 		
 		JLabel SignUpUsername = new JLabel("Username");
@@ -150,39 +171,58 @@ public class ClientGUI2 {
 			public void actionPerformed(ActionEvent e) { // action taken when Sign Up Button is pressed.
 			}
 		});
-		btnSignUp.setBounds(124, 247, 134, 29);
+		btnSignUp.setBounds(6, 364, 308, 48);
 		SignUpPanel.add(btnSignUp);
+		
+		JButton btnReturnLogIn = new JButton("");
+		btnReturnLogIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) { // return to LogIn page
+				LogInPanel.setVisible(true);
+				SignUpPanel.setVisible(false);
+			}
+		});
+		btnReturnLogIn.setBackground(new Color(102, 51, 0));
+		btnReturnLogIn.setIcon(new ImageIcon(ClientGUI2.class.getResource("/com/sun/javafx/scene/control/skin/caspian/images/backspace-icon.png")));
+		btnReturnLogIn.setBounds(6, 6, 57, 51);
+		SignUpPanel.add(btnReturnLogIn);
 		
 		// ---------------- LOG IN PANEL --------------------- //
 		JLabel lblNewLabel = new JLabel("Welcome to MyCal!");
-		lblNewLabel.setBounds(122, 6, 119, 16);
+		lblNewLabel.setBounds(100, 6, 119, 16);
 		LogInPanel.add(lblNewLabel);
 		
 		JLabel usernameLogin_1 = new JLabel("Username");
-		usernameLogin_1.setBounds(36, 113, 67, 16);
+		usernameLogin_1.setBounds(6, 113, 67, 16);
 		LogInPanel.add(usernameLogin_1);
 		
 		JLabel passwordLogin = new JLabel("Password");
-		passwordLogin.setBounds(36, 141, 67, 16);
+		passwordLogin.setBounds(6, 138, 67, 16);
 		LogInPanel.add(passwordLogin);
 		
 		username = new JTextField();
 		username.setColumns(10);
-		username.setBounds(122, 107, 134, 22);
+		username.setBounds(100, 110, 134, 22);
 		LogInPanel.add(username);
 		
-		password = new JTextField();
-		password.setColumns(10);
-		password.setBounds(122, 135, 134, 22);
-		LogInPanel.add(password);
+		JButton btnLogIn = new JButton("Sign In");
+		btnLogIn.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+		btnLogIn.setForeground(Color.WHITE);
+		btnLogIn.setBackground(new Color(71,181,250));
+		btnLogIn.setContentAreaFilled(false);
+		btnLogIn.setOpaque(true);
+		btnLogIn.setBorderPainted(false);
 		
-		JButton btnLogIn = new JButton("Log In");
+		Border newborder = BorderFactory.createCompoundBorder();
+		btnLogIn.setBorder(newborder);
+
+
 		btnLogIn.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) { // Log in the user
 				boolean temp=false;
 				currentUser = username.getText();
 				try {
-					temp=theClient.login(username.getText(), password.getText());
+					temp=theClient.login(username.getText(), passwordLogIn.getText());
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -252,21 +292,24 @@ public class ClientGUI2 {
 			
 			// if login is unsuccessful, pop up and tell user it's incorrect
 			if(!temp){
-				 JPopupMenu popup = new JPopupMenu();
-				 popup.setLayout(null);
-				 JLabel item = new JLabel("  Incorrect username or password!  ");
-				 popup.add(item);
-				 popup.show(btnLogIn,-45, -120);
+				 // replace this with new fields visibility
 
 			}
 			
 			
 			}
 		});
-		btnLogIn.setBounds(122, 192, 134, 29);
+		btnLogIn.setBounds(6, 376, 308, 47);
 		LogInPanel.add(btnLogIn);
 		
-		JButton btnSignUp_1 = new JButton("Sign Up");
+		
+		JButton btnSignUp_1 = new JButton("Create a free account");
+		btnSignUp_1.setForeground(Color.WHITE);
+		btnSignUp_1.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+		btnSignUp_1.setOpaque(true);
+		btnSignUp_1.setBorderPainted(false);
+		btnSignUp_1.setBackground(UIManager.getColor("Button.select"));
+		btnSignUp_1.setBorder(UIManager.getBorder("Button.border"));
 		btnSignUp_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { // action performed when Sign Up button is pressed.
 				// take user to sign up field
@@ -274,8 +317,12 @@ public class ClientGUI2 {
 				LogInPanel.setVisible(false);
 			}
 		});
-		btnSignUp_1.setBounds(122, 220, 134, 29);
+		btnSignUp_1.setBounds(6, 317, 308, 47);
 		LogInPanel.add(btnSignUp_1);
+		
+		passwordLogIn = new JPasswordField();
+		passwordLogIn.setBounds(100, 138, 134, 28);
+		LogInPanel.add(passwordLogIn);
 		
 		// ------------- HOME PANEL ---------------- //
 
@@ -297,6 +344,4 @@ public class ClientGUI2 {
 		eventsScroll.setViewportView(listOfEvents);
 		
 	}
-	
-	
 }
