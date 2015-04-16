@@ -7,7 +7,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.TimerTask;
 import java.util.Vector;
+
+//import SendEmail;
 
 public class Server {
 
@@ -20,6 +26,7 @@ public class Server {
         try
         {
             serverSocket = new ServerSocket(port);
+//            serverSocket.setSoTimeout(6000);
         }
         catch (IOException e)
         {
@@ -31,6 +38,20 @@ public class Server {
         while (true) {
             try
             {
+                String timeStamp = new SimpleDateFormat("HH_mm_ss").format(Calendar.getInstance().getTime());
+//                System.out.println(timeStamp);
+                String[] temp = timeStamp.split("_");
+                // check if the time is around between 6-7 am
+                if(Integer.parseInt(temp[0])==6) {
+                	
+                	SendEmail.sendGMail(null);
+                }
+                // timeout every 15 minutes so we can send an update email to the subscribers with a summary of upcoming events.
+                serverSocket.setSoTimeout(900000);
+            	
+
+                
+                
                 Socket newConnection = serverSocket.accept();
                 //System.out.println("accepted connection");
 				//now each client gets a threads that deals with its connection and requests //
@@ -38,10 +59,12 @@ public class Server {
                 new Thread(st).start();
 				//now the server will continue waiting for other requests and the current user will be serviced
 				// by the created thread //
+                
+                //if it is 7:00 am, send email summarizing upcoming events for the day.
             } 
             catch (IOException ioe)
             {
-                System.err.println("server accept failed");
+//                System.err.println("server accept failed");
             }
         }
     }
@@ -474,4 +497,9 @@ System.out.println("after stmt.execute");
 			
 	 
  }
-}
+ 
+ public static Vector<String> todayEvents(Vector<String> data, Connection conn) throws SQLException{
+	 Vector<String> todayEvents = new Vector<String>();
+	 return todayEvents;
+ 	}
+ }

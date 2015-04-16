@@ -1,5 +1,6 @@
 import java.awt.EventQueue;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import java.awt.CardLayout;
@@ -16,6 +17,7 @@ import java.awt.TextField;
 import java.awt.Button;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.util.Vector;
 
@@ -36,7 +38,13 @@ import javax.swing.UIManager;
 import javax.swing.ImageIcon;
 import javax.swing.JPasswordField;
 import javax.swing.border.Border;
+
 import java.awt.Font;
+import java.io.IOException;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ClientGUI2 {
 
@@ -60,7 +68,10 @@ public class ClientGUI2 {
 	private JScrollPane friendsScroll = new JScrollPane();
 	
 	private JPanel HomePanel = new JPanel();
+	private JLabel signInError = new JLabel("Incorrect username/password");
 	private JPasswordField passwordLogIn;
+	private BufferedImage image;
+	private Boolean toset = true;
 
 
 	/**
@@ -167,6 +178,15 @@ public class ClientGUI2 {
 		SignUpPanel.add(emailS);
 		
 		JButton btnSignUp = new JButton("Sign Up!");
+		btnSignUp.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+		btnSignUp.setForeground(Color.WHITE);
+		btnSignUp.setBackground(new Color(71,181,250));
+		btnSignUp.setContentAreaFilled(false);
+		btnSignUp.setOpaque(true);
+		btnSignUp.setBorderPainted(false);
+		
+		Border newborder2 = BorderFactory.createCompoundBorder();
+		btnSignUp.setBorder(newborder2);
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { // action taken when Sign Up Button is pressed.
 			}
@@ -187,21 +207,29 @@ public class ClientGUI2 {
 		SignUpPanel.add(btnReturnLogIn);
 		
 		// ---------------- LOG IN PANEL --------------------- //
-		JLabel lblNewLabel = new JLabel("Welcome to MyCal!");
-		lblNewLabel.setBounds(100, 6, 119, 16);
+		
+		JLabel lblNewLabel = new JLabel("MyCal");
+		lblNewLabel.setFont(new Font("Kailasa", Font.BOLD, 22));
+		lblNewLabel.setBounds(125, 6, 72, 47);
 		LogInPanel.add(lblNewLabel);
 		
-		JLabel usernameLogin_1 = new JLabel("Username");
-		usernameLogin_1.setBounds(6, 113, 67, 16);
-		LogInPanel.add(usernameLogin_1);
-		
-		JLabel passwordLogin = new JLabel("Password");
-		passwordLogin.setBounds(6, 138, 67, 16);
-		LogInPanel.add(passwordLogin);
-		
 		username = new JTextField();
+		username.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+//				if(toset){
+				username.setText("");
+				username.setForeground(Color.DARK_GRAY);
+				signInError.setVisible(false);
+				toset=false;}
+				
+//			}
+		});
+		username.setForeground(new Color(211, 211, 211));
+		username.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
+		username.setText("Username");
 		username.setColumns(10);
-		username.setBounds(100, 110, 134, 22);
+		username.setBounds(24, 84, 256, 47);
 		LogInPanel.add(username);
 		
 		JButton btnLogIn = new JButton("Sign In");
@@ -229,7 +257,9 @@ public class ClientGUI2 {
 				}
 			
 			
-			
+			if(!temp){
+				signInError.setVisible(true);
+			}
 			// Actions to be performed if login is successful:
 			if(temp){
 				// create the list of friends			
@@ -290,12 +320,6 @@ public class ClientGUI2 {
 			}
 				
 			
-			// if login is unsuccessful, pop up and tell user it's incorrect
-			if(!temp){
-				 // replace this with new fields visibility
-
-			}
-			
 			
 			}
 		});
@@ -303,7 +327,7 @@ public class ClientGUI2 {
 		LogInPanel.add(btnLogIn);
 		
 		
-		JButton btnSignUp_1 = new JButton("Create a free account");
+		JButton btnSignUp_1 = new JButton("Create free account");
 		btnSignUp_1.setForeground(Color.WHITE);
 		btnSignUp_1.setFont(new Font("Lucida Grande", Font.BOLD, 16));
 		btnSignUp_1.setOpaque(true);
@@ -321,8 +345,49 @@ public class ClientGUI2 {
 		LogInPanel.add(btnSignUp_1);
 		
 		passwordLogIn = new JPasswordField();
-		passwordLogIn.setBounds(100, 138, 134, 28);
+		passwordLogIn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(toset){
+					passwordLogIn.setText("");
+					passwordLogIn.setForeground(Color.DARK_GRAY);
+					signInError.setVisible(false);
+				}
+			}
+		});
+		
+		passwordLogIn.setText("Password");
+		passwordLogIn.setForeground(new Color(211, 211, 211));
+		passwordLogIn.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
+		passwordLogIn.setEchoChar((char) 0);
+
+		passwordLogIn.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (toset){
+				passwordLogIn.setText("");
+				passwordLogIn.setEchoChar('*');
+//				signInError.setVisible(false);
+				toset=false;
+				}
+			}
+		});
+
+		
+
+
+		passwordLogIn.setBounds(24, 132, 256, 47);
 		LogInPanel.add(passwordLogIn);
+		
+		JLabel Icon = new JLabel("");
+		Icon.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/calendar-icon.png"));
+		Icon.setBounds(70, 178, 256, 256);
+		LogInPanel.add(Icon);
+		
+		signInError.setVisible(false);
+		signInError.setForeground(new Color(255, 0, 0));
+		signInError.setBounds(25, 56, 255, 16);
+		LogInPanel.add(signInError);
 		
 		// ------------- HOME PANEL ---------------- //
 
@@ -342,6 +407,7 @@ public class ClientGUI2 {
 		
 //		listOfEvents = new JTable();
 		eventsScroll.setViewportView(listOfEvents);
+		
 		
 	}
 }
