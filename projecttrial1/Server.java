@@ -366,9 +366,9 @@ System.out.println("after stmt.execute");
  		   //System.out.println(friendlistRS.getString(1));
  	   }
  	
- 	   System.out.println("Friends of " + data.get(0));
+ 	   //System.out.println("Friends of " + data.get(0));
  	   // print out friends of user1 (data.get(0))
- 	   System.out.println(friendlist);
+ 	   //System.out.println(friendlist);
  	   return friendlist;
     }
 
@@ -384,15 +384,16 @@ System.out.println("after stmt.execute");
  	   //execute query to obtain friends. store in ResultSet
  	   eventlistRS=stmt.executeQuery();
  	   
- 	   //copy friends into vector
+ 	   // copy event location and time into vector
  	   while(eventlistRS.next()){
- 		   eventlist.add("Place: " + eventlistRS.getString(1) + ", Time: " + eventlistRS.getString(2));
+// 		   eventlist.add("Place: " + eventlistRS.getString(1) + " & Time: " + eventlistRS.getString(2));
+ 		   eventlist.add(eventlistRS.getString(1) + " & "+ eventlistRS.getString(2));
  		   //System.out.println(friendlistRS.getString(1));
  	   }
  	
- 	   System.out.println("Events of " + data.get(0));
+ 	   //System.out.println("Events of " + data.get(0));
  	   // print out friends of user1 (data.get(0))
- 	   System.out.println(eventlist);
+ 	   //System.out.println(eventlist);
  	   return eventlist;
     }
 
@@ -407,11 +408,11 @@ System.out.println("after stmt.execute");
 	 
 	 	stmt1=conn.prepareStatement("insert into event values(?,?,?)");
 		
-	 	stmt1.setString(1, data.get(0));
-		stmt1.setString(2, data.get(1));
-		stmt1.setString(3, data.get(2));
+	 	stmt1.setString(1, data.get(0)); //datetime
+		stmt1.setString(2, data.get(1)); //location
+		stmt1.setString(3, data.get(2)); // username
 		
-		stmt1.execute();
+		stmt1.execute(); // create an event with key time and location with constraint username... Taco, is this correct?
 		
 		
 	//	if (data.size()>3){ //only insert into the 'values' table if we have a friendlist (useful when modifying events)
@@ -426,17 +427,18 @@ System.out.println("after stmt.execute");
 	 	stmt2.setString(3, data.get(1)); //location
 		stmt2.setString(4, "0"); //not attending (yet)
 		 	
-		
+		/* Leave the first ? blank and insert it below. Perform an execution for each
+		  user invited to the event.   */
 		
 		
 		int i = 3;
 		
-	 while (i<data.size())
-	 {
-	 stmt2.setString(1, data.get(i));
-	 stmt2.execute();
-	 i++;
-	 }
+		 while (i<data.size())
+		 {
+		 stmt2.setString(1, data.get(i));
+		 stmt2.execute();
+		 i++;
+		 }
 	 
 	//	}
 	 
@@ -467,9 +469,7 @@ System.out.println("after stmt.execute");
 		 	   
 		 	
 		 	 stmt.execute();
-			
-			
-			
+
 			return "success";
 			
 	 

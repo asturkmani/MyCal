@@ -32,6 +32,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTree;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
+import javax.swing.JLayeredPane;
 
 public class ClientGUI {
 
@@ -283,10 +284,11 @@ public class ClientGUI {
 		
 		JButton btnDeleteEvent = new JButton("Delete Event!");
 		btnDeleteEvent.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) { //when delete event is clicked
+			public void actionPerformed(ActionEvent e) { //  Delete an event
 				
 				
 				String toDelete; //string to get select value
+				/* Why are we not including all selected events to delete? */
 				toDelete = listevents.getSelectedValue(); //this method selects only one value (first in list if mulitple selected)
 				 
 				//call the function to delete (only parameter we need is string of event details which we will parse later)
@@ -300,8 +302,15 @@ public class ClientGUI {
 				
 			}
 		});
+		
+		
+		
 		btnDeleteEvent.setBounds(260, 386, 117, 29);
 		homePanel.add(btnDeleteEvent);
+		
+		JLabel lblEvents = new JLabel("Events");
+		lblEvents.setBounds(465, 282, 61, 16);
+		homePanel.add(lblEvents);
 		
 
 
@@ -378,7 +387,7 @@ public class ClientGUI {
 		
 		JButton btnSignUp_1 = new JButton("Sign Up");
 		btnSignUp_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) { // Sign up a new user
 				
 				String date = new String();
 				date = comboBoxYear.getSelectedItem().toString() + "-" + comboBoxMonth.getSelectedItem().toString() + "-" + comboBoxDay.getSelectedItem().toString();
@@ -425,7 +434,7 @@ public class ClientGUI {
 		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) { // Login the user
 				currentUser = usernameFieldLogin.getText();
 				boolean temp=false;
 				//clientz.login(usernameField., passwordField.getPassword());
@@ -456,24 +465,11 @@ public class ClientGUI {
 					
 					} catch (Exception e1) {e1.printStackTrace();}
 
-					
-					
 				}
-				
-				
+	
 			}
-			
-			
-			
-			
-			
-			
+
 		});
-		
-		
-		
-		
-		
 		
 		btnLogin.setBounds(194, 212, 117, 29);
 		loginPanel.add(btnLogin);

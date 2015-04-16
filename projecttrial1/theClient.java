@@ -14,7 +14,7 @@ public class theClient {
 	}
 
 	
-	public static boolean login(String username, String password) throws Exception {
+public static boolean login(String username, String password) throws Exception {
 		
 		 String response;
 		Socket clientSocket = new Socket("localhost", 6780);
@@ -144,11 +144,7 @@ public static Vector<String> friendList(String username) throws Exception{
 	  }
 	  
 	 	  return listOfFriends;
-	 
-	  
-	  
-	
-	
+
 }
 
 public static Vector<String> eventList(String username) throws Exception{
@@ -171,7 +167,7 @@ public static Vector<String> eventList(String username) throws Exception{
 	
 	  while (!response.equals("stopz")){
 
-		  System.out.println("in the loop");
+		 // System.out.println("in the loop");
 		  listOfEvents.add(response);
 		  //System.out.println(data);
 		  response = inFromServer.readLine();
@@ -180,9 +176,7 @@ public static Vector<String> eventList(String username) throws Exception{
 	  
 	
 		  return listOfEvents;
-	  
-	  
-	
+
 }
 
 public static void deleteEvent(String event) throws Exception{
