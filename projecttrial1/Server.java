@@ -498,6 +498,9 @@ System.out.println("after stmt.execute");
 	 
  }
  
+ 
+ // TAREK ADDRESS THIS FUNCTION WITH YOUR SQL MAGIC //
+ // REQUIRED: A LIST WITH ALL EVENTS OCCURING "TODAY" AND ALL THE USERS' IN THOSE EVENTS' EMAILS //
  public static Vector<String> todayEvents(Vector<String> data, Connection conn) throws SQLException{
 	 Vector<String> todayEvents = new Vector<String>();
 	 return todayEvents;
