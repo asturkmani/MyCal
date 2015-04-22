@@ -217,6 +217,22 @@ public class Server {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+                   case "getdetails":
+                	   Vector<String> details = new Vector<String>();
+                     	try {
+                     		System.out.println("Arrived to server, input to details:" + input.get(0));
+  						details=details(input, conn);
+  					} catch (SQLException e) {
+  						// TODO Auto-generated catch block
+  						e.printStackTrace();
+  					}
+                     	
+                     	for (String str : details){
+                     		System.out.print("From sqL: " + str);
+                     		outToClient.writeBytes(str + "\n");
+                     	}
+                     	returnz="stopz";
+                     	break;
                    
                    case "eventlist":
                       	Vector<String> eventlist = new Vector<String>();
@@ -233,19 +249,9 @@ public class Server {
           		           	}
                 
                       	returnz="stopz"; //here this signals the client to stop reading because we dont know how long the list of friends is
-                        
-                      	
-                      	
+
                       	break;
-                      	
-                   
-                   
-                   
-                   
-                   
-                   
-                   
-                   
+
                    case "createevent":
                 	   try{
                 		   System.out.println("just before calling create even");
@@ -283,6 +289,7 @@ public class Server {
             {
             }
         }
+
     }
     
     
@@ -295,48 +302,50 @@ public class Server {
 	   //is supposed to return just one or none rows since username is a primary key and we would only have one result (if any)
 	   stmt.setString(1, data.get(0)); //data.get(0) would be the username
 	   stmt.setString(2, data.get(1)); //data.get(1) would be the password
-	   
-	   
-	   
-	   
 	   rs = stmt.executeQuery(); //execute the statement
-	   
-	   				
-		
-		
-		
 		if(!rs.next())		//the resultset would have a 'next' only if there is 1+ rows, i.e. if we got a match
-		
 			return "fail"; //if not return fail
-			
-		
-		
 		else return "success"; //if we do have a result return success
 				
 			
 				
    }
 
-	
+   public static Vector<String> details(Vector<String> data, Connection conn) throws SQLException {
+			PreparedStatement stmt;
+			ResultSet rs;
+			System.out.println("Input to server details function is:" + data.get(0));
+			stmt = conn.prepareStatement("select * from user where username = ?");
+			stmt.setString(1,data.get(0));
+			
+			Vector<String> details = new Vector<String>();
+			rs=stmt.executeQuery(); // execute the statement
+			
+			//get user data of first user with matching username
+			if(rs.next()){
+				details.add(rs.getString(3));
+				details.add(rs.getString(4));
+				details.add(rs.getString(5));
+				details.add(rs.getString(6));
+			}
+			
+			return details;
+			
+		}
 
-   
-   
-   
-   
- 
-
-	   
-	   
-	   
-   
-
-   
    public static String signup(Vector<String> data, Connection conn) throws SQLException {
 	  
    System.out.println("create event function called on server");
    
-	   PreparedStatement stmt; //again to avoid sql injection
-	   
+   PreparedStatement stmtCheck;	//using prepared statement to protect from SQL injection
+   ResultSet rs;
+   stmtCheck = conn.prepareStatement("select username from user where username = ?"); //this sql query
+   //is supposed to return just one or none rows since username is a primary key and we would only have one result (if any)
+   stmtCheck.setString(1, data.get(0)); //data.get(0) would be the username
+   rs = stmtCheck.executeQuery(); //execute the statement
+	if(rs.next()){		//the resultset would have a 'next' only if there is 1+ rows, i.e. if we got a match
+
+	   PreparedStatement stmt; //again to avoid sql injection	   
 	   stmt = conn.prepareStatement("insert into user values (?, ?, ?, ?, ?, ?)");
 	   stmt.setString(1, data.get(0));//username
 	   stmt.setString(2, data.get(1));//password
@@ -344,15 +353,14 @@ public class Server {
 	   stmt.setString(4, data.get(3));//first name
 	   stmt.setString(5, data.get(4));//last name
 	   stmt.setString(6, data.get(5));//date of birth (should be written with caution, sql is very picky here)
-	   
-	System.out.println("just before stmt.execute");   
-	    stmt.execute(); //execute this statement (note we used execute not execute query because we are inserting) 
-	   				
-System.out.println("after stmt.execute");
-	  
+	   stmt.execute(); //execute this statement (note we used execute not execute query because we are inserting) 
 	   return "Success"; //always return this because we wouldn't reach this if we got an SQL exception
-	   
-   }
+	}
+	else{
+		return "fail";
+		}
+	}
+
    
    public static String addfriend(Vector<String> data, Connection conn) throws SQLException {
 	   PreparedStatement stmt1,stmt2;
@@ -386,12 +394,8 @@ System.out.println("after stmt.execute");
  	   //copy friends into vector
  	   while(friendlistRS.next()){
  		   friendlist.add(friendlistRS.getString(1));
- 		   //System.out.println(friendlistRS.getString(1));
  	   }
- 	
- 	   //System.out.println("Friends of " + data.get(0));
- 	   // print out friends of user1 (data.get(0))
- 	   //System.out.println(friendlist);
+
  	   return friendlist;
     }
 
@@ -409,21 +413,13 @@ System.out.println("after stmt.execute");
  	   
  	   // copy event location and time into vector
  	   while(eventlistRS.next()){
-// 		   eventlist.add("Place: " + eventlistRS.getString(1) + " & Time: " + eventlistRS.getString(2));
  		   eventlist.add(eventlistRS.getString(1) + " & "+ eventlistRS.getString(2));
- 		   //System.out.println(friendlistRS.getString(1));
+
  	   }
- 	
- 	   //System.out.println("Events of " + data.get(0));
- 	   // print out friends of user1 (data.get(0))
- 	   //System.out.println(eventlist);
+
  	   return eventlist;
     }
 
-   
-   
-   
- 
  public static String createevent(Vector<String> data, Connection conn) throws SQLException {
 	 
  

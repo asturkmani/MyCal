@@ -53,7 +53,7 @@ public static boolean login(String username, String password) throws Exception {
 	
 
 
-public static void signup(String username, String password, String email, String firstname, String lastname, String dob) throws Exception
+public static String signup(String username, String password, String email, String firstname, String lastname, String dob) throws Exception
 {
 	
 	Socket clientSocket = new Socket("localhost", 6780);
@@ -62,18 +62,20 @@ public static void signup(String username, String password, String email, String
 	  
 	  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 	
-	 outToServer.writeBytes("SIGNUP\n");
+	  outToServer.writeBytes("SIGNUP\n");
 	  outToServer.writeBytes(username + "\n");
 	  outToServer.writeBytes(password + "\n");
 	  outToServer.writeBytes(email + "\n");
 	  outToServer.writeBytes(firstname + "\n");
 	  outToServer.writeBytes(lastname+ "\n");
 	  outToServer.writeBytes(dob + "\n\n");
+	  
+	  String reponse = new String();
+	  reponse = inFromServer.readLine();
 	  clientSocket.close();
 	  
-	  
-	  
-	 
+	  return reponse;
+ 
 }
 
 
@@ -195,6 +197,33 @@ public static void deleteEvent(String event) throws Exception{
 	
 }
 
+public static Vector<String> getDetails(String username) throws Exception{
+		Socket clientSocket = new Socket("localhost", 6780);
+	  
+		Vector<String> details = new Vector<String>();
+	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+	  
+	  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	
+	  String response = new String();
+	  outToServer.writeBytes("GETDETAILS\n"); //added the keyword or "verb"
+	  outToServer.writeBytes(username + "\n\n"); //send the username
+	  
+		
+	  response = inFromServer.readLine();
+	  System.out.println("response from server to theClient: " + response);
+	
+	  while (!response.equals("stopz")){
+
+		  details.add(response);
+		  response = inFromServer.readLine();
+		  
+	  }
+	  
+	
+		  return details;
+	
+	}
 }
 
 
