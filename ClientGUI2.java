@@ -440,12 +440,19 @@ public class ClientGUI2 {
 		HomePanel.add(profileName);
 		
 		JLabel goToProfile = new JLabel("");
+		goToProfile.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				profilePanel.setVisible(true);
+				HomePanel.setVisible(false);
+			}
+		});
 		goToProfile.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/user.png"));
 		goToProfile.setBounds(18, 6, 35, 35);
 		HomePanel.add(goToProfile);
 		
 		JScrollPane eventsScroll = new JScrollPane();
-		eventsScroll.setBounds(18, 257, 259, 155);
+		eventsScroll.setBounds(18, 53, 282, 384);
 		eventsScroll.setViewportView(listOfEvents);
 		HomePanel.add(eventsScroll);
 
@@ -455,6 +462,18 @@ public class ClientGUI2 {
 		JScrollPane friendsScroll = new JScrollPane();
 		friendsScroll.setBounds(173, 37, 122, 167);
 		profilePanel.add(friendsScroll);
+		
+		JLabel goToHome = new JLabel("");
+		goToHome.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				HomePanel.setVisible(true);
+				profilePanel.setVisible(false);
+			}
+		});
+		goToHome.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/home.jpeg"));
+		goToHome.setBounds(6, 6, 34, 34);
+		profilePanel.add(goToHome);
 
 		
 		//================================================================================
@@ -519,8 +538,8 @@ public class ClientGUI2 {
 					//Transition to home panel
 					LogInPanel.setVisible(false);
 					profileName.setText(details.get(1) + " " + details.get(2));//include users first in last name on homepage
-					HomePanel.setSize(new Dimension(400,600));
-					frame.setSize(400,600);
+//					HomePanel.setSize(new Dimension(400,600));
+//					frame.setSize(400,600);
 					HomePanel.setVisible(true);
 
 				} catch (Exception e1) {e1.printStackTrace();}}}});
@@ -588,8 +607,8 @@ public class ClientGUI2 {
 					//transition to homepanel
 					SignUpPanel.setVisible(false);
 	//				profileName.setText(currentUser)
-					HomePanel.setSize(new Dimension(400,600));
-					frame.setSize(400,600);
+//					HomePanel.setSize(new Dimension(400,600));
+//					frame.setSize(400,600);
 					HomePanel.setVisible(true);
 				
 				
