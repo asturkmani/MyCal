@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import java.awt.CardLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLayeredPane;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -14,12 +16,15 @@ import javax.swing.JTextArea;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.TextField;
 import java.awt.Button;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.awt.Color;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JTextField;
@@ -41,6 +46,7 @@ import javax.swing.JPasswordField;
 import javax.swing.border.Border;
 
 import java.awt.Font;
+import java.io.File;
 import java.io.IOException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -51,7 +57,9 @@ import javax.swing.JSeparator;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+
 import javax.swing.ScrollPaneConstants;
+import javax.swing.JComboBox;
 
 public class ClientGUI2 {
 	private JFrame frame;
@@ -73,6 +81,11 @@ public class ClientGUI2 {
 	private Boolean toset = true;
 	private JTextField dobS;
 	private JPasswordField passwordField;
+	private JTextField newEvent;
+	private JTextField eventLocation;
+	private JTextField date;
+	private JTextField time;
+	private Vector<JButton> Events = new Vector<JButton>();
 
 
 	/**
@@ -155,6 +168,8 @@ public class ClientGUI2 {
 		//================================================================================
 		// 1 - LogIn panel components
 	    //================================================================================
+		
+		JScrollPane inviteFriends = new JScrollPane();
 		
 		JLabel lblNewLabel = new JLabel("MyCal");
 		lblNewLabel.setFont(new Font("Kailasa", Font.BOLD, 22));
@@ -452,9 +467,153 @@ public class ClientGUI2 {
 		HomePanel.add(goToProfile);
 		
 		JScrollPane eventsScroll = new JScrollPane();
-		eventsScroll.setBounds(18, 53, 282, 384);
-		eventsScroll.setViewportView(listOfEvents);
+		eventsScroll.setOpaque(false);
+		eventsScroll.setBorder(null);
+		eventsScroll.setBounds(18, 168, 282, 271);
+//		eventsScroll.setViewportView(listOfEvents);
 		HomePanel.add(eventsScroll);
+		
+		newEvent = new JTextField();
+		newEvent.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				newEvent.setText("");
+				newEvent.setForeground(Color.DARK_GRAY);
+			}
+		});
+		newEvent.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				newEvent.setText("");
+				newEvent.setForeground(Color.DARK_GRAY);
+			}
+		});
+		newEvent.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					
+					theClient.createEvent(newEvent.getText(), currentUser, null, null, null);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+
+		newEvent.setText("Add a new event!");
+		newEvent.setBounds(18, 42, 188, 46);
+		newEvent.setForeground(new Color(211, 211, 211));
+		HomePanel.add(newEvent);
+		newEvent.setColumns(10);
+		
+		eventLocation = new JTextField();
+		eventLocation.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				eventLocation.setText("");
+				eventLocation.setForeground(Color.DARK_GRAY);
+			}
+		});
+		eventLocation.setText("Where?");
+		eventLocation.setForeground(new Color(211, 211, 211));
+		eventLocation.setBounds(205, 42, 95, 46);
+		HomePanel.add(eventLocation);
+		eventLocation.setColumns(10);
+		
+		date = new JTextField();
+		date.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				date.setText("");
+				date.setForeground(Color.DARK_GRAY);
+			}
+		});
+		date.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				date.setText("");
+				date.setForeground(Color.DARK_GRAY);
+			}
+		});
+		date.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+		date.setText("yyyy-mm-dd");
+		date.setForeground(new Color(211, 211, 211));
+		date.setBounds(18, 87, 95, 46);
+		HomePanel.add(date);
+		date.setColumns(10);
+		
+		time = new JTextField();
+		time.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				time.setText("");
+				time.setForeground(Color.DARK_GRAY);
+			}
+		});
+		time.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				time.setText("");
+				time.setForeground(Color.DARK_GRAY);
+			}
+		});
+		time.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+		time.setForeground(new Color(211, 211, 211));
+		time.setText("hh:mm");
+		time.setBounds(110, 87, 95, 46);
+		HomePanel.add(time);
+		time.setColumns(10);
+		
+		
+		inviteFriends.setBounds(205, 91, 95, 75);
+		HomePanel.add(inviteFriends);
+		
+		JButton btnNewButton = new JButton("Create Event!");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// get name date, time, invited peeps, username from entered fields and create the event. initially set rating to 0.
+
+				String timeZ = new String();
+				timeZ = time.getText();
+				String dateZ = new String();
+				dateZ = date.getText();
+				
+				String datetime = new String();
+				datetime = dateZ + " " + timeZ; 
+				
+				List<String> templist =listOfFriends.getSelectedValuesList(); //get selected friends
+				//put all values in a vector (we prefer using vector for ease of manipulation)
+				Vector<String> selectedFriends = new Vector<String>(); //
+				
+				
+				for (int i=0; i<templist.size();i++) {
+					selectedFriends.add(templist.get(i));}
+				
+				//calling the createEvent function in theClient
+				try {
+					theClient.createEvent(newEvent.getText(), currentUser, selectedFriends, datetime,eventLocation.getText() );
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				JButton button = new JButton(newEvent.getText());
+				button.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+				button.setForeground(Color.WHITE);
+				button.setBackground(new Color(71,181,250));
+				button.setContentAreaFilled(false);
+				button.setOpaque(true);
+				button.setBorderPainted(false);
+				button.requestFocus();		
+				Border newborder2 = BorderFactory.createCompoundBorder();
+				button.setBorder(newborder2);
+				int x = Events.get(Events.size()-1).getX();
+				int y = Events.get(Events.size()-1).getY() + 43;
+				button.setBounds(x, y, 280, 40);
+				
+				Events.add(button);
+			}
+		});
+		btnNewButton.setBounds(18, 134, 188, 29);
+		HomePanel.add(btnNewButton);
 
 		//================================================================================
 		// 1 - Profile panel components
@@ -507,32 +666,68 @@ public class ClientGUI2 {
 			
 					// populate the list and wrap scrollPane around it
 					listOfFriends = new JList<String>(friends);
+					inviteFriends.setViewportView(listOfFriends);
 					friendsScroll.setViewportView(listOfFriends);
 					
-					// split event data into multiple columns
-					String tempString = new String();
-					Vector<String> rowI = new Vector<String>();
-					Vector<Vector<String>> rowData = new Vector<Vector<String>>();// vector of vectors to contain all rows
-					for(int i=0; i<events.size();i++){
-						tempString = events.get(i);// get each event.
-						String [] temp1 = tempString.split("&");// split each event into place & time based on "&"
-						rowI.add(temp1[0]);// add place into vector
-						String [] temp2 = temp1[1].split(" ");
-						rowI.add(temp2[1]);
-						rowI.add(temp2[2]);
-						rowData.add(rowI);
-						System.out.println(rowData);
-						rowI = new Vector<String>();
-					}
-					// create column names
-					Vector<String> columnNames = new Vector<String>();
-					columnNames.add("Place");
-					columnNames.add("Date");
-					columnNames.add("Time");
+					// Dynamically create buttons for events.
+					// the scrollpane
+					JPanel buttonPanel = new JPanel();
+					buttonPanel.setLayout(new GridBagLayout());
+				    buttonPanel.setSize(new Dimension(400, 300)); // whatever
+				    
 
-					//create the event table and wrap a scrollPlane around it.
-					listOfEvents = new JTable(rowData, columnNames);
-					eventsScroll.setViewportView(listOfEvents);
+					  
+					    
+
+				    // GridBagConstraint for button
+				    GridBagConstraints constraint = new GridBagConstraints();
+				    constraint.anchor = GridBagConstraints.CENTER;
+				    constraint.fill = GridBagConstraints.NONE;
+				    constraint.gridx = 0;
+				    constraint.gridy = GridBagConstraints.RELATIVE;
+				    constraint.weightx = 1.0f;
+				    constraint.weighty = 1.0f;
+
+//				    int sizeOfButtons = 50;
+				    
+//				    int x = 19; int y=200;
+				    int y = eventsScroll.getY()+1; int x = eventsScroll.getX()+1;
+				    
+					String tempString = new String();
+				    for(int i = 0; i < events.size(); i++) {
+//				        JButton button = new JButton();
+
+				        tempString = events.get(i);// get each event.
+//				        System.out.println("EVENTS OBTAINED ARE: " + tempString);
+						String [] temp1 = tempString.split("&");// split each event into place & time based on "&"
+//						System.out.println("IN CLIENT GUI: " + temp1[0] + "&"+temp1[1] + "&"+temp1[2] + "&"+temp1[3] + "&"+temp1[4] + "&");
+						String [] temp2 = temp1[1].split(" ");
+						JButton button = new JButton(temp1[2]);
+						button.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+						button.setForeground(Color.WHITE);
+						button.setBackground(new Color(71,181,250));
+						button.setContentAreaFilled(false);
+						button.setOpaque(true);
+						button.setBorderPainted(false);
+						button.requestFocus();		
+						Border newborder2 = BorderFactory.createCompoundBorder();
+						button.setBorder(newborder2);		
+						button.setBounds(x, y, 280, 40);
+						y = y+43;
+						Events.add(button);
+				        HomePanel.add(button, constraint);
+				    }
+				    
+//				    eventsScroll.setBackground(new Color(201,119,119));
+//				    eventsScroll.setViewportView(Events);
+				    
+				    
+				    
+				   HomePanel.add(eventsScroll); // or other panel etc.
+				   eventsScroll.setBorder(null);
+				   eventsScroll.setOpaque(false);
+				    eventsScroll.updateUI();
+//				    HomePanel.setBackground(new Color(186,98,34));
 
 					
 					//Transition to home panel

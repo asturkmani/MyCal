@@ -404,7 +404,7 @@ public class Server {
  	   Vector<String> eventlist = new Vector<String>();
  	  
  	   PreparedStatement stmt;
- 	   stmt=conn.prepareStatement("select `where`, `when` from event where creator=?");
+ 	   stmt=conn.prepareStatement("select `where`, `when`,`name`,`rating`,`rating_count` from event where creator=?");
  	   stmt.setString(1, data.get(0));
  	   
  	   ResultSet eventlistRS;
@@ -413,7 +413,7 @@ public class Server {
  	   
  	   // copy event location and time into vector
  	   while(eventlistRS.next()){
- 		   eventlist.add(eventlistRS.getString(1) + " & "+ eventlistRS.getString(2));
+ 		   eventlist.add(eventlistRS.getString(1) + " & "+ eventlistRS.getString(2) + "&"+ eventlistRS.getString(3) + "&"+ eventlistRS.getString(4) + "&"+ eventlistRS.getString(5));
 
  	   }
 
@@ -425,18 +425,20 @@ public class Server {
  
 	 	PreparedStatement stmt1; //stmt creates the event in the 'event' entity
 	 
-	 	stmt1=conn.prepareStatement("insert into event values(?,?,?)");
+	 	stmt1=conn.prepareStatement("insert into event values(?,?,?,?,?,?)");
 		
 	 	stmt1.setString(1, data.get(0)); //datetime
 		stmt1.setString(2, data.get(1)); //location
 		stmt1.setString(3, data.get(2)); // username
+		stmt1.setString(4, data.get(3)); //name of event
+		stmt1.setFloat(5, 0);
+		stmt1.setFloat(6, 0);
 		
 		stmt1.execute(); // create an event with key time and location with constraint username... Taco, is this correct?
 		
 		
 	//	if (data.size()>3){ //only insert into the 'values' table if we have a friendlist (useful when modifying events)
 			
-		
 		
 	 	PreparedStatement stmt2; //stmt inserts into the relationship 'invited'
 		 
@@ -450,7 +452,7 @@ public class Server {
 		  user invited to the event.   */
 		
 		
-		int i = 3;
+		int i = 6;
 		
 		 while (i<data.size())
 		 {

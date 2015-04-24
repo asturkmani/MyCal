@@ -188,7 +188,7 @@ public class ClientGUI {
 				
 				//calling the createEvent function in theClient
 				try {
-					theClient.createEvent(currentUser, selectedFriends, datetime, wheretextField.getText());
+//					theClient.createEvent(currentUser, selectedFriends, datetime, wheretextField.getText());
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -269,7 +269,7 @@ public class ClientGUI {
 				
 				
 				try {
-					theClient.createEvent(currentUser, emptyVector, datetime, place); //pass empty vector as friendlist
+//					theClient.createEvent(currentUser, emptyVector, datetime, place); //pass empty vector as friendlist
 					theClient.deleteEvent(eventDescription);
 					
 				} catch (Exception e1) {

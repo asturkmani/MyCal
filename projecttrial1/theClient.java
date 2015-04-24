@@ -98,7 +98,7 @@ public static void addfriend(String username1, String username2) throws Exceptio
 	
 }
 
-public static void createEvent(String username, Vector<String> friends, String datetime, String location) throws Exception {
+public static void createEvent(String eventname, String username, Vector<String> friends, String datetime, String location) throws Exception {
 	
 	Socket clientSocket = new Socket("localhost", 6780);
 	
@@ -111,12 +111,16 @@ public static void createEvent(String username, Vector<String> friends, String d
 	  outToServer.writeBytes(datetime + "\n");
 	  outToServer.writeBytes(location + "\n");	
 	  outToServer.writeBytes(username + "\n");
+	  outToServer.writeBytes(eventname + "\n");
 	 
 	//write each friend on a line
+	  if ( friends != null){
 	  for (String str : friends){
      		outToServer.writeBytes(str + "\n");
 	  }
+	  }
 	  outToServer.writeBytes("\n");
+	  
 }
 
 
