@@ -231,24 +231,29 @@ public class ClientGUI2 {
 		btnLogIn.setBounds(6, 376, 308, 47);
 		LogInPanel.add(btnLogIn);
 		
-		JButton btnSignUp_1 = new JButton("Create free account");
-		btnSignUp_1.setForeground(Color.WHITE);
-		btnSignUp_1.setFont(new Font("Lucida Grande", Font.BOLD, 16));
-		btnSignUp_1.setOpaque(true);
-		btnSignUp_1.setBorderPainted(false);
-		btnSignUp_1.setBackground(UIManager.getColor("Button.select"));
-		btnSignUp_1.setBorder(UIManager.getBorder("Button.border"));
-		btnSignUp_1.addActionListener(new ActionListener() {
+		JButton createAccount = new JButton("Create free account");
+		createAccount.setForeground(Color.WHITE);
+		createAccount.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+		createAccount.setOpaque(true);
+		createAccount.setBorderPainted(false);
+		createAccount.setBackground(UIManager.getColor("Button.select"));
+		createAccount.setBorder(UIManager.getBorder("Button.border"));
+		createAccount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { // action performed when Sign Up button is pressed.
 				// take user to sign up field
 				SignUpPanel.setVisible(true);
 				LogInPanel.setVisible(false);
 			}
 		});
-		btnSignUp_1.setBounds(6, 317, 308, 47);
-		LogInPanel.add(btnSignUp_1);
+		createAccount.setBounds(6, 317, 308, 47);
+		LogInPanel.add(createAccount);
 		
 		passwordLogIn = new JPasswordField();		
+		passwordLogIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnLogIn.doClick();
+			}
+		});
 		passwordLogIn.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -438,6 +443,11 @@ public class ClientGUI2 {
 		SignUpPanel.add(emailS);
 		
 		dobS = new JTextField();
+		dobS.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnSignUp.doClick();
+			}
+		});
 		dobS.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -908,7 +918,11 @@ public class ClientGUI2 {
 				boolean temp=false;
 				currentUser = username.getText();
 				try {
-					temp=theClient.login(username.getText(), passwordLogIn.getText());
+					// prevent log in when incorrect data is entered
+					if(!username.getText().toLowerCase().equals("") && !username.getText().toLowerCase().equals("username") && !passwordLogIn.getText().toLowerCase().equals("") && !passwordLogIn.getText().toLowerCase().equals("password")){
+						temp=theClient.login(username.getText(), passwordLogIn.getText());}
+					else
+						signInError.setVisible(true);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -969,13 +983,12 @@ public class ClientGUI2 {
 					JPanel buttonsPanel = new JPanel();
 					buttonsPanel.setLayout(null);
 				    for(int i = 0; i < events.size(); i++) {
-//				        JButton button = new JButton();
+
 
 				        tempString = events.get(i);// get each event.
-//				        System.out.println("EVENTS OBTAINED ARE: " + tempString);
+
 						String [] temp1 = tempString.split("&");// split each event into place & time based on "&"
-//						System.out.println("IN CLIENT GUI: " + temp1[0] + "&"+temp1[1] + "&"+temp1[2] + "&"+temp1[3] + "&"+temp1[4] + "&");
-						String [] temp2 = temp1[1].split(" ");
+
 						
 						// specify button properties
 						JButton button = new JButton(temp1[2]);
@@ -1041,16 +1054,19 @@ public class ClientGUI2 {
 		// 2 - Load User details, friend list, event list
 	    //================================================================================
 		btnSignUp.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) { // action taken when Sign Up Button is pressed.
 				String response = new String();
 				try {
+					if (!usernameS.getText().toLowerCase().equals("") && !usernameS.getText().toLowerCase().equals("username") && !passwordField.getText().toLowerCase().equals("") && !passwordField.getText().toLowerCase().equals("password") && dobS.getText().toLowerCase().equals("") && dobS.getText().toLowerCase().equals("") && dobS.getText().toLowerCase().equals("date of birth") && firstNameS.getText().toLowerCase().equals("first name") && firstNameS.getText().toLowerCase().equals("") && lastNameS.getText().toLowerCase().equals("") && lastNameS.getText().toLowerCase().equals("last name") )
 					response = theClient.signup(usernameS.getText(), passwordField.getText(), emailS.getText(), firstNameS.getText(), lastNameS.getText(), dobS.getText());
 					
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				if(response == "success"){
+//				System.out.println("REsponse from server is: " + response);
+				if(response.equals("success")){
 					//transition back to loginpanel
 					SignUpPanel.setVisible(false);
 

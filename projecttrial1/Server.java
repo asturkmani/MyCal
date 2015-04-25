@@ -383,7 +383,7 @@ public class Server {
 		   stmt.setString(5, data.get(4));//last name
 		   stmt.setString(6, data.get(5));//date of birth (should be written with caution, sql is very picky here)
 		   stmt.execute(); //execute this statement (note we used execute not execute query because we are inserting) 
-		   return "Success"; //always return this because we wouldn't reach this if we got an SQL exception
+		   return "success"; //always return this because we wouldn't reach this if we got an SQL exception
 		}
 		else{
 			return "fail";
