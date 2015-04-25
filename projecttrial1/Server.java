@@ -176,6 +176,7 @@ public class Server {
                    case "signup": 
                 	   
                 	   try {
+                		   System.out.println("HELLO WORLD:" + input);
                 	   returnz=signup(input, conn);	//signup operation, call the signup function
                 	   }
                 	   catch (SQLException e){
@@ -365,32 +366,28 @@ public class Server {
 			
 		}
 
-   public static String signup(Vector<String> data, Connection conn) throws SQLException {
-	  
-   System.out.println("create event function called on server");
-   
-   PreparedStatement stmtCheck;	//using prepared statement to protect from SQL injection
-   ResultSet rs;
-   stmtCheck = conn.prepareStatement("select username from user where username = ?"); //this sql query
-   //is supposed to return just one or none rows since username is a primary key and we would only have one result (if any)
-   stmtCheck.setString(1, data.get(0)); //data.get(0) would be the username
-   rs = stmtCheck.executeQuery(); //execute the statement
-	if(rs.next()){		//the resultset would have a 'next' only if there is 1+ rows, i.e. if we got a match
-
-	   PreparedStatement stmt; //again to avoid sql injection	   
-	   stmt = conn.prepareStatement("insert into user values (?, ?, ?, ?, ?, ?)");
-	   stmt.setString(1, data.get(0));//username
-	   stmt.setString(2, data.get(1));//password
-	   stmt.setString(3, data.get(2));//email
-	   stmt.setString(4, data.get(3));//first name
-	   stmt.setString(5, data.get(4));//last name
-	   stmt.setString(6, data.get(5));//date of birth (should be written with caution, sql is very picky here)
-	   stmt.execute(); //execute this statement (note we used execute not execute query because we are inserting) 
-	   return "Success"; //always return this because we wouldn't reach this if we got an SQL exception
-	}
-	else{
-		return "fail";
+   public static String signup(Vector<String> data, Connection conn) throws SQLException {   
+	   PreparedStatement stmtCheck;	//using prepared statement to protect from SQL injection
+	   ResultSet rs;
+	   stmtCheck = conn.prepareStatement("select username from user where username = ?"); //this sql query
+	   //is supposed to return just one or none rows since username is a primary key and we would only have one result (if any)
+	   stmtCheck.setString(1, data.get(0)); //data.get(0) would be the username
+	   rs = stmtCheck.executeQuery(); //execute the statement
+		if(!rs.next()){		//the resultset would have a 'next' only if there is 1+ rows, i.e. if we got a match
+		   PreparedStatement stmt; //again to avoid sql injection	   
+		   stmt = conn.prepareStatement("insert into user values (?, ?, ?, ?, ?, ?)");
+		   stmt.setString(1, data.get(0));//username
+		   stmt.setString(2, data.get(1));//password
+		   stmt.setString(3, data.get(2));//email
+		   stmt.setString(4, data.get(3));//first name
+		   stmt.setString(5, data.get(4));//last name
+		   stmt.setString(6, data.get(5));//date of birth (should be written with caution, sql is very picky here)
+		   stmt.execute(); //execute this statement (note we used execute not execute query because we are inserting) 
+		   return "Success"; //always return this because we wouldn't reach this if we got an SQL exception
 		}
+		else{
+			return "fail";
+			}
 	}
 
    
@@ -504,26 +501,13 @@ public class Server {
  
  public static String deleteevent(Vector<String> data, Connection conn) throws SQLException{
 	 
-	 //parse the string we got, it should be divided into location and datetime
 	 
-	//divide original string into two parts
-			String [] original = data.get(0).split(",");
-			
-			//divide each part 
-			String [] part1 = original[0].split(": ");
-			
-			String [] part2 = original[1].split(": ");
-			
-			//create string for place, string for time
-			String place = part1[1];
-			String time = part2[1];
 			
 			
 			   PreparedStatement stmt;
-		 	   stmt=conn.prepareStatement("delete from event where `where`=? and `when`=?");
-		 	  stmt.setString(1, place);
-		 	 stmt.setString(2, time);
-		 	   
+		 	   stmt=conn.prepareStatement("delete from event where name=?");
+		 	  stmt.setString(1, data.get(0));
+		 	  
 		 	
 		 	 stmt.execute();
 

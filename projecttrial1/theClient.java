@@ -289,6 +289,7 @@ public static Vector<String> getInvited(String eventname) throws Exception{
 	  
   }
   
+  clientSocket.close();
 
 	  return invited;
 	
