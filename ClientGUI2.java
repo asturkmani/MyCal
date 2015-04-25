@@ -84,7 +84,6 @@ public class ClientGUI2 {
 	private Vector<String> friends = new Vector<String>();
 	private Vector<String> events = new Vector<String>();
 	private Vector<String> details = new Vector<String>();
-	private JList<String> listOfFriends = new JList<String>();
 	private JTable listOfEvents;
 	private JLabel signInError = new JLabel("Incorrect username/password");
 	private JPasswordField passwordLogIn;
@@ -96,6 +95,10 @@ public class ClientGUI2 {
 	private JTextField date;
 	private JTextField time;
 	private Vector<JButton> vectorOfButtons = new Vector<JButton>();
+	private JTextField eventNameModify;
+	private JTextField eventLocationModify;
+	private JScrollPane inviteFriendsScroll = new JScrollPane();
+	private JTextField addFriend;
 
 
 	/**
@@ -178,8 +181,7 @@ public class ClientGUI2 {
 		//================================================================================
 		// 1 - LogIn panel components
 	    //================================================================================
-		
-		JScrollPane inviteFriends = new JScrollPane();
+
 		
 		JLabel lblNewLabel = new JLabel("MyCal");
 		lblNewLabel.setFont(new Font("Kailasa", Font.BOLD, 22));
@@ -457,9 +459,14 @@ public class ClientGUI2 {
 			}
 		});
 		SignUpPanel.add(passwordField);
+		inviteFriendsScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		//================================================================================
 		// 1 - Home panel components
 	    //================================================================================
+		JLabel addFriendError = new JLabel("User does not exist!");
+		
+		inviteFriendsScroll.setBounds(205, 87, 95, 76);
+		HomePanel.add(inviteFriendsScroll);
 		
 	    Border etchedBorder =
 		BorderFactory.createEtchedBorder();
@@ -467,6 +474,15 @@ public class ClientGUI2 {
 		BorderFactory.createEmptyBorder(10, 10, 10, 10);
 	    Border compoundBorder =
 		BorderFactory.createCompoundBorder(etchedBorder, emptyBorder);
+	    
+		
+	    DefaultListModel friendsList = new DefaultListModel();
+		JList inviteFriendsList = new JList(friendsList);
+		inviteFriendsList.setBounds(205, 87, 95, 76);
+
+//		HomePanel.add(inviteFriendsList);
+		
+		
 
 	    // Create a date listener to be used for all calendars
 
@@ -491,7 +507,8 @@ public class ClientGUI2 {
 	    calendar1.setTodayFont(new Font("Dialog", Font.PLAIN, 14));
 	    	    	    
 		JLabel profileName = new JLabel("");
-		profileName.setBounds(68, 6, 409, 35);
+		profileName.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		profileName.setBounds(65, 6, 409, 35);
 		HomePanel.add(profileName);
 		
 		JLabel goToProfile = new JLabel("");
@@ -553,54 +570,7 @@ public class ClientGUI2 {
 		eventLocation.setBounds(205, 42, 95, 46);
 		HomePanel.add(eventLocation);
 		eventLocation.setColumns(10);
-		
-//		date = new JTextField();
-//		date.addFocusListener(new FocusAdapter() {
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				date.setText("");
-//				date.setForeground(Color.DARK_GRAY);
-//			}
-//		});
-//		date.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				date.setText("");
-//				date.setForeground(Color.DARK_GRAY);
-//			}
-//		});
-//		date.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-//		date.setText("yyyy-mm-dd");
-//		date.setForeground(new Color(211, 211, 211));
-//		date.setBounds(18, 87, 95, 46);
-//		HomePanel.add(date);
-//		date.setColumns(10);
-//		
-//		time = new JTextField();
-//		time.addFocusListener(new FocusAdapter() {
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				time.setText("");
-//				time.setForeground(Color.DARK_GRAY);
-//			}
-//		});
-//		time.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				time.setText("");
-//				time.setForeground(Color.DARK_GRAY);
-//			}
-//		});
-//		time.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-//		time.setForeground(new Color(211, 211, 211));
-//		time.setText("hh:mm");
-//		time.setBounds(110, 87, 95, 46);
-//		HomePanel.add(time);
-//		time.setColumns(10);
-		
-		
-		inviteFriends.setBounds(205, 91, 95, 75);
-		HomePanel.add(inviteFriends);
+
 		
 		JButton btnNewButton = new JButton("Create Event!");
 		btnNewButton.addActionListener(new ActionListener() {
@@ -634,9 +604,12 @@ public class ClientGUI2 {
 				
 				
 				
+				
+				
+				
 			//	System.out.println("TIME FROM GUI: " + date.getDate() + date );
 				
-				List<String> templist =listOfFriends.getSelectedValuesList(); //get selected friends
+				List<String> templist =inviteFriendsList.getSelectedValuesList(); //get selected friends
 				//put all values in a vector (we prefer using vector for ease of manipulation)
 				Vector<String> selectedFriends = new Vector<String>(); //
 				
@@ -700,17 +673,7 @@ public class ClientGUI2 {
 		});
 		btnNewButton.setBounds(18, 134, 188, 29);
 		HomePanel.add(btnNewButton);
-		
 
-		
-		
-
-		//================================================================================
-		// 1 - Profile panel components
-	    //================================================================================
-		JScrollPane friendsScroll = new JScrollPane();
-		friendsScroll.setBounds(173, 37, 122, 167);
-		profilePanel.add(friendsScroll);
 		
 		JLabel goToHome = new JLabel("");
 		goToHome.addMouseListener(new MouseAdapter() {
@@ -723,6 +686,101 @@ public class ClientGUI2 {
 		goToHome.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/home.jpeg"));
 		goToHome.setBounds(6, 6, 34, 34);
 		profilePanel.add(goToHome);
+		
+		addFriend = new JTextField();
+		addFriend.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				addFriend.setText("");
+				addFriend.setForeground(Color.DARK_GRAY);
+				addFriendError.setVisible(false);
+			}
+		});
+		addFriend.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				addFriend.setText("");
+				addFriend.setForeground(Color.DARK_GRAY);
+				addFriendError.setVisible(false);
+			}
+		});
+		addFriend.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if(!theClient.addfriend(currentUser, addFriend.getText())){
+						addFriendError.setVisible(true);
+					}
+						
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		addFriend.setForeground(Color.LIGHT_GRAY);
+		addFriend.setText("Add new friend");
+		addFriend.setBounds(167, 46, 147, 40);
+		profilePanel.add(addFriend);
+		addFriend.setColumns(10);
+		
+		JScrollPane profileFriendsScroll = new JScrollPane();
+		profileFriendsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		profileFriendsScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		profileFriendsScroll.setBounds(167, 111, 147, 171);
+		profilePanel.add(profileFriendsScroll);
+		
+		
+		addFriendError.setVisible(false);
+		addFriendError.setForeground(Color.RED);
+		addFriendError.setBounds(167, 86, 147, 16);
+		profilePanel.add(addFriendError);
+		
+		JPanel ModifyEvent = new JPanel();
+		ModifyEvent.setLayout(null);
+		ModifyEvent.setBackground(new Color(250, 248, 245));
+		frame.getContentPane().add(ModifyEvent, "name_66068424150500");
+		
+		JCalendarCombo calendarCombo = new JCalendarCombo(3, true);
+		calendarCombo.setTodayFont(new Font("Dialog", Font.PLAIN, 14));
+		calendarCombo.setTitleFont(new Font("Serif", Font.BOLD | Font.ITALIC, 13));
+		calendarCombo.setTimeFont(new Font("DialogInput", Font.PLAIN, 10));
+		calendarCombo.setFont(new Font("DialogInput", Font.PLAIN, 13));
+		calendarCombo.setEditable(true);
+		calendarCombo.setDayOfWeekFont(new Font("SansSerif", Font.ITALIC, 13));
+		calendarCombo.setDayFont(new Font("SansSerif", Font.BOLD, 13));
+		calendarCombo.setBounds(20, 87, 180, 45);
+		ModifyEvent.add(calendarCombo);
+		
+		JLabel usernameModify = new JLabel("");
+		usernameModify.setBounds(68, 6, 409, 35);
+		ModifyEvent.add(usernameModify);
+		
+		JLabel goBack = new JLabel("");
+		goBack.setBounds(18, 6, 35, 35);
+		ModifyEvent.add(goBack);
+		
+		eventNameModify = new JTextField();
+		eventNameModify.setText("Add a new event!");
+		eventNameModify.setForeground(new Color(211, 211, 211));
+		eventNameModify.setColumns(10);
+		eventNameModify.setBounds(18, 42, 188, 46);
+		ModifyEvent.add(eventNameModify);
+		
+		eventLocationModify = new JTextField();
+		eventLocationModify.setText("Where?");
+		eventLocationModify.setForeground(new Color(211, 211, 211));
+		eventLocationModify.setColumns(10);
+		eventLocationModify.setBounds(205, 42, 95, 46);
+		ModifyEvent.add(eventLocationModify);
+		
+		JScrollPane friendsModify = new JScrollPane();
+		friendsModify.setBounds(205, 91, 95, 75);
+		ModifyEvent.add(friendsModify);
+		
+		JButton modifyEvent = new JButton("Modify Event!");
+		modifyEvent.setBounds(18, 134, 188, 29);
+		ModifyEvent.add(modifyEvent);
 
 		
 		//================================================================================
@@ -753,11 +811,12 @@ public class ClientGUI2 {
 					friends = theClient.friendList(currentUser); 	// create the list of friends
 					events = theClient.eventList(currentUser); 		// obtain event list
 					details = theClient.getDetails(currentUser);	// obtain user details
+					
+					JList<String> newFriends = new JList<String>(friends);
+					inviteFriendsScroll.setViewportView(newFriends);
+					profileFriendsScroll.setViewportView(newFriends);
 			
 					// populate the list and wrap scrollPane around it
-					listOfFriends = new JList<String>(friends);
-					inviteFriends.setViewportView(listOfFriends);
-					friendsScroll.setViewportView(listOfFriends);
 					
 					// Dynamically create buttons for events.
 					// the scrollpane
@@ -816,6 +875,13 @@ public class ClientGUI2 {
 						Border newborder2 = BorderFactory.createCompoundBorder();
 						button.setBorder(newborder2);		
 						button.setBounds(x, y, 280, 40);
+						button.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) { // action performed when Sign Up button is pressed.
+								// take user to sign up field
+								ModifyEvent.setVisible(true);
+								HomePanel.setVisible(false);
+							}
+						});
 						y = y+43;
 						buttonsPanel.setPreferredSize(new Dimension((int) buttonsPanel.getPreferredSize().getWidth(),
 			                    (int)(buttonsPanel.getPreferredSize().getHeight()+43)));
@@ -865,10 +931,10 @@ public class ClientGUI2 {
 				try {
 					friends = theClient.friendList(currentUser);
 					events = theClient.eventList(currentUser);
-			
-				// populate the list and wrap scrollPane around it
-					listOfFriends = new JList<String>(friends);
-//					friendsScroll.setViewportView(listOfFriends);
+					
+					JList<String> newFriends = new JList<String>();
+					
+
 					
 					// split event data into multiple columns
 					
