@@ -1,3 +1,4 @@
+package projecttrial1;
 import java.awt.EventQueue;
 
 import javax.imageio.ImageIO;
@@ -642,6 +643,42 @@ public class ClientGUI2 {
 		});
 		btnNewButton.setBounds(18, 134, 188, 29);
 		HomePanel.add(btnNewButton);
+		
+		JButton btnTestMe = new JButton("test me");
+		btnTestMe.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+//				Vector<String> temp = new Vector<String>();
+//				temp.add("julian");
+//				temp.add("aboudi");
+//				temp.add("tarekjreidini");
+//				
+//				
+//				
+//				try {
+//					theClient.createEvent("zabr hmar", "tarekjreidini", temp, "2011-12-12", "ELH");
+//				} catch (Exception e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+				
+				
+				
+				try {
+					System.out.println("event detailszz:" + theClient.eventDetails("zabr hmar"));
+					System.out.println("invited peepz:" + theClient.getInvited("zabr hmar"));
+					
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+				
+			}
+		});
+		btnTestMe.setBounds(76, 199, 117, 29);
+		HomePanel.add(btnTestMe);
 		
 
 		
