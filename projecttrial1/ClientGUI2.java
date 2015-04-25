@@ -231,24 +231,29 @@ public class ClientGUI2 {
 		btnLogIn.setBounds(6, 376, 308, 47);
 		LogInPanel.add(btnLogIn);
 		
-		JButton btnSignUp_1 = new JButton("Create free account");
-		btnSignUp_1.setForeground(Color.WHITE);
-		btnSignUp_1.setFont(new Font("Lucida Grande", Font.BOLD, 16));
-		btnSignUp_1.setOpaque(true);
-		btnSignUp_1.setBorderPainted(false);
-		btnSignUp_1.setBackground(UIManager.getColor("Button.select"));
-		btnSignUp_1.setBorder(UIManager.getBorder("Button.border"));
-		btnSignUp_1.addActionListener(new ActionListener() {
+		JButton createAccount = new JButton("Create free account");
+		createAccount.setForeground(Color.WHITE);
+		createAccount.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+		createAccount.setOpaque(true);
+		createAccount.setBorderPainted(false);
+		createAccount.setBackground(UIManager.getColor("Button.select"));
+		createAccount.setBorder(UIManager.getBorder("Button.border"));
+		createAccount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { // action performed when Sign Up button is pressed.
 				// take user to sign up field
 				SignUpPanel.setVisible(true);
 				LogInPanel.setVisible(false);
 			}
 		});
-		btnSignUp_1.setBounds(6, 317, 308, 47);
-		LogInPanel.add(btnSignUp_1);
+		createAccount.setBounds(6, 317, 308, 47);
+		LogInPanel.add(createAccount);
 		
 		passwordLogIn = new JPasswordField();		
+		passwordLogIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnLogIn.doClick();
+			}
+		});
 		passwordLogIn.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -438,6 +443,11 @@ public class ClientGUI2 {
 		SignUpPanel.add(emailS);
 		
 		dobS = new JTextField();
+		dobS.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnSignUp.doClick();
+			}
+		});
 		dobS.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -597,7 +607,16 @@ public class ClientGUI2 {
 		HomePanel.add(eventLocation);
 		eventLocation.setColumns(10);
 		
-		//////// MODIFY PAGE COMPONENTS /////////
+		//================================================================================
+		// 1 - ModifyEvent panel components
+	    //================================================================================
+		
+		JScrollPane profileFriendsScroll = new JScrollPane();
+		profileFriendsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		profileFriendsScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		profileFriendsScroll.setBounds(167, 111, 147, 171);
+		profilePanel.add(profileFriendsScroll);
+		
 		JLabel EventLocationDisplay = new JLabel("Location:");
 		EventLocationDisplay.setBounds(54, 39, 61, 16);
 		ModifyEvent.add(EventLocationDisplay);
@@ -761,9 +780,15 @@ public class ClientGUI2 {
 		addFriend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if(!theClient.addfriend(currentUser, addFriend.getText())){
-						addFriendError.setVisible(true);
+					String response = theClient.addfriend(currentUser, addFriend.getText());
+					if(response.equals("success")){
+						friends = theClient.friendList(currentUser); 
+						JList<String> newFriends = new JList<String>(friends);
+						inviteFriendsScroll.setViewportView(newFriends);
+						profileFriendsScroll.setViewportView(newFriends);
 					}
+					else
+						addFriendError.setVisible(true);
 						
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -777,12 +802,6 @@ public class ClientGUI2 {
 		addFriend.setBounds(167, 46, 147, 40);
 		profilePanel.add(addFriend);
 		addFriend.setColumns(10);
-		
-		JScrollPane profileFriendsScroll = new JScrollPane();
-		profileFriendsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		profileFriendsScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-		profileFriendsScroll.setBounds(167, 111, 147, 171);
-		profilePanel.add(profileFriendsScroll);
 		
 		
 		addFriendError.setVisible(false);
@@ -1048,7 +1067,7 @@ public class ClientGUI2 {
 			public void actionPerformed(ActionEvent e) { // action taken when Sign Up Button is pressed.
 				String response = new String();
 				try {
-					if (!usernameS.getText().toLowerCase().equals("") && !usernameS.getText().toLowerCase().equals("username") && !passwordField.getText().toLowerCase().equals("") && !passwordField.getText().toLowerCase().equals("password") && dobS.getText().toLowerCase().equals("") && dobS.getText().toLowerCase().equals("") )
+					if (!usernameS.getText().toLowerCase().equals("") && !usernameS.getText().toLowerCase().equals("username") && !passwordField.getText().toLowerCase().equals("") && !passwordField.getText().toLowerCase().equals("password") && dobS.getText().toLowerCase().equals("") && dobS.getText().toLowerCase().equals("") && dobS.getText().toLowerCase().equals("date of birth") && firstNameS.getText().toLowerCase().equals("first name") && firstNameS.getText().toLowerCase().equals("") && lastNameS.getText().toLowerCase().equals("") && lastNameS.getText().toLowerCase().equals("last name") )
 					response = theClient.signup(usernameS.getText(), passwordField.getText(), emailS.getText(), firstNameS.getText(), lastNameS.getText(), dobS.getText());
 					
 				} catch (Exception e1) {

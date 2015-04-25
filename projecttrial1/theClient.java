@@ -106,7 +106,7 @@ public static Vector<String> getEventDetails(String eventName) throws Exception 
 	  
 	 	  return EventDetails;
 }
-public static Boolean addfriend(String username1, String username2) throws Exception {
+public static String addfriend(String username1, String username2) throws Exception {
 	
 	Socket clientSocket = new Socket("localhost", 6780);
 	  
@@ -119,18 +119,9 @@ public static Boolean addfriend(String username1, String username2) throws Excep
 	 outToServer.writeBytes(username2 + "\n\n");
 	//clientSocket.close();
 	 
-	 if (inFromServer.readLine() == "success"){
-		 clientSocket.close();
-		 return true;
-	 }
-		 
-	 else{
-		 clientSocket.close();
-		 return false;
-		 }
-	 
-	
-	
+	 String reponse = inFromServer.readLine();
+	 clientSocket.close();
+	 return reponse;
 }
 
 public static void createEvent(String eventname, String username, Vector<String> friends, String datetime, String location) throws Exception {
