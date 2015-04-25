@@ -78,8 +78,35 @@ public static String signup(String username, String password, String email, Stri
  
 }
 
+public static Vector<String> getEventDetails(String eventName) throws Exception {
+	Vector<String> EventDetails = new Vector<String>(); //create a vector of strings to send back to gui 
+	String response= new String();
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	  
+	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+	  
+	  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	
+	  
+	  outToServer.writeBytes("EVENTDETAILS\n"); //added the keyword or "verb"
+	  outToServer.writeBytes(eventName + "\n\n"); //send the username
+	
+	  response = inFromServer.readLine();
+	
+	  while (!response.equals("stopz")){
 
-public static void addfriend(String username1, String username2) throws Exception {
+		  //System.out.println("in the loop");
+		  EventDetails.add(response);
+		  //System.out.println(data);
+		  response = inFromServer.readLine();
+		  
+	  }
+	  clientSocket.close();
+	  
+	 	  return EventDetails;
+}
+public static Boolean addfriend(String username1, String username2) throws Exception {
 	
 	Socket clientSocket = new Socket("localhost", 6780);
 	  
@@ -92,8 +119,16 @@ public static void addfriend(String username1, String username2) throws Exceptio
 	 outToServer.writeBytes(username2 + "\n\n");
 	//clientSocket.close();
 	 
+	 if (inFromServer.readLine() == "success"){
+		 clientSocket.close();
+		 return true;
+	 }
+		 
+	 else{
+		 clientSocket.close();
+		 return false;
+		 }
 	 
-	
 	
 	
 }
@@ -120,6 +155,7 @@ public static void createEvent(String eventname, String username, Vector<String>
 	  }
 	  }
 	  outToServer.writeBytes("\n");
+	  clientSocket.close();
 	  
 }
 
@@ -148,6 +184,7 @@ public static Vector<String> friendList(String username) throws Exception{
 		  response = inFromServer.readLine();
 		  
 	  }
+	  clientSocket.close();
 	  
 	 	  return listOfFriends;
 
@@ -180,7 +217,7 @@ public static Vector<String> eventList(String username) throws Exception{
 		  
 	  }
 	  
-	
+	  clientSocket.close();
 		  return listOfEvents;
 
 }
@@ -196,7 +233,7 @@ public static void deleteEvent(String event) throws Exception{
 	  
 	  outToServer.writeBytes("DELETEEVENT\n"); //added the keyword or "verb"
 	  outToServer.writeBytes(event + "\n\n"); //send the username
-	
+	  clientSocket.close();
 	
 	
 }
@@ -224,9 +261,9 @@ public static Vector<String> getDetails(String username) throws Exception{
 		  
 	  }
 	  
-	
+	  clientSocket.close();
 		  return details;
-	
+		  
 	}
 
 public static Vector<String> getInvited(String eventname) throws Exception{
@@ -286,7 +323,6 @@ public static Vector<String> eventDetails(String eventname) throws Exception{
 	  return detailz;
 	
 }
-
 
 }
 
