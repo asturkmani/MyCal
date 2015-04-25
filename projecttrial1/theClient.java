@@ -146,7 +146,7 @@ public static void createEvent(String eventname, String username, Vector<String>
 	  }
 	  }
 	  outToServer.writeBytes("\n");
-	  clientSocket.close();
+//	  clientSocket.close();
 	  
 }
 

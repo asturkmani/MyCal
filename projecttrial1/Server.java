@@ -218,7 +218,7 @@ public class Server {
                    case "getdetails":
                 	   Vector<String> details = new Vector<String>();
                      	try {
-                     		System.out.println("Arrived to server, input to details:" + input.get(0));
+//                     		System.out.println("Arrived to server, input to details:" + input.get(0));
   						details=details(input, conn);
   					} catch (SQLException e) {
   						// TODO Auto-generated catch block
@@ -347,7 +347,7 @@ public class Server {
    public static Vector<String> details(Vector<String> data, Connection conn) throws SQLException {
 			PreparedStatement stmt;
 			ResultSet rs;
-			System.out.println("Input to server details function is:" + data.get(0));
+//			System.out.println("Input to server details function is:" + data.get(0));
 			stmt = conn.prepareStatement("select * from user where username = ?");
 			stmt.setString(1,data.get(0));
 			
@@ -356,10 +356,13 @@ public class Server {
 			
 			//get user data of first user with matching username
 			if(rs.next()){
+				details.add(rs.getString(1));
+				details.add(rs.getString(2));
 				details.add(rs.getString(3));
 				details.add(rs.getString(4));
 				details.add(rs.getString(5));
 				details.add(rs.getString(6));
+				
 			}
 			
 			return details;
