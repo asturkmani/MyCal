@@ -215,7 +215,22 @@ public class Server {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+               
+                   
+                   
+                   case "deletefriend":
+                   {
+                	   
+						returnz=deletefriend(input, conn);
+						break;
+					
+					}
+                
+                   
+                   
+                   
                    case "getdetails":
+                
                 	   Vector<String> details = new Vector<String>();
                      	try {
                      		System.out.println("Arrived to server, input to details:" + input.get(0));
@@ -266,6 +281,30 @@ public class Server {
                      	
                      	
                    
+                       	
+                   case "getcommentusers":
+                	   Vector<String> users = new Vector<String>();
+                     	try {
+                     	users=getcommentusers(input, conn);
+  					} catch (SQLException e) {
+  						e.printStackTrace();
+  					}
+                     	
+                     	for (String strz : users){
+                     		outToClient.writeBytes(strz + "\n");
+                     	}
+                     	returnz="stopz";
+                     	break;
+                     	
+                     	
+                   case "addcomment":
+            		   returnz=addcomment(input, conn);
+               	break;  	
+                     	
+                     	
+                     	
+                     	
+                     	
                    
                    case "eventlist":
                       	Vector<String> eventlist = new Vector<String>();
@@ -383,7 +422,7 @@ public class Server {
 		   stmt.setString(5, data.get(4));//last name
 		   stmt.setString(6, data.get(5));//date of birth (should be written with caution, sql is very picky here)
 		   stmt.execute(); //execute this statement (note we used execute not execute query because we are inserting) 
-		   return "Success"; //always return this because we wouldn't reach this if we got an SQL exception
+		   return "success"; //always return this because we wouldn't reach this if we got an SQL exception
 		}
 		else{
 			return "fail";
@@ -571,4 +610,80 @@ public class Server {
 
  
  
+ public static Vector<String> getcommentusers(Vector<String> data, Connection conn) throws SQLException{
+	  // Acquire vector of users who comment on a certain event
+	   Vector<String> users = new Vector<String>();
+	  
+	   PreparedStatement stmt;
+	   stmt=conn.prepareStatement("select * from comments where event=?");
+	   stmt.setString(1, data.get(0));
+	   
+	   ResultSet usersRS;
+	   
+	   usersRS=stmt.executeQuery();
+	   
+	   
+	   
+	   
+	   
+	//   add the users to a vector
+	   while(usersRS.next()){
+		   users.add(usersRS.getString(2)); //add username
+		  users.add(usersRS.getString(1)); //add actual comment
+	   }
+
+	   return users;
+
+	 
+ }
+ 
+ 
+ public static String addcomment(Vector<String> data, Connection conn){
+			
+	 	PreparedStatement stmt1;
+	   
+	   try {
+		
+		   stmt1=conn.prepareStatement("insert into comments values (?,?,?)");
+		   stmt1.setString(1, data.get(0));
+		   stmt1.setString(2, data.get(1));
+		   stmt1.setString(3, data.get(2)); 
+		   stmt1.execute();
+		   
+		   
+	} catch (SQLException e) {
+		
+		return "fail";
+	}
+	  
+	   return "success";
+	   
+ }
+ 
+ public static String deletefriend(Vector<String> data, Connection conn){
+	 PreparedStatement stmt1,stmt2;
+	   
+	 System.out.println("starting deletefriend on server");
+	   try {
+		stmt1=conn.prepareStatement("delete from friends_with where user1=? and user2=?");
+		stmt1.setString(1, data.get(0));
+		stmt1.setString(2, data.get(1));
+		  
+		   stmt1.execute();
+		   
+		   stmt2=conn.prepareStatement("delete from friends_with where user1=? and user2=?");
+		   stmt2.setString(1, data.get(1));
+		   stmt2.setString(2, data.get(0));
+		   stmt2.execute();
+	} catch (SQLException e) {
+		e.printStackTrace();
+		return "fail";
+	}
+
+		 System.out.println("finishing deletefriend on server");
+	   return "success";
+
+	 
+ }
+
 }
