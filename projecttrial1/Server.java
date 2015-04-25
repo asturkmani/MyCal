@@ -183,13 +183,9 @@ public class Server {
                 	   }
                    break;
                    
+                   
                    case "addfriend":
-                	   try {
                 		   returnz=addfriend(input, conn);
-                	   }
-                	   catch (SQLException e){
-                		   e.printStackTrace();
-                	   }
                    	break;
                    	
                    case "friendlist":
@@ -362,18 +358,23 @@ public class Server {
 	}
 
    
-   public static String addfriend(Vector<String> data, Connection conn) throws SQLException {
+   public static String addfriend(Vector<String> data, Connection conn){
 	   PreparedStatement stmt1,stmt2;
 	   
-	   stmt1=conn.prepareStatement("insert into friends_with values (?,?)");
-	   stmt1.setString(1, data.get(0));
-	   stmt1.setString(2, data.get(1));
-	   stmt1.execute();
-	   
-	   stmt2=conn.prepareStatement("insert into friends_with values (?,?)");
-	   stmt2.setString(1, data.get(1));
-	   stmt2.setString(2, data.get(0));
-	   stmt2.execute();
+	   try {
+		stmt1=conn.prepareStatement("insert into friends_with values (?,?)");
+		   stmt1.setString(1, data.get(0));
+		   stmt1.setString(2, data.get(1));
+		   stmt1.execute();
+		   
+		   stmt2=conn.prepareStatement("insert into friends_with values (?,?)");
+		   stmt2.setString(1, data.get(1));
+		   stmt2.setString(2, data.get(0));
+		   stmt2.execute();
+	} catch (SQLException e) {
+
+		return "fail";
+	}
 	   
 	   return "success";
 	   
