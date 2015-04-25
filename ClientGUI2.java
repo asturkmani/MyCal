@@ -6,7 +6,9 @@ import javax.swing.JFrame;
 import java.awt.CardLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JLayeredPane;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -18,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.TextField;
 import java.awt.Button;
 import java.awt.event.ActionListener;
@@ -85,7 +88,7 @@ public class ClientGUI2 {
 	private JTextField eventLocation;
 	private JTextField date;
 	private JTextField time;
-	private Vector<JButton> Events = new Vector<JButton>();
+	private Vector<JButton> vectorOfButtons = new Vector<JButton>();
 
 
 	/**
@@ -465,13 +468,7 @@ public class ClientGUI2 {
 		goToProfile.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/user.png"));
 		goToProfile.setBounds(18, 6, 35, 35);
 		HomePanel.add(goToProfile);
-		
-		JScrollPane eventsScroll = new JScrollPane();
-		eventsScroll.setOpaque(false);
-		eventsScroll.setBorder(null);
-		eventsScroll.setBounds(18, 168, 282, 271);
-//		eventsScroll.setViewportView(listOfEvents);
-		HomePanel.add(eventsScroll);
+
 		
 		newEvent = new JTextField();
 		newEvent.addFocusListener(new FocusAdapter() {
@@ -590,6 +587,21 @@ public class ClientGUI2 {
 					selectedFriends.add(templist.get(i));}
 				
 				//calling the createEvent function in theClient
+				
+				/* here we need to:
+				 1) add the new event to the database
+				 2)create a new button to represent it
+				 3) update the gui to reflect this. Refer to description in initial log in procedure for more details on dynamic
+				 creation of buttons */
+				
+				// create constraints
+				GridBagConstraints constraint = new GridBagConstraints();
+			    constraint.anchor = GridBagConstraints.CENTER;
+			    constraint.fill = GridBagConstraints.NONE;
+			    constraint.gridx = 0;
+			    constraint.gridy = GridBagConstraints.RELATIVE;
+			    constraint.weightx = 1.0f;
+			    constraint.weighty = 1.0f;
 				try {
 					theClient.createEvent(newEvent.getText(), currentUser, selectedFriends, datetime,eventLocation.getText() );
 				} catch (Exception e1) {
@@ -605,15 +617,35 @@ public class ClientGUI2 {
 				button.requestFocus();		
 				Border newborder2 = BorderFactory.createCompoundBorder();
 				button.setBorder(newborder2);
-				int x = Events.get(Events.size()-1).getX();
-				int y = Events.get(Events.size()-1).getY() + 43;
+				//place the new button in the scrollpane. place it below previous buttons (events)
+				// if they exist, else place it at the first point in the scroll pane.
+				int x,y;
+				
+				if(vectorOfButtons.size() > 0){
+				x = vectorOfButtons.get(vectorOfButtons.size()-1).getX();
+				y = vectorOfButtons.get(vectorOfButtons.size()-1).getY() + 43;}
+				else{
+					x = 19;
+					y = 200;}
 				button.setBounds(x, y, 280, 40);
 				
-				Events.add(button);
+				//add the new button to the vector of buttons
+				vectorOfButtons.add(button);
+				// add the new button to the homepanel along with constraints
+
+
+				
+				HomePanel.revalidate();
+				frame.revalidate();
+				frame.repaint();
 			}
 		});
 		btnNewButton.setBounds(18, 134, 188, 29);
 		HomePanel.add(btnNewButton);
+		
+
+		
+		
 
 		//================================================================================
 		// 1 - Profile panel components
@@ -672,7 +704,7 @@ public class ClientGUI2 {
 					// Dynamically create buttons for events.
 					// the scrollpane
 					JPanel buttonPanel = new JPanel();
-					buttonPanel.setLayout(new GridBagLayout());
+					buttonPanel.setLayout(null);
 				    buttonPanel.setSize(new Dimension(400, 300)); // whatever
 				    
 
@@ -690,10 +722,21 @@ public class ClientGUI2 {
 
 //				    int sizeOfButtons = 50;
 				    
-//				    int x = 19; int y=200;
-				    int y = eventsScroll.getY()+1; int x = eventsScroll.getX()+1;
+				    int x = 0; int y=0;
+
+				    
+				    /* TO DYNAMICALLY ADD BUTTONS
+				     0) pre-processing : create gridbag constraints for the button
+				     1) read in the list of events
+				     2) for each event, create a new button with text field equal to the name of the event
+				     3) add that button to the vector of buttons so we can access it later on
+				     4) add the button to the home panel
+				     5) update the homepanel */
 				    
 					String tempString = new String();
+					// create a panel to house the buttons of events
+					JPanel buttonsPanel = new JPanel();
+					buttonsPanel.setLayout(null);
 				    for(int i = 0; i < events.size(); i++) {
 //				        JButton button = new JButton();
 
@@ -702,6 +745,8 @@ public class ClientGUI2 {
 						String [] temp1 = tempString.split("&");// split each event into place & time based on "&"
 //						System.out.println("IN CLIENT GUI: " + temp1[0] + "&"+temp1[1] + "&"+temp1[2] + "&"+temp1[3] + "&"+temp1[4] + "&");
 						String [] temp2 = temp1[1].split(" ");
+						
+						// specify button properties
 						JButton button = new JButton(temp1[2]);
 						button.setFont(new Font("Lucida Grande", Font.BOLD, 16));
 						button.setForeground(Color.WHITE);
@@ -714,20 +759,22 @@ public class ClientGUI2 {
 						button.setBorder(newborder2);		
 						button.setBounds(x, y, 280, 40);
 						y = y+43;
-						Events.add(button);
-				        HomePanel.add(button, constraint);
+						buttonsPanel.setPreferredSize(new Dimension((int) buttonsPanel.getPreferredSize().getWidth(),
+			                    (int)(buttonsPanel.getPreferredSize().getHeight()+43)));
+						vectorOfButtons.add(button); //add the new button to the vector of buttons
+				        buttonsPanel.add(button, constraint); // add the button to the homepanel
 				    }
+
+					
+					
 				    
-//				    eventsScroll.setBackground(new Color(201,119,119));
-//				    eventsScroll.setViewportView(Events);
-				    
-				    
-				    
-				   HomePanel.add(eventsScroll); // or other panel etc.
-				   eventsScroll.setBorder(null);
-				   eventsScroll.setOpaque(false);
-				    eventsScroll.updateUI();
-//				    HomePanel.setBackground(new Color(186,98,34));
+					JScrollPane eventsScrollPane = new JScrollPane(buttonsPanel);
+					eventsScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+					eventsScrollPane.getViewport().setBorder(null);
+					eventsScrollPane.setViewportBorder(null);
+					eventsScrollPane.setBorder(null);
+					eventsScrollPane.setBounds(28, 180, 266, 272);
+					HomePanel.add(eventsScrollPane);
 
 					
 					//Transition to home panel
@@ -787,15 +834,7 @@ public class ClientGUI2 {
 						rowI = new Vector<String>();
 						
 					}
-					// create column names
-					Vector<String> columnNames = new Vector<String>();
-					columnNames.add("Place");
-					columnNames.add("Date");
-					columnNames.add("Time");
 
-					
-					listOfEvents = new JTable(rowData, columnNames);
-					eventsScroll.setViewportView(listOfEvents);
 					
 				
 				
