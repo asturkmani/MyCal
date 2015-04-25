@@ -209,6 +209,7 @@ public class Server {
 
                    	break;
                    	
+                   	
                    
                    case "deleteevent":
                 	   try {
@@ -233,6 +234,41 @@ public class Server {
                      	}
                      	returnz="stopz";
                      	break;
+                   
+            
+                     	
+                   case "getinvited":
+                	   Vector<String> invited = new Vector<String>();
+                     	try {
+                     	invited=getinvited(input, conn);
+  					} catch (SQLException e) {
+  						e.printStackTrace();
+  					}
+                     	
+                     	for (String strz : invited){
+                     		outToClient.writeBytes(strz + "\n");
+                     	}
+                     	returnz="stopz";
+                     	break;
+            
+                
+                   case "eventdetails":
+                	   Vector<String> detailz = new Vector<String>();
+                     	try {
+                     	detailz=eventdetails(input, conn);
+  					} catch (SQLException e) {
+  						e.printStackTrace();
+  					}
+                     	
+                     	for (String strz : detailz){
+                     		outToClient.writeBytes(strz + "\n");
+                     	}
+                     	returnz="stopz";
+                     	break;
+            
+                     	
+                     	
+                   
                    
                    case "eventlist":
                       	Vector<String> eventlist = new Vector<String>();
@@ -413,7 +449,7 @@ public class Server {
  	   
  	   // copy event location and time into vector
  	   while(eventlistRS.next()){
- 		   eventlist.add(eventlistRS.getString(1) + " & "+ eventlistRS.getString(2) + "&"+ eventlistRS.getString(3) + "&"+ eventlistRS.getString(4) + "&"+ eventlistRS.getString(5));
+ 		   eventlist.add(eventlistRS.getString(1) + "&"+ eventlistRS.getString(2) + "&"+ eventlistRS.getString(3) + "&"+ eventlistRS.getString(4) + "&"+ eventlistRS.getString(5));
 
  	   }
 
@@ -442,21 +478,20 @@ public class Server {
 		
 	 	PreparedStatement stmt2; //stmt inserts into the relationship 'invited'
 		 
-	 	stmt2=conn.prepareStatement("insert into invited values(?,?,?,?)");
+	 	stmt2=conn.prepareStatement("insert into invited values(?,?,?)");
 
-	 	stmt2.setString(2, data.get(0)); //datettime
-	 	stmt2.setString(3, data.get(1)); //location
-		stmt2.setString(4, "0"); //not attending (yet)
+	 	stmt2.setString(1, data.get(3)); //eventname
+	 	stmt2.setString(3, "0"); //not attending (yet)
 		 	
 		/* Leave the first ? blank and insert it below. Perform an execution for each
 		  user invited to the event.   */
 		
 		
-		int i = 6;
+		int i = 4;
 		
 		 while (i<data.size())
 		 {
-		 stmt2.setString(1, data.get(i));
+		 stmt2.setString(2, data.get(i));
 		 stmt2.execute();
 		 i++;
 		 }
@@ -503,4 +538,52 @@ public class Server {
 	 Vector<String> todayEvents = new Vector<String>();
 	 return todayEvents;
  	}
- }
+
+ public static Vector<String> getinvited(Vector<String> data, Connection conn) throws SQLException {
+	   // Acquire vector of invited people given an eventname
+	   Vector<String> invited = new Vector<String>();
+	  
+	   PreparedStatement stmt;
+	   stmt=conn.prepareStatement("select * from invited where eventname=?");
+	   stmt.setString(1, data.get(0));
+	   
+	   ResultSet invitedRS;
+	   //execute query to obtain invited people. store in ResultSet
+	   invitedRS=stmt.executeQuery();
+	   
+	//   add the invitees to a vector
+	   while(invitedRS.next()){
+		   invited.add(invitedRS.getString(2));
+		  // System.out.println("DEBUG!!" +  invitedRS.getString(2));
+			
+	   }
+
+	   return invited;
+  }
+ 
+ public static Vector<String> eventdetails(Vector<String> data, Connection conn) throws SQLException {
+	   // Acquire vector of invited people given an eventname
+	   Vector<String> detailz = new Vector<String>();
+	  
+	   PreparedStatement stmt;
+	   stmt=conn.prepareStatement("select * from event where name=?");
+	   stmt.setString(1, data.get(0));
+	   
+	   
+	   ResultSet event1; //result set with when and where
+	   event1=stmt.executeQuery();
+	   
+	   if(event1.next()){
+		   detailz.add(event1.getString(1)); //when
+		   detailz.add(event1.getString(2)); //where
+		      
+	   }
+	   
+	  
+
+	   return detailz;
+}
+
+ 
+ 
+}
