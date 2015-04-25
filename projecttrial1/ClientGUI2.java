@@ -607,7 +607,16 @@ public class ClientGUI2 {
 		HomePanel.add(eventLocation);
 		eventLocation.setColumns(10);
 		
-		//////// MODIFY PAGE COMPONENTS /////////
+		//================================================================================
+		// 1 - ModifyEvent panel components
+	    //================================================================================
+		
+		JScrollPane profileFriendsScroll = new JScrollPane();
+		profileFriendsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		profileFriendsScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		profileFriendsScroll.setBounds(167, 111, 147, 171);
+		profilePanel.add(profileFriendsScroll);
+		
 		JLabel EventLocationDisplay = new JLabel("Location:");
 		EventLocationDisplay.setBounds(54, 39, 61, 16);
 		ModifyEvent.add(EventLocationDisplay);
@@ -771,9 +780,15 @@ public class ClientGUI2 {
 		addFriend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if(!theClient.addfriend(currentUser, addFriend.getText())){
-						addFriendError.setVisible(true);
+					String response = theClient.addfriend(currentUser, addFriend.getText());
+					if(response.equals("success")){
+						friends = theClient.friendList(currentUser); 
+						JList<String> newFriends = new JList<String>(friends);
+						inviteFriendsScroll.setViewportView(newFriends);
+						profileFriendsScroll.setViewportView(newFriends);
 					}
+					else
+						addFriendError.setVisible(true);
 						
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -787,12 +802,6 @@ public class ClientGUI2 {
 		addFriend.setBounds(167, 46, 147, 40);
 		profilePanel.add(addFriend);
 		addFriend.setColumns(10);
-		
-		JScrollPane profileFriendsScroll = new JScrollPane();
-		profileFriendsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		profileFriendsScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-		profileFriendsScroll.setBounds(167, 111, 147, 171);
-		profilePanel.add(profileFriendsScroll);
 		
 		
 		addFriendError.setVisible(false);
