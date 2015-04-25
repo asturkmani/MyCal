@@ -290,6 +290,7 @@ public static Vector<String> getInvited(String eventname) throws Exception{
 
 public static Vector<String> eventDetails(String eventname) throws Exception{
 	
+	
 	Socket clientSocket = new Socket("localhost", 6780);
 	  
 	Vector<String> detailz = new Vector<String>();
@@ -316,6 +317,73 @@ public static Vector<String> eventDetails(String eventname) throws Exception{
 	
 }
 
+public static Vector<String> getComment(String eventname) throws Exception{
+	
+	Vector<String> result = new Vector<String>();
+	
+
+	Socket clientSocket = new Socket("localhost", 6780);
+	  
+	DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+  
+  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+  String response = new String();
+  outToServer.writeBytes("getcommentusers\n"); //added the keyword or "verb"
+  outToServer.writeBytes(eventname + "\n\n"); //send the eventname
+   
+	
+  response = inFromServer.readLine();
+  
+  while (!response.equals("stopz")){
+
+	
+	  result.add(response);
+	  response = inFromServer.readLine();
+	  
+  }
+
+	return result;
+	
+	
+}
+
+
+public static void addComment (String username, String eventname, String comment) throws Exception {
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	
+	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+	  
+	  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	  
+	  // output to server details. send friends
+	  outToServer.writeBytes("addcomment\n");
+	  outToServer.writeBytes(comment + "\n");
+	  outToServer.writeBytes(username + "\n");	
+	  outToServer.writeBytes(eventname + "\n\n");
+	 // clientSocket.close();
+	  
+	
+}
+
+public static void deleteFriend (String user1, String user2) throws Exception {
+	
+	System.out.println("starting deletefriend on theclient");
+	Socket clientSocket = new Socket("localhost", 6780);
+	
+	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+	  
+	  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	  
+	  // output to server details. send friends
+	  outToServer.writeBytes("deletefriend\n");
+	  outToServer.writeBytes(user1 + "\n");
+	  outToServer.writeBytes(user2 + "\n\n");	
+
+		System.out.println("finishing deletefriend on theclient");
+	
+}
 }
 
 
