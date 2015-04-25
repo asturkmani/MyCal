@@ -27,6 +27,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.awt.Color;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -63,6 +65,11 @@ import java.awt.event.FocusEvent;
 
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JComboBox;
+
+import org.freixas.jcalendar.DateEvent;
+import org.freixas.jcalendar.DateListener;
+import org.freixas.jcalendar.JCalendar;
+import org.freixas.jcalendar.JCalendarCombo;
 
 public class ClientGUI2 {
 	private JFrame frame;
@@ -453,6 +460,36 @@ public class ClientGUI2 {
 		//================================================================================
 		// 1 - Home panel components
 	    //================================================================================
+		
+	    Border etchedBorder =
+		BorderFactory.createEtchedBorder();
+	    Border emptyBorder =
+		BorderFactory.createEmptyBorder(10, 10, 10, 10);
+	    Border compoundBorder =
+		BorderFactory.createCompoundBorder(etchedBorder, emptyBorder);
+
+	    // Create a date listener to be used for all calendars
+
+	    MyDateListener listener = new MyDateListener();
+	    
+	    JCalendarCombo calendar1 =
+	    		new JCalendarCombo(
+	    		    JCalendarCombo.DISPLAY_DATE | JCalendarCombo.DISPLAY_TIME,
+	    		    true);
+	    	    calendar1.setEditable(true);
+	    	    calendar1.addDateListener(listener);
+	   calendar1.setEditable(true);
+	   calendar1.setBounds(20, 87, 180, 45);
+	   HomePanel.add(calendar1);
+	    
+	   calendar1.setFont(new Font("DialogInput", Font.PLAIN, 13));
+	   
+	   calendar1.setTitleFont(new Font("Serif", Font.BOLD|Font.ITALIC, 13));
+	    calendar1.setDayOfWeekFont(new Font("SansSerif", Font.ITALIC, 13));
+	    calendar1.setDayFont(new Font("SansSerif", Font.BOLD, 13));
+	    calendar1.setTimeFont(new Font("DialogInput", Font.PLAIN, 10));
+	    calendar1.setTodayFont(new Font("Dialog", Font.PLAIN, 14));
+	    	    	    
 		JLabel profileName = new JLabel("");
 		profileName.setBounds(68, 6, 409, 35);
 		HomePanel.add(profileName);
@@ -489,7 +526,7 @@ public class ClientGUI2 {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					
-					theClient.createEvent(newEvent.getText(), currentUser, null, null, null);
+					theClient.createEvent(newEvent.getText(), currentUser, null, null, eventLocation.getText());
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -517,49 +554,49 @@ public class ClientGUI2 {
 		HomePanel.add(eventLocation);
 		eventLocation.setColumns(10);
 		
-		date = new JTextField();
-		date.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				date.setText("");
-				date.setForeground(Color.DARK_GRAY);
-			}
-		});
-		date.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				date.setText("");
-				date.setForeground(Color.DARK_GRAY);
-			}
-		});
-		date.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-		date.setText("yyyy-mm-dd");
-		date.setForeground(new Color(211, 211, 211));
-		date.setBounds(18, 87, 95, 46);
-		HomePanel.add(date);
-		date.setColumns(10);
-		
-		time = new JTextField();
-		time.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				time.setText("");
-				time.setForeground(Color.DARK_GRAY);
-			}
-		});
-		time.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				time.setText("");
-				time.setForeground(Color.DARK_GRAY);
-			}
-		});
-		time.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-		time.setForeground(new Color(211, 211, 211));
-		time.setText("hh:mm");
-		time.setBounds(110, 87, 95, 46);
-		HomePanel.add(time);
-		time.setColumns(10);
+//		date = new JTextField();
+//		date.addFocusListener(new FocusAdapter() {
+//			@Override
+//			public void focusGained(FocusEvent e) {
+//				date.setText("");
+//				date.setForeground(Color.DARK_GRAY);
+//			}
+//		});
+//		date.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				date.setText("");
+//				date.setForeground(Color.DARK_GRAY);
+//			}
+//		});
+//		date.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+//		date.setText("yyyy-mm-dd");
+//		date.setForeground(new Color(211, 211, 211));
+//		date.setBounds(18, 87, 95, 46);
+//		HomePanel.add(date);
+//		date.setColumns(10);
+//		
+//		time = new JTextField();
+//		time.addFocusListener(new FocusAdapter() {
+//			@Override
+//			public void focusGained(FocusEvent e) {
+//				time.setText("");
+//				time.setForeground(Color.DARK_GRAY);
+//			}
+//		});
+//		time.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				time.setText("");
+//				time.setForeground(Color.DARK_GRAY);
+//			}
+//		});
+//		time.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+//		time.setForeground(new Color(211, 211, 211));
+//		time.setText("hh:mm");
+//		time.setBounds(110, 87, 95, 46);
+//		HomePanel.add(time);
+//		time.setColumns(10);
 		
 		
 		inviteFriends.setBounds(205, 91, 95, 75);
@@ -571,12 +608,33 @@ public class ClientGUI2 {
 				// get name date, time, invited peeps, username from entered fields and create the event. initially set rating to 0.
 
 				String timeZ = new String();
-				timeZ = time.getText();
+//				timeZ = time.getText();
 				String dateZ = new String();
-				dateZ = date.getText();
+//				dateZ = date.getText();
 				
-				String datetime = new String();
-				datetime = dateZ + " " + timeZ; 
+				//int datetime = new String();
+				Integer temp = new Integer(0);
+				String finaldate = new String();
+				Date date = calendar1.getDate();
+				
+				temp=date.getYear() + 1900;
+				finaldate = temp.toString() + "-";
+				temp=date.getMonth() + 1;
+				
+				finaldate = finaldate + temp.toString() + "-";
+				temp=date.getDate();
+				
+				finaldate = finaldate + temp.toString() + " ";
+				temp=date.getHours();
+				finaldate = finaldate + temp.toString() + ":";
+				temp=date.getMinutes();
+				finaldate = finaldate + temp.toString();
+				
+				System.out.println(finaldate);
+				
+				
+				
+			//	System.out.println("TIME FROM GUI: " + date.getDate() + date );
 				
 				List<String> templist =listOfFriends.getSelectedValuesList(); //get selected friends
 				//put all values in a vector (we prefer using vector for ease of manipulation)
@@ -603,7 +661,7 @@ public class ClientGUI2 {
 			    constraint.weightx = 1.0f;
 			    constraint.weighty = 1.0f;
 				try {
-					theClient.createEvent(newEvent.getText(), currentUser, selectedFriends, datetime,eventLocation.getText() );
+					theClient.createEvent(newEvent.getText(), currentUser, selectedFriends, finaldate,eventLocation.getText() );
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -862,4 +920,24 @@ public class ClientGUI2 {
 
 
 	}
+	
+	
+	// INNER CLASSES
+
+private class MyDateListener
+      implements DateListener
+{
+
+public void dateChanged(DateEvent e)
+{
+    Calendar c = e.getSelectedDate();
+    if (c != null) {
+	System.out.println(c.getTime());
+    }
+    else {
+	System.out.println("No time selected.");
+    }
+}
+
+}
 }
