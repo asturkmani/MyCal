@@ -293,6 +293,35 @@ public static Vector<String> getInvited(String eventname) throws Exception{
 }
 
 
+public static Vector<String> getAttending(String eventname) throws Exception{
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	  
+	Vector<String> invited = new Vector<String>();
+  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+  
+  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+  String response = new String();
+  outToServer.writeBytes("getattending\n"); //added the keyword or "verb"
+  outToServer.writeBytes(eventname + "\n\n"); //send the eventname
+   
+	
+  response = inFromServer.readLine();
+  
+  while (!response.equals("stopz")){
+
+	  invited.add(response);
+	  response = inFromServer.readLine();
+	  
+  }
+  
+  clientSocket.close();
+
+	  return invited;
+	
+}
+
 
 public static Vector<String> eventDetails(String eventname) throws Exception{
 	

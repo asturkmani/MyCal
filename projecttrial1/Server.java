@@ -325,6 +325,26 @@ public class Server {
                      	}
                      	returnz="stopz";
                      	break;
+                     	
+                     	
+                     	
+                   case "getattending":
+                	   Vector<String> attending = new Vector<String>();
+                     	try {
+                     		System.out.println("Received request to get list of attending users to event with details: " + input);
+                     	attending=getAttending(input, conn);
+  					} catch (SQLException e) {
+  						System.out.println("Retrieval failed, sql exception thrown!");
+           		     System.out.println("Exiting...");
+  						e.printStackTrace();
+  					}
+                     	System.out.println("Retrieval successful, sending out details to client...");
+                     	for (String strz : attending){
+                     		outToClient.writeBytes(strz + "\n");
+                     	}
+                     	returnz="stopz";
+                     	break;
+                     	
             
                 
                    case "eventdetails":
@@ -674,8 +694,12 @@ public class Server {
  // TAREK ADDRESS THIS FUNCTION WITH YOUR SQL MAGIC //
  // REQUIRED: A LIST WITH ALL EVENTS OCCURING "TODAY" AND ALL THE USERS' IN THOSE EVENTS' EMAILS //
  public static Vector<String> todayEvents(Vector<String> data, Connection conn) throws SQLException{
-	 Vector<String> todayEvents = new Vector<String>();
-	 return todayEvents;
+	 Vector<String> emails = new Vector<String>();
+	 
+	 
+	 
+	 
+	 return emails;
  	}
 
  public static Vector<String> getinvited(Vector<String> data, Connection conn) throws SQLException {
@@ -683,7 +707,7 @@ public class Server {
 	   Vector<String> invited = new Vector<String>();
 	  
 	   PreparedStatement stmt;
-	   stmt=conn.prepareStatement("select * from invited where eventname=?");
+	   stmt=conn.prepareStatement("select * from invited where eventname=? and attending=false");
 	   stmt.setString(1, data.get(0));
 	   
 	   ResultSet invitedRS;
@@ -699,6 +723,32 @@ public class Server {
 
 	   return invited;
   }
+ 
+ 
+ public static Vector<String> getAttending(Vector<String> data, Connection conn) throws SQLException {
+	   // Acquire vector of invited people given an eventname
+	   Vector<String> attending = new Vector<String>();
+	  
+	   PreparedStatement stmt;
+	   stmt=conn.prepareStatement("select user from invited where eventname=? and attending=true");
+	   stmt.setString(1, data.get(0));
+	   
+	   ResultSet invitedRS;
+	   //execute query to obtain invited people. store in ResultSet
+	   invitedRS=stmt.executeQuery();
+	   
+	//   add the invitees to a vector
+	   while(invitedRS.next()){
+		   attending.add(invitedRS.getString(1));
+		  // System.out.println("DEBUG!!" +  invitedRS.getString(2));
+			
+	   }
+
+	   return attending;
+}
+
+ 
+ 
  
  public static Vector<String> eventdetails(Vector<String> data, Connection conn) throws SQLException {
 	   // Acquire vector of invited people given an eventname
