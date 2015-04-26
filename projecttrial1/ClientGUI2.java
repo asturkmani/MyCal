@@ -102,9 +102,9 @@ public class ClientGUI2 {
 	private JTextField addFriend;
 	private JList<String> newFriends;
 	private JTextField DOB_modify;
+	private JTextField email_modify;
 	private JTextField FName_modify;
 	private JTextField LName_modify;
-	private JTextField email_modify;
 	private JPasswordField password_modify_profile;
 
 
@@ -197,21 +197,21 @@ public class ClientGUI2 {
 		editProfileDetails.add(DOB_modify);
 		DOB_modify.setColumns(7);
 		
+		FName_modify = new JTextField();
+		editProfileDetails.add(FName_modify);
+		FName_modify.setColumns(7);
+		
 		LName_modify = new JTextField();
 		editProfileDetails.add(LName_modify);
 		LName_modify.setColumns(7);
-		
-		email_modify = new JTextField();
-		editProfileDetails.add(email_modify);
-		email_modify.setColumns(7);
 		
 		password_modify_profile = new JPasswordField();
 		password_modify_profile.setColumns(7);
 		editProfileDetails.add(password_modify_profile);
 		
-		FName_modify = new JTextField();
-		editProfileDetails.add(FName_modify);
-		FName_modify.setColumns(7);
+		email_modify = new JTextField();
+		editProfileDetails.add(email_modify);
+		email_modify.setColumns(7);
 		
 		 //================================================================================
 	    // Components
@@ -757,12 +757,6 @@ public class ClientGUI2 {
 				finaldate = finaldate + temp.toString();
 				
 				System.out.println(finaldate);
-				
-				
-				
-				
-				
-				
 			//	System.out.println("TIME FROM GUI: " + date.getDate() + date );
 				
 				List<String> templist =inviteFriendsList.getSelectedValuesList(); //get selected friends
@@ -859,17 +853,18 @@ public class ClientGUI2 {
 						vectorOfButtons.add(button); //add the new button to the vector of buttons
 				        buttonsPanel.add(button, constraint); // add the button to the homepanel
 				    }
-
+				    buttonsPanel.repaint();
+				    buttonsPanel.revalidate();
+					HomePanel.revalidate();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				buttonsPanel.revalidate();
-				HomePanel.revalidate();
+				
 				
 			}
 		});
-		btnNewButton.setBounds(18, 134, 188, 29);
+		btnNewButton.setBounds(12, 130, 188, 29);
 		HomePanel.add(btnNewButton);
 		
 		JLabel goToHome = new JLabel("");
@@ -911,7 +906,9 @@ public class ClientGUI2 {
 						newFriends.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 						inviteFriendsScroll.setViewportView(newFriends);
 						profileFriendsScroll.setViewportView(newFriends);
-						addFriendError.setVisible(true);
+						
+						addFriend.setText("");
+						addFriendError.setVisible(false);
 					}
 					else
 						addFriendError.setVisible(true);
@@ -925,7 +922,7 @@ public class ClientGUI2 {
 		});
 		addFriend.setForeground(Color.LIGHT_GRAY);
 		addFriend.setText("Add new friend");
-		addFriend.setBounds(167, 46, 147, 40);
+		addFriend.setBounds(167, 41, 147, 40);
 		profilePanel.add(addFriend);
 		addFriend.setColumns(10);
 
@@ -998,8 +995,16 @@ public class ClientGUI2 {
 		
 		JButton modifyProfile = new JButton("Update profile");
 		modifyProfile.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
-//				theClient.
+				try {
+					theClient.updateuser(currentUser, FName_modify.getText(), LName_modify.getText(), email_modify.getText(), password_modify_profile.getText(), DOB_modify.getText());
+					FName_modify.setText(""); LName_modify.setText(""); email_modify.setText("");password_modify_profile.setText("");DOB_modify.setText("");
+				    editProfileDetails.setVisible(false);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		modifyProfile.setBounds(6, 294, 149, 29);
@@ -1417,9 +1422,12 @@ public class ClientGUI2 {
 			public void actionPerformed(ActionEvent e) { // action taken when Sign Up Button is pressed.
 				String response = new String();
 				try {
+					System.out.println("About to send sign up request to server");
 					if (!usernameS.getText().toLowerCase().equals("") && !usernameS.getText().toLowerCase().equals("username") && !passwordField.getText().toLowerCase().equals("") && !passwordField.getText().toLowerCase().equals("password") && dobS.getText().toLowerCase().equals("") && dobS.getText().toLowerCase().equals("") && dobS.getText().toLowerCase().equals("date of birth") && firstNameS.getText().toLowerCase().equals("first name") && firstNameS.getText().toLowerCase().equals("") && lastNameS.getText().toLowerCase().equals("") && lastNameS.getText().toLowerCase().equals("last name") )
-					response = theClient.signup(usernameS.getText(), passwordField.getText(), emailS.getText(), firstNameS.getText(), lastNameS.getText(), dobS.getText());
 					
+						response = theClient.signup(usernameS.getText(), passwordField.getText(), emailS.getText(), firstNameS.getText(), lastNameS.getText(), dobS.getText());
+					
+					System.out.println("Response from server: " + response);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

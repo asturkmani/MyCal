@@ -30,20 +30,20 @@ public static boolean login(String username, String password) throws Exception {
 		  response = inFromServer.readLine(); //get the response from the user (success or fail)
 		  
 	
+		  
 		  switch(response)
 		  {
 		  case "success":
+			  clientSocket.close();
 			  return true;
 			  
 			  
 		  case "fail":
+			  clientSocket.close();
 			  return false;
 			  
 		  }
-		  
-		  
-//		  System.out.println("FROM SERVER: " + response);
-		  //clientSocket.close();
+		  clientSocket.close();
 
 		  return false;
 			
@@ -70,8 +70,12 @@ public static String signup(String username, String password, String email, Stri
 	  outToServer.writeBytes(lastname+ "\n");
 	  outToServer.writeBytes(dob + "\n\n");
 	  
+	  System.out.println("Sent sign up request to server");
 	  String reponse = new String();
 	  reponse = inFromServer.readLine();
+	  System.out.println("Reading sign up response from server...");
+	  clientSocket.close();
+	  System.out.println("Closed socket connection, response from server: " + reponse);
 	  clientSocket.close();
 	  
 	  return reponse;
