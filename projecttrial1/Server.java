@@ -185,6 +185,24 @@ public class Server {
                    break;
                    
                    
+                   
+                   
+                   case "updateuser": 
+                	   
+                	   try {
+                		   
+                	   returnz=updateuser(input, conn);	//signup operation, call the signup function
+                	   }
+                	   catch (SQLException e){
+                		   e.printStackTrace();
+                	   }
+                   break;
+                   
+                   
+                   
+                   
+                   
+                   
                    case "addfriend":
                 		   returnz=addfriend(input, conn);
                    	break;
@@ -227,6 +245,18 @@ public class Server {
 					}
                 
                    
+                   case "modifyevent":
+                   {
+                	   
+						try {
+							returnz=modifyevent(input, conn);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						break;
+					
+					}
+                
                    
                    
                    case "getdetails":
@@ -688,5 +718,51 @@ public class Server {
 
 	 
  }
+
+
+ public static String updateuser(Vector<String> data, Connection conn) throws SQLException {   
+	 System.out.println("beginning updateuser on server ");
+	 System.out.println(data);
+	 
+	 PreparedStatement stmt;	//using prepared statement to protect from SQL injection
+	   stmt = conn.prepareStatement("update user set password=?, email=?, first_name=?, family_name=?, dob=? where username = ?"); //this sql query
+	   
+		   stmt.setString(6, data.get(0));//username
+		   stmt.setString(1, data.get(1));//password
+		   stmt.setString(2, data.get(2));//email
+		   stmt.setString(3, data.get(3));//first name
+		   stmt.setString(4, data.get(4));//last name
+		   stmt.setString(5, data.get(5));//date of birth (should be written with caution, sql is very picky here)
+		   stmt.execute(); //execute this statement (note we used execute not execute query because we are inserting) 
+		   return "success"; //always return this because we wouldn't reach this if we got an SQL exception
+		
+		
+		}
+
+ 
+ 
+ 
+ public static String modifyevent(Vector<String> data, Connection conn) throws SQLException {
+	 
+	 System.out.println("MODIFY SHITTT STARTED OMG" + data);
+	 	PreparedStatement stmt1; //stmt creates the event in the 'event' entity
+	 
+	 	stmt1=conn.prepareStatement("update event set `when`=?, `where`=? where name = ?");
+		
+	 	stmt1.setString(1, data.get(0)); //datetime
+		stmt1.setString(2, data.get(1)); //location
+		//stmt1.setString(3, data.get(2)); // username
+		stmt1.setString(3, data.get(3)); //name of event
+		
+		stmt1.execute(); // create an event with key time and location with constraint username... Taco, is this correct?
+		
+	
+	 
+	return "Success";
+}
+
+ 
+ 
+ 
 
 }

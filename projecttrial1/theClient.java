@@ -388,6 +388,33 @@ public static String deleteFriend (String user1, String user2) throws Exception 
 //		System.out.println("finishing deletefriend on theclient");
 	
 }
+
+public static String updateuser (String username, String firstName, String lastName, String email, String password, String dob) throws Exception{
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	  
+	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+	  
+	  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	
+	  outToServer.writeBytes("updateuser\n");
+	  outToServer.writeBytes(username + "\n");
+	  outToServer.writeBytes(password + "\n");
+	  outToServer.writeBytes(email + "\n");
+	  outToServer.writeBytes(firstName + "\n");
+	  outToServer.writeBytes(lastName+ "\n");
+	  outToServer.writeBytes(dob + "\n\n");
+	  
+	  String reponse = new String();
+	  reponse = inFromServer.readLine();
+	  clientSocket.close();
+	  
+	  System.out.println("finished updateing from client side");
+	  return reponse;
+
+	
+	
+}
 }
 
 

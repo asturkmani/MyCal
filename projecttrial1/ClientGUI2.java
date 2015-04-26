@@ -1079,13 +1079,13 @@ public class ClientGUI2 {
 				
 				
 				try {
-					theClient.deleteEvent(eventNameDispla.getText());
+				//	theClient.deleteEvent(eventNameDispla.getText());
 									} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				try {
-					theClient.createEvent(eventNameDispla.getText(), currentUser, tempfriends, finaldate, eventLocationModify.getText());
+					theClient.modifyEvent(eventNameDispla.getText(), currentUser, tempfriends, finaldate, eventLocationModify.getText());
 					
 
 					// dynamically update the list
