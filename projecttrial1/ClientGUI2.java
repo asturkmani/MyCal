@@ -13,6 +13,7 @@ import javax.swing.ListSelectionModel;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
@@ -21,11 +22,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-
 import javax.swing.UIManager;
 import javax.swing.ImageIcon;
 import javax.swing.JPasswordField;
@@ -59,6 +60,7 @@ public class ClientGUI2 {
 	private Vector<String> friends = new Vector<String>();
 	private Vector<String> events = new Vector<String>();
 	private Vector<String> attendingEvents = new Vector<String>();
+	private Vector<String> notificationEvents = new Vector<String>();
 	private Vector<String> details = new Vector<String>();
 	private JLabel signInError = new JLabel("Incorrect username/password");
 	private JPasswordField passwordLogIn;
@@ -105,6 +107,7 @@ public class ClientGUI2 {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	@SuppressWarnings("deprecation")
 	private void initialize() {
 		
 		try {
@@ -609,7 +612,7 @@ public class ClientGUI2 {
 	    	    	    
 		JLabel profileName = new JLabel("");
 		profileName.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
-		profileName.setBounds(65, 6, 409, 35);
+		profileName.setBounds(60, 6, 409, 35);
 		HomePanel.add(profileName);
 		
 		JLabel goToProfile = new JLabel("");
@@ -693,7 +696,6 @@ public class ClientGUI2 {
 
 		JButton createEvent = new JButton("Create Event!");
 		createEvent.addActionListener(new ActionListener() {
-			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				// get name date, time, invited peeps, username from entered fields and create the event. initially set rating to 0.
 
@@ -892,6 +894,112 @@ public class ClientGUI2 {
 		createEvent.setBounds(12, 130, 188, 29);
 		HomePanel.add(createEvent);
 		
+		JLabel notifications = new JLabel("");
+		notifications.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					
+					// JPanel to contain everything
+					JPanel Notifications = new JPanel(new GridLayout(0,2));
+					JPopupMenu showNotifications = new JPopupMenu();
+					
+					Vector<JLabel> events = new Vector<JLabel>();
+					Vector<JCheckBox> decisions = new Vector<JCheckBox>();
+					
+					
+					Vector<String> notificationEvents = theClient.getInvitedUser(currentUser);
+					for (int i=0;i<notificationEvents.size();i++){
+						
+						//obtain event name, create it's check box
+						JLabel eventNotif = new JLabel(notificationEvents.get(i));
+						events.add(eventNotif);
+						Notifications.add(eventNotif);
+						
+						// add the check boxes
+						JCheckBox decision = new JCheckBox();
+						decisions.add(decision);
+						Notifications.add(decision);
+					}
+					
+					JButton acceptNoti = new JButton("Accept");
+					acceptNoti.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							
+							try {
+								//iterate through the checkboxes and execute its respective event
+								for (int i=0;i<decisions.size();i++){
+									//accept the event
+									if(decisions.get(i).isSelected() )
+										theClient.acceptEvent(currentUser, events.get(i).getText()); 
+								}
+								
+								//check if there are anymore notifications, if not hide the notifications sign
+								showNotifications.hide();
+								Vector<String> tempCheck = theClient.getInvitedUser(currentUser);
+								if(tempCheck.size() == 0){
+									notifications.setVisible(false);
+									notifications.disable();
+								}
+								
+									
+							} catch (Exception e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+					});
+					Notifications.add(acceptNoti);
+					
+					// delete event option
+					JButton deleteNoti = new JButton("Decline");
+					deleteNoti.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							
+							try {
+								//iterate through the checkboxes and execute its respective event
+								for (int i=0;i<decisions.size();i++){
+									//decline the event
+									if(decisions.get(i).isSelected() )
+										theClient.declineEvent(currentUser, events.get(i).getText()); 
+								}
+								showNotifications.hide();
+								Vector<String> tempCheck = theClient.getInvitedUser(currentUser);
+								if(tempCheck.size() == 0){
+									notifications.setVisible(false);
+									notifications.disable();}
+									
+							} catch (Exception e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+					});
+					Notifications.add(deleteNoti);
+					
+					
+					
+					//place the notifications in the JPanel in a scrollablePane and put them in the popup
+					
+					JScrollPane notificationsScroll = new JScrollPane(Notifications);
+
+					showNotifications.add(notificationsScroll);
+					
+					showNotifications.show(notifications, -60, 0);
+					
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		notifications.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/notifications.png"));
+		notifications.setBounds(280, 6, 35, 35);
+		notifications.setVisible(false);
+		notifications.disable();
+		HomePanel.add(notifications);
+		
 		JLabel goToHome = new JLabel("");
 		goToHome.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1036,7 +1144,6 @@ public class ClientGUI2 {
 		
 		JButton modifyProfile = new JButton("Update profile");
 		modifyProfile.addActionListener(new ActionListener() {
-			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				try {
 					theClient.updateuser(currentUser, FName_modify.getText(), LName_modify.getText(), email_modify.getText(), password_modify_profile.getText(), DOB_modify.getText());
@@ -1080,7 +1187,6 @@ public class ClientGUI2 {
 		
 		
 		modifyEvent.addActionListener(new ActionListener() {
-			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				
 				
@@ -1442,7 +1548,8 @@ public class ClientGUI2 {
 		deleteEvent.setBounds(197, 423, 117, 29);
 		ModifyEvent.add(deleteEvent);
 		
-		JLabel viewInvitees = new JLabel("View invitees");
+		JLabel viewInvitees = new JLabel("View pending");
+		JLabel viewAttendees = new JLabel("View attending");
 		// create a popup menu to show invited users
 		viewInvitees.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1518,7 +1625,7 @@ public class ClientGUI2 {
 				attendeesPopup.add(attendeesScroll);
 				
 				inviteesPopup.show(viewInvitees, 0, 20);
-				attendeesPopup.show(viewInvitees, 0, 20);
+				attendeesPopup.show(viewAttendees , 0, 20);
 
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -1531,7 +1638,7 @@ public class ClientGUI2 {
 		viewInvitees.setBounds(54, 56, 102, 16);
 		ModifyEvent.add(viewInvitees);
 		
-		JLabel viewAttendees = new JLabel("View attendees");
+		
 		viewAttendees.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -1541,7 +1648,7 @@ public class ClientGUI2 {
 				try {
 					
 					// FIX THIS PART //
-					Vector<String> attendeesList = theClient.getAttendingUser(eventNameDispla.getText());
+					Vector<String> attendeesList = theClient.getAttending(eventNameDispla.getText());
 					System.out.println("ATTENDEES" + attendeesList);
 					
 					// if no one is attending
@@ -1614,7 +1721,6 @@ public class ClientGUI2 {
 		// 2 - Load User details, friend list, event list
 	    //================================================================================
 		btnLogIn.addActionListener(new ActionListener() {
-			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) { // Log in the user
 				boolean temp=false;
 				currentUser = username.getText();
@@ -1640,6 +1746,15 @@ public class ClientGUI2 {
 					friends = theClient.friendList(currentUser); 	// create the list of friends
 					events = theClient.eventList(currentUser); 		// obtain event list
 					attendingEvents = theClient.getAttendingUser(currentUser);
+					notificationEvents = theClient.getInvitedUser(currentUser);
+					
+					// if user has notifications
+					if(notificationEvents.size()>0){
+						notifications.enable();
+						notifications.setVisible(true);
+					}
+					
+					
 					System.out.println(attendingEvents);
 					details = theClient.getDetails(currentUser);	// obtain user details
 					
@@ -1808,7 +1923,6 @@ public class ClientGUI2 {
 		// 2 - Load User details, friend list, event list
 	    //================================================================================
 		btnSignUp.addActionListener(new ActionListener() {
-			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) { // action taken when Sign Up Button is pressed.
 				String response = new String();
 				try {
@@ -1862,6 +1976,4 @@ public void dateChanged(DateEvent e)
     }
 }
 }
-
-
 }
