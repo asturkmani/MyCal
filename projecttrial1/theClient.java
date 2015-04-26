@@ -367,7 +367,7 @@ public static void addComment (String username, String eventname, String comment
 	
 }
 
-public static void deleteFriend (String user1, String user2) throws Exception {
+public static String deleteFriend (String user1, String user2) throws Exception {
 	
 	System.out.println("starting deletefriend on theclient");
 	Socket clientSocket = new Socket("localhost", 6780);
@@ -381,7 +381,11 @@ public static void deleteFriend (String user1, String user2) throws Exception {
 	  outToServer.writeBytes(user1 + "\n");
 	  outToServer.writeBytes(user2 + "\n\n");	
 
-		System.out.println("finishing deletefriend on theclient");
+	  String response = inFromServer.readLine();
+	  clientSocket.close();
+	  
+	  return response;
+//		System.out.println("finishing deletefriend on theclient");
 	
 }
 }

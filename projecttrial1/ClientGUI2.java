@@ -10,12 +10,15 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JLayeredPane;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.SingleSelectionModel;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -97,6 +100,12 @@ public class ClientGUI2 {
 	private JTextField eventLocationModify;
 	private JScrollPane inviteFriendsScroll = new JScrollPane();
 	private JTextField addFriend;
+	private JList<String> newFriends;
+	private JTextField DOB_modify;
+	private JTextField FName_modify;
+	private JTextField LName_modify;
+	private JTextField email_modify;
+	private JPasswordField password_modify_profile;
 
 
 	/**
@@ -178,6 +187,31 @@ public class ClientGUI2 {
 		
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(null);
+		
+		JPanel editProfileDetails = new JPanel();
+		editProfileDetails.setBounds(62, 111, 93, 171);
+		editProfileDetails.setVisible(false);
+		profilePanel.add(editProfileDetails);
+		
+		DOB_modify = new JTextField();
+		editProfileDetails.add(DOB_modify);
+		DOB_modify.setColumns(7);
+		
+		LName_modify = new JTextField();
+		editProfileDetails.add(LName_modify);
+		LName_modify.setColumns(7);
+		
+		email_modify = new JTextField();
+		editProfileDetails.add(email_modify);
+		email_modify.setColumns(7);
+		
+		password_modify_profile = new JPasswordField();
+		password_modify_profile.setColumns(7);
+		editProfileDetails.add(password_modify_profile);
+		
+		FName_modify = new JTextField();
+		editProfileDetails.add(FName_modify);
+		FName_modify.setColumns(7);
 		
 		 //================================================================================
 	    // Components
@@ -507,19 +541,19 @@ public class ClientGUI2 {
 		
 		
 		JLabel DOB_actual = new JLabel("New label");
-		DOB_actual.setBounds(62, 80, 93, 16);
+		DOB_actual.setBounds(62, 120, 93, 22);
 		profilePanel.add(DOB_actual);
 		
 		JLabel fname_actual = new JLabel("New label");
-		fname_actual.setBounds(62, 111, 93, 16);
+		fname_actual.setBounds(62, 154, 93, 22);
 		profilePanel.add(fname_actual);
 		
 		JLabel lname_actual = new JLabel("New label");
-		lname_actual.setBounds(62, 139, 93, 16);
+		lname_actual.setBounds(62, 188, 93, 22);
 		profilePanel.add(lname_actual);
 		
 		JLabel email_actual = new JLabel("New label");
-		email_actual.setBounds(62, 167, 93, 16);
+		email_actual.setBounds(62, 249, 93, 22);
 		profilePanel.add(email_actual);
 		
 		
@@ -627,6 +661,7 @@ public class ClientGUI2 {
 					lname_actual.setText(details.get(4));
 					fname_actual.setText(details.get(3));
 					email_actual.setText(details.get(2));
+					
 					currentUsername.setText(details.get(0));
 					profilePanel.setVisible(true);
 					HomePanel.setVisible(false);
@@ -873,8 +908,10 @@ public class ClientGUI2 {
 					if(response.equals("success")){
 						friends = theClient.friendList(currentUser); 
 						JList<String> newFriends = new JList<String>(friends);
+						newFriends.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 						inviteFriendsScroll.setViewportView(newFriends);
 						profileFriendsScroll.setViewportView(newFriends);
+						addFriendError.setVisible(true);
 					}
 					else
 						addFriendError.setVisible(true);
@@ -906,23 +943,76 @@ public class ClientGUI2 {
 		
 		JLabel currentUserDOB = new JLabel("DOB");
 		currentUserDOB.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		currentUserDOB.setBounds(6, 80, 34, 16);
+		currentUserDOB.setBounds(6, 120, 34, 16);
 		profilePanel.add(currentUserDOB);
 		
 		JLabel fname = new JLabel("FName");
 		fname.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		fname.setBounds(6, 111, 51, 16);
+		fname.setBounds(6, 157, 51, 16);
 		profilePanel.add(fname);
 		
 		JLabel lname = new JLabel("LName");
 		lname.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		lname.setBounds(6, 139, 51, 16);
+		lname.setBounds(6, 191, 51, 16);
 		profilePanel.add(lname);
 		
 		JLabel email = new JLabel("Email");
 		email.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		email.setBounds(6, 167, 45, 16);
+		email.setBounds(6, 252, 45, 16);
 		profilePanel.add(email);
+		
+		JButton deleteFriend = new JButton("Delete selected");
+		deleteFriend.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String todelete = newFriends.getSelectedValue();
+				try {
+					String response = theClient.deleteFriend(todelete, currentUser);
+					if(response.equals("success")){
+						friends = theClient.friendList(currentUser); 
+						newFriends = new JList<String>(friends);
+						newFriends.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						inviteFriendsScroll.setViewportView(newFriends);
+						profileFriendsScroll.setViewportView(newFriends);
+						profileFriendsScroll.revalidate();}
+					
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		deleteFriend.setBounds(167, 294, 147, 29);
+		profilePanel.add(deleteFriend);
+		
+		JLabel editDetials = new JLabel("");
+		editDetials.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				editProfileDetails.setVisible(true);
+				
+			}
+		});
+		editDetials.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/cog.png"));
+		editDetials.setBounds(46, 6, 34, 34);
+		profilePanel.add(editDetials);
+		
+		JButton modifyProfile = new JButton("Update profile");
+		modifyProfile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+//				theClient.
+			}
+		});
+		modifyProfile.setBounds(6, 294, 149, 29);
+		profilePanel.add(modifyProfile);
+		
+		JLabel pass_actual = new JLabel("********");
+		pass_actual.setBounds(62, 221, 93, 16);
+		profilePanel.add(pass_actual);
+		
+		JLabel password_modify = new JLabel("Pass");
+		password_modify.setBounds(6, 222, 51, 18);
+		profilePanel.add(password_modify);
+
 		
 		JCalendarCombo calendarCombo = new JCalendarCombo(3, true);
 		calendarCombo.setTodayFont(new Font("Dialog", Font.PLAIN, 14));
@@ -1221,7 +1311,8 @@ public class ClientGUI2 {
 					events = theClient.eventList(currentUser); 		// obtain event list
 					details = theClient.getDetails(currentUser);	// obtain user details
 					
-					JList<String> newFriends = new JList<String>(friends);
+					newFriends = new JList<String>(friends);
+					newFriends.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					inviteFriendsScroll.setViewportView(newFriends);
 					profileFriendsScroll.setViewportView(newFriends);
 
@@ -1309,7 +1400,7 @@ public class ClientGUI2 {
 					
 					//Transition to home panel
 					LogInPanel.setVisible(false);
-					profileName.setText(details.get(1) + " " + details.get(2));//include users first in last name on homepage
+					profileName.setText(details.get(3) + " " + details.get(4));//include users first in last name on homepage
 //					HomePanel.setSize(new Dimension(400,600));
 //					frame.setSize(400,600);
 					HomePanel.setVisible(true);
