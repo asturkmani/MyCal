@@ -96,7 +96,6 @@ public class ClientGUI2 {
 	private JTextField date;
 	private JTextField time;
 	private Vector<JButton> vectorOfButtons = new Vector<JButton>();
-	private JTextField eventNameModify;
 	private JTextField eventLocationModify;
 	private JTextField addFriend;
 	private JList<String> newFriends;
@@ -587,19 +586,19 @@ public class ClientGUI2 {
 		HomePanel.add(inviteFriendsScroll);
 		
 		JLabel EventLocationDisplay = new JLabel("Location:");
-		EventLocationDisplay.setBounds(54, 39, 61, 16);
+		EventLocationDisplay.setBounds(54, 28, 61, 16);
 		ModifyEvent.add(EventLocationDisplay);
 		
 		JLabel eventTimeDisplay = new JLabel("Time:");
-		eventTimeDisplay.setBounds(54, 57, 61, 16);
+		eventTimeDisplay.setBounds(54, 42, 61, 16);
 		ModifyEvent.add(eventTimeDisplay);
 		
 		JLabel eventLocationDispla = new JLabel("");
-		eventLocationDispla.setBounds(127, 39, 173, 16);
+		eventLocationDispla.setBounds(127, 28, 173, 16);
 		ModifyEvent.add(eventLocationDispla);
 		
 		JLabel eventTimeDispla = new JLabel("");
-		eventTimeDispla.setBounds(127, 57, 173, 16);
+		eventTimeDispla.setBounds(127, 42, 173, 16);
 		ModifyEvent.add(eventTimeDispla);
 		
 		JLabel eventNameDispla = new JLabel("Event name");
@@ -852,14 +851,19 @@ public class ClientGUI2 {
 				    }
 				    buttonsPanel.repaint();
 				    buttonsPanel.revalidate();
+				    HomePanel.repaint();
 					HomePanel.revalidate();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
-				
+				buttonsPanel.repaint();
+			    buttonsPanel.revalidate();
+			    HomePanel.repaint();
+				HomePanel.revalidate();
 			}
+			
 		});
 		createEvent.setBounds(12, 130, 188, 29);
 		HomePanel.add(createEvent);
@@ -903,7 +907,7 @@ public class ClientGUI2 {
 						newFriends.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 						
 						JList<String> newFriends2 = new JList<String>(friends);
-						newFriends2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						newFriends2.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION );
 						
 						//update list of friends
 						inviteFriendsScroll.setViewportView(newFriends2);
@@ -976,7 +980,7 @@ public class ClientGUI2 {
 						newFriends = new JList<String>(friends);
 						newFriends2 =new JList<String>(friends); 
 						newFriends.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-						newFriends2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						newFriends2.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 						
 						
 						inviteFriendsScroll.setViewportView(newFriends2);
@@ -1042,25 +1046,12 @@ public class ClientGUI2 {
 		calendarCombo.setBounds(20, 376, 180, 45);
 		ModifyEvent.add(calendarCombo);
 		
-		
-		
-		eventNameModify = new JTextField();
-		eventNameModify.setText("Enter new name");
-		eventNameModify.setForeground(new Color(211, 211, 211));
-		eventNameModify.setColumns(10);
-		eventNameModify.setBounds(20, 329, 188, 46);
-		ModifyEvent.add(eventNameModify);
-		
 		eventLocationModify = new JTextField();
 		eventLocationModify.setText("New Location");
 		eventLocationModify.setForeground(new Color(211, 211, 211));
 		eventLocationModify.setColumns(10);
-		eventLocationModify.setBounds(205, 329, 109, 46);
+		eventLocationModify.setBounds(197, 375, 117, 46);
 		ModifyEvent.add(eventLocationModify);
-		
-		JScrollPane friendsModify = new JScrollPane();
-		friendsModify.setBounds(219, 103, 95, 75);
-		ModifyEvent.add(friendsModify);
 		
 		JButton modifyEvent = new JButton("Modify Event!");
 		modifyEvent.addActionListener(new ActionListener() {
@@ -1189,11 +1180,11 @@ public class ClientGUI2 {
 				HomePanel.revalidate();
 			}
 		});
-		modifyEvent.setBounds(18, 423, 188, 29);
+		modifyEvent.setBounds(12, 423, 194, 29);
 		ModifyEvent.add(modifyEvent);
 		
 		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(12, 85, 302, 6);
+		separator_1.setBounds(12, 80, 302, 6);
 		ModifyEvent.add(separator_1);
 		
 		JButton deleteEvent = new JButton("Delete Event!");
@@ -1293,6 +1284,64 @@ public class ClientGUI2 {
 		deleteEvent.setBounds(197, 423, 117, 29);
 		ModifyEvent.add(deleteEvent);
 		
+		JLabel viewInvitees = new JLabel("View invitees");
+		// create a popup menu to show invited users
+		viewInvitees.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JPanel invitees = new JPanel();
+				JPanel attendees = new JPanel();
+				invitees.setBackground(Color.WHITE);
+				attendees.setBackground(Color.WHITE);
+				try {
+					Vector<String> inviteesList = theClient.getInvited(eventNameDispla.getText());
+					Vector<String> attendeesList = theClient.getAttending(eventNameDispla.getText());
+					for (int i=0;i<inviteesList.size();i++){
+						
+						JLabel invited = new JLabel(inviteesList.get(i)); 
+						JLabel attending = new JLabel(attendeesList.get(i));
+						invited.setPreferredSize(new Dimension(60, 20));
+						
+						invited.setBackground(Color.ORANGE);
+
+						
+						invited.setOpaque(true);
+						invited.setForeground(Color.WHITE);
+						invited.setFont(new Font("Lucia Grande",Font.BOLD,14));
+						
+						//add new friend to the JPanel
+						invitees.setPreferredSize(new Dimension((int) invited.getPreferredSize().getWidth()+10,
+			                    (int)(invitees.getPreferredSize().getHeight()+23)));
+						invitees.add(invited);
+						
+					}
+					//create scrollpane to house textarea
+
+				JScrollPane inviteesScroll = new JScrollPane(invitees);
+
+				inviteesScroll.getViewport().setBorder(null);
+				inviteesScroll.setViewportBorder(null);
+				inviteesScroll.setBorder(null);
+				inviteesScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+				
+				//place scrollable textarea in the popup menu
+				JPopupMenu inviteesPopup = new JPopupMenu();
+				inviteesPopup.add(inviteesScroll);
+				
+				inviteesPopup.show(viewInvitees, 0, 20);
+
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		viewInvitees.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
+		viewInvitees.setForeground(Color.BLUE);
+		viewInvitees.setBounds(54, 56, 102, 16);
+		ModifyEvent.add(viewInvitees);
+		
 		
 		
 		//================================================================================
@@ -1330,7 +1379,7 @@ public class ClientGUI2 {
 					
 					newFriends = new JList<String>(friends);
 					newFriends2 = new JList<String>(friends);
-					newFriends2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					newFriends2.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 					newFriends.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					
 					profileFriendsScroll.setViewportView(newFriends);
