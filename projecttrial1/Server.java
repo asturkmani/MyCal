@@ -250,6 +250,29 @@ public class Server {
 						returnz=deletefriend(input, conn);
 						break;
 					}
+                   
+                   
+                   
+                   case "declineevent":
+                   {
+                	  try {
+						returnz=declineEvent(input, conn);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+						break;
+					}
+                   
+                   
+                   case "acceptevent":
+                   {
+                	  try {
+						returnz=acceptEvent(input, conn);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+						break;
+					}
 
                    case "modifyevent":
                    {
@@ -374,6 +397,45 @@ public class Server {
   	           		     System.out.println("Exiting...");
    						e.printStackTrace();
    					}
+                	   break;
+                	   
+                	   
+                	   
+                	   
+                   case "getinviteduser":
+                	   Vector<String> eventlistuser = new Vector<String>();
+                      	try {
+   						eventlistuser=getInvitedUser(input, conn);
+   					} catch (SQLException e) {
+   						e.printStackTrace();
+   					}
+                      	
+                      	for (String strzz : eventlistuser){
+                      		outToClient.writeBytes(strzz + "\n");
+          		           	}
+                
+                      	returnz="stopz"; //here this signals the client to stop reading because we dont know how long the list of events is
+
+                      	break;
+
+                      	
+                   case "getattendinguser":
+                	   Vector<String> eventlistuserA = new Vector<String>();
+                      	try {
+   						eventlistuserA=getAttendingUser(input, conn);
+   					} catch (SQLException e) {
+   						e.printStackTrace();
+   					}
+                      	
+                      	for (String strzz : eventlistuserA){
+                      		outToClient.writeBytes(strzz + "\n");
+          		           	}
+                
+                      	returnz="stopz"; //here this signals the client to stop reading because we dont know how long the list of events is
+
+                      	break;
+                	   
+                	   
                    default: outToClient.writeBytes("Everything Failed!\n"); //this should never come because 'login' and 'signup' are
 													//so they are supposed to be fool-proof. but in case
                    break;
@@ -781,6 +843,87 @@ public class Server {
 	return "Success";
 }
 
+ 
+ 
+ public static Vector<String> getInvitedUser(Vector<String> data, Connection conn) throws SQLException {
+	   // Acquire vector of events a  user is invited to given a username
+	   Vector<String> events = new Vector<String>();
+	  
+	   PreparedStatement stmt;
+	   stmt=conn.prepareStatement("select eventname from invited where user=? and attending=false");
+	   stmt.setString(1, data.get(0));
+	   
+	   ResultSet invitedRS;
+	   //execute query to obtain list of events. store in ResultSet
+	   invitedRS=stmt.executeQuery();
+	   
+	//   add the events to a vector
+	   while(invitedRS.next()){
+		   events.add(invitedRS.getString(1));
+		  // System.out.println("DEBUG!!" +  invitedRS.getString(2));
+			
+	   }
+
+	   return events;
+}
+
+ public static Vector<String> getAttendingUser(Vector<String> data, Connection conn) throws SQLException {
+	   // Acquire vector of events a  user is invited to given a username
+	   Vector<String> events = new Vector<String>();
+	  
+	   PreparedStatement stmt;
+	   stmt=conn.prepareStatement("select eventname from invited where user=? and attending=true");
+	   stmt.setString(1, data.get(0));
+	   
+	   ResultSet invitedRS;
+	   //execute query to obtain list of events. store in ResultSet
+	   invitedRS=stmt.executeQuery();
+	   
+	//   add the events to a vector
+	   while(invitedRS.next()){
+		   events.add(invitedRS.getString(1));
+		  // System.out.println("DEBUG!!" +  invitedRS.getString(2));
+			
+	   }
+
+	   return events;
+}
+
+ public static String declineEvent(Vector<String> data, Connection conn) throws SQLException{
+	 PreparedStatement stmt;
+	   
+	 	stmt=conn.prepareStatement("delete from invited where user=? and eventname=?");
+		stmt.setString(1, data.get(0)); //username
+		stmt.setString(2, data.get(1)); //eventname
+		  
+		   stmt.execute();
+		   
+
+		 return "success";
+
+	 
+ }
+
+
+ 
+ public static String acceptEvent(Vector<String> data, Connection conn) throws SQLException{
+	 PreparedStatement stmt;
+	   
+	 	stmt=conn.prepareStatement("update invited set attending=true where eventname=? and user=?");
+		stmt.setString(2, data.get(0)); //username
+		stmt.setString(1, data.get(1)); //eventname
+		  
+		   stmt.execute();
+		   
+
+		 return "success";
+
+	 
+ }
+ 
+ 
+ 
+ 
  
  
  

@@ -2,6 +2,8 @@ package projecttrial1;
 
 import java.io.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Vector;
 
 public class theClient {
@@ -444,6 +446,144 @@ public static void modifyEvent(String eventname, String username, Vector<String>
 	  outToServer.writeBytes("\n");
 //	  clientSocket.close();
 	  
+}
+
+
+
+
+
+public static Vector<String> getInvitedUser(String username) throws Exception{
+	
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	  
+	Vector<String> eventlistuser = new Vector<String>();
+  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+  
+  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+  String response = new String();
+  outToServer.writeBytes("getInvitedUser\n"); //added the keyword or "verb"
+  outToServer.writeBytes(username + "\n\n"); //send the eventname
+   
+	
+  response = inFromServer.readLine();
+  
+  while (!response.equals("stopz")){
+
+	  eventlistuser.add(response);
+	  response = inFromServer.readLine();
+	  
+  }
+
+  return eventlistuser;
+}
+
+
+
+public static Vector<String> getAttendingUser(String username) throws Exception{
+	
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	  
+	Vector<String> eventlistuser = new Vector<String>();
+  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+  
+  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+  String response = new String();
+  outToServer.writeBytes("getAttendingUser\n"); //added the keyword or "verb"
+  outToServer.writeBytes(username + "\n\n"); //send the eventname
+   
+	
+  response = inFromServer.readLine();
+  
+  while (!response.equals("stopz")){
+
+	  eventlistuser.add(response);
+	  response = inFromServer.readLine();
+	  
+  }
+
+  return eventlistuser;
+}
+
+
+
+public static String declineEvent (String username, String eventname) throws Exception {
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	
+	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+	  
+	  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	  
+	  // output to server details. send friends
+	  outToServer.writeBytes("declineevent\n");
+	  outToServer.writeBytes(username + "\n");
+	  outToServer.writeBytes(eventname + "\n\n");	
+
+	  String response = inFromServer.readLine();
+	  clientSocket.close();
+	  
+	  return response;
+	
+}
+
+
+public static String acceptEvent (String username, String eventname) throws Exception {
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	
+	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+	  
+	  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	  
+	  // output to server details. send friends
+	  outToServer.writeBytes("acceptEvent\n");
+	  outToServer.writeBytes(username + "\n");
+	  outToServer.writeBytes(eventname + "\n\n");	
+
+	  String response = inFromServer.readLine();
+	  clientSocket.close();
+	  
+	  return response;
+	
+}
+
+
+
+public static Vector<String> todayEvents() throws Exception{
+	
+	
+	Calendar currentDate = Calendar.getInstance(); //Get the current date
+	SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd"); //format it as per your requirement
+	String dateNow = formatter.format(currentDate.getTime());
+	
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	  
+	Vector<String> emails = new Vector<String>();
+  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+  
+  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+  String response = new String();
+  outToServer.writeBytes("todayEvents\n"); //added the keyword or "verb"
+  outToServer.writeBytes(dateNow + "\n\n"); //send the currentdate
+   
+	
+  response = inFromServer.readLine();
+  
+  while (!response.equals("stopz")){
+
+	  emails.add(response);
+	  response = inFromServer.readLine();
+	  
+  }
+  clientSocket.close();
+
+  return emails;
 }
 
 
