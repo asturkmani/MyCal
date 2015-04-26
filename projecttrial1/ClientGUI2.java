@@ -98,9 +98,9 @@ public class ClientGUI2 {
 	private Vector<JButton> vectorOfButtons = new Vector<JButton>();
 	private JTextField eventNameModify;
 	private JTextField eventLocationModify;
-	private JScrollPane inviteFriendsScroll = new JScrollPane();
 	private JTextField addFriend;
 	private JList<String> newFriends;
+	private JList<String> newFriends2;
 	private JTextField DOB_modify;
 	private JTextField email_modify;
 	private JTextField FName_modify;
@@ -532,7 +532,6 @@ public class ClientGUI2 {
 			}
 		});
 		SignUpPanel.add(passwordField);
-		inviteFriendsScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		
 		//================================================================================
 		// 1 - Profile panel components
@@ -566,26 +565,26 @@ public class ClientGUI2 {
 	    //================================================================================
 		JLabel addFriendError = new JLabel("User does not exist!");
 		
-		inviteFriendsScroll.setBounds(205, 87, 95, 76);
-		HomePanel.add(inviteFriendsScroll);
+		
 		
 	    Border etchedBorder =
 		BorderFactory.createEtchedBorder();
 	    Border emptyBorder =
 		BorderFactory.createEmptyBorder(10, 10, 10, 10);
-	    Border compoundBorder =
-		BorderFactory.createCompoundBorder(etchedBorder, emptyBorder);
-	    
-		
-	    DefaultListModel friendsList = new DefaultListModel();
-		JList inviteFriendsList = new JList(friendsList);
-		inviteFriendsList.setBounds(205, 87, 95, 76);
+	    DefaultListModel<String> friendsList = new DefaultListModel<String>();
+
 		
 		JScrollPane profileFriendsScroll = new JScrollPane();
 		profileFriendsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		profileFriendsScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		profileFriendsScroll.setBounds(167, 111, 147, 171);
 		profilePanel.add(profileFriendsScroll);
+		
+		JScrollPane inviteFriendsScroll = new JScrollPane();
+		inviteFriendsScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		inviteFriendsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		inviteFriendsScroll.setBounds(205, 87, 92, 68);
+		HomePanel.add(inviteFriendsScroll);
 		
 		JLabel EventLocationDisplay = new JLabel("Location:");
 		EventLocationDisplay.setBounds(54, 39, 61, 16);
@@ -618,8 +617,6 @@ public class ClientGUI2 {
 		goBack.setIcon(new ImageIcon(ClientGUI2.class.getResource("/org/freixas/jcalendar/images/Back16.gif")));
 		goBack.setBounds(12, 6, 35, 35);
 		ModifyEvent.add(goBack);
-
-//		HomePanel.add(inviteFriendsList);
 		
 		
 
@@ -696,6 +693,7 @@ public class ClientGUI2 {
 			public void actionPerformed(ActionEvent e) {
 
 					try {
+//						Vector<String> invitedFriends = newFriends.getSelectedValues();
 						theClient.createEvent(newEvent.getText(), currentUser, null, null, eventLocation.getText());
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
@@ -728,15 +726,12 @@ public class ClientGUI2 {
 		// 1 - ModifyEvent panel components
 	    //================================================================================
 
-		JButton btnNewButton = new JButton("Create Event!");
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton createEvent = new JButton("Create Event!");
+		createEvent.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				// get name date, time, invited peeps, username from entered fields and create the event. initially set rating to 0.
 
-				String timeZ = new String();
-//				timeZ = time.getText();
-				String dateZ = new String();
-//				dateZ = date.getText();
 				
 				//int datetime = new String();
 				Integer temp = new Integer(0);
@@ -758,8 +753,9 @@ public class ClientGUI2 {
 				
 				System.out.println(finaldate);
 			//	System.out.println("TIME FROM GUI: " + date.getDate() + date );
-				
-				List<String> templist =inviteFriendsList.getSelectedValuesList(); //get selected friends
+				System.out.println("invite friends list is: " + newFriends2);
+				List<String> templist = newFriends2.getSelectedValuesList(); //get selected friends
+				System.out.println("Selected values are: " + templist);
 				//put all values in a vector (we prefer using vector for ease of manipulation)
 				Vector<String> selectedFriends = new Vector<String>(); //
 				
@@ -776,6 +772,7 @@ public class ClientGUI2 {
 				 creation of buttons */
 
 				try {
+					System.out.println("Invited friends are: " + selectedFriends);
 					theClient.createEvent(newEvent.getText(), currentUser, selectedFriends, finaldate,eventLocation.getText() );
 					
 					// dynamically update the list
@@ -864,8 +861,8 @@ public class ClientGUI2 {
 				
 			}
 		});
-		btnNewButton.setBounds(12, 130, 188, 29);
-		HomePanel.add(btnNewButton);
+		createEvent.setBounds(12, 130, 188, 29);
+		HomePanel.add(createEvent);
 		
 		JLabel goToHome = new JLabel("");
 		goToHome.addMouseListener(new MouseAdapter() {
@@ -904,8 +901,18 @@ public class ClientGUI2 {
 						friends = theClient.friendList(currentUser); 
 						JList<String> newFriends = new JList<String>(friends);
 						newFriends.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-						inviteFriendsScroll.setViewportView(newFriends);
+						
+						JList<String> newFriends2 = new JList<String>(friends);
+						newFriends2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						
+						//update list of friends
+						inviteFriendsScroll.setViewportView(newFriends2);
 						profileFriendsScroll.setViewportView(newFriends);
+						
+						//revalidate them
+						inviteFriendsScroll.revalidate();
+						inviteFriendsScroll.repaint();
+						profileFriendsScroll.revalidate();
 						
 						addFriend.setText("");
 						addFriendError.setVisible(false);
@@ -967,9 +974,14 @@ public class ClientGUI2 {
 					if(response.equals("success")){
 						friends = theClient.friendList(currentUser); 
 						newFriends = new JList<String>(friends);
+						newFriends2 =new JList<String>(friends); 
 						newFriends.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-						inviteFriendsScroll.setViewportView(newFriends);
+						newFriends2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						
+						
+						inviteFriendsScroll.setViewportView(newFriends2);
 						profileFriendsScroll.setViewportView(newFriends);
+						inviteFriendsScroll.revalidate();
 						profileFriendsScroll.revalidate();}
 					
 				} catch (Exception e1) {
@@ -1184,8 +1196,8 @@ public class ClientGUI2 {
 		separator_1.setBounds(12, 85, 302, 6);
 		ModifyEvent.add(separator_1);
 		
-		JButton btnNewButton_1 = new JButton("Delete Event!");
-		btnNewButton_1.addActionListener(new ActionListener() {
+		JButton deleteEvent = new JButton("Delete Event!");
+		deleteEvent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			try {
 				theClient.deleteEvent(eventNameDispla.getText());
@@ -1278,8 +1290,8 @@ public class ClientGUI2 {
 			HomePanel.setVisible(true);
 			}
 		});
-		btnNewButton_1.setBounds(197, 423, 117, 29);
-		ModifyEvent.add(btnNewButton_1);
+		deleteEvent.setBounds(197, 423, 117, 29);
+		ModifyEvent.add(deleteEvent);
 		
 		
 		
@@ -1317,9 +1329,12 @@ public class ClientGUI2 {
 					details = theClient.getDetails(currentUser);	// obtain user details
 					
 					newFriends = new JList<String>(friends);
+					newFriends2 = new JList<String>(friends);
+					newFriends2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					newFriends.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-					inviteFriendsScroll.setViewportView(newFriends);
+					
 					profileFriendsScroll.setViewportView(newFriends);
+					inviteFriendsScroll.setViewportView(newFriends2);
 
 //					events = theClient.eventList(currentUser); 		// obtain event list
 				    // GridBagConstraint for button
@@ -1423,7 +1438,7 @@ public class ClientGUI2 {
 				String response = new String();
 				try {
 					System.out.println("About to send sign up request to server");
-					if (!usernameS.getText().toLowerCase().equals("") && !usernameS.getText().toLowerCase().equals("username") && !passwordField.getText().toLowerCase().equals("") && !passwordField.getText().toLowerCase().equals("password") && dobS.getText().toLowerCase().equals("") && dobS.getText().toLowerCase().equals("") && dobS.getText().toLowerCase().equals("date of birth") && firstNameS.getText().toLowerCase().equals("first name") && firstNameS.getText().toLowerCase().equals("") && lastNameS.getText().toLowerCase().equals("") && lastNameS.getText().toLowerCase().equals("last name") )
+					if (!usernameS.getText().toLowerCase().equals("") && !usernameS.getText().toLowerCase().equals("username") && !passwordField.getText().toLowerCase().equals("") && !passwordField.getText().toLowerCase().equals("password") && !dobS.getText().toLowerCase().equals("") && !dobS.getText().toLowerCase().equals("date of birth") && !firstNameS.getText().toLowerCase().equals("first name") && !firstNameS.getText().toLowerCase().equals("") && !lastNameS.getText().toLowerCase().equals("") && !lastNameS.getText().toLowerCase().equals("last name") )
 					
 						response = theClient.signup(usernameS.getText(), passwordField.getText(), emailS.getText(), firstNameS.getText(), lastNameS.getText(), dobS.getText());
 					
