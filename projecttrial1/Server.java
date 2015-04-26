@@ -245,6 +245,18 @@ public class Server {
 					}
                 
                    
+                   case "modifyevent":
+                   {
+                	   
+						try {
+							returnz=modifyevent(input, conn);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						break;
+					
+					}
+                
                    
                    
                    case "getdetails":
@@ -727,5 +739,30 @@ public class Server {
 		
 		}
 
+ 
+ 
+ 
+ public static String modifyevent(Vector<String> data, Connection conn) throws SQLException {
+	 
+	 System.out.println("MODIFY SHITTT STARTED OMG" + data);
+	 	PreparedStatement stmt1; //stmt creates the event in the 'event' entity
+	 
+	 	stmt1=conn.prepareStatement("update event set `when`=?, `where`=? where name = ?");
+		
+	 	stmt1.setString(1, data.get(0)); //datetime
+		stmt1.setString(2, data.get(1)); //location
+		//stmt1.setString(3, data.get(2)); // username
+		stmt1.setString(3, data.get(3)); //name of event
+		
+		stmt1.execute(); // create an event with key time and location with constraint username... Taco, is this correct?
+		
+	
+	 
+	return "Success";
+}
+
+ 
+ 
+ 
 
 }
