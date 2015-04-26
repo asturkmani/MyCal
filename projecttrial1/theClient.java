@@ -615,13 +615,6 @@ public static Vector<String> todayEvents() throws Exception{
 
   return emails;
 }
-
-
-
-
-
-
-
 }
 
 

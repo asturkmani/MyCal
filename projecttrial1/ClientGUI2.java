@@ -942,6 +942,143 @@ public class ClientGUI2 {
 									notifications.disable();
 								}
 								
+								//refresh event list
+								// dynamically update the list
+								vectorOfButtons.clear();
+								buttonsPanel.removeAll();
+								buttonsPanel.setPreferredSize(null);
+								
+								// re-populate the list of events
+								Vector<String> events = theClient.eventList(currentUser); 		// obtain event list
+								attendingEvents = theClient.getAttendingUser(currentUser);
+								
+								System.out.println("OBTAINED EVENTS CREATED: " + events);
+								System.out.println("OBTAINED EVENTS ATTENDING: " + attendingEvents);
+							    // GridBagConstraint for button
+							    GridBagConstraints constraint = new GridBagConstraints();
+							    constraint.anchor = GridBagConstraints.CENTER;
+							    constraint.fill = GridBagConstraints.NONE;
+							    constraint.gridx = 0;
+							    constraint.gridy = GridBagConstraints.RELATIVE;
+							    constraint.weightx = 1.0f;
+							    constraint.weighty = 1.0f;
+
+//							    int sizeOfButtons = 50;
+							    
+							    int x = 0; int y=0;
+
+							    
+							    /* TO DYNAMICALLY ADD BUTTONS
+							     0) pre-processing : create gridbag constraints for the button
+							     1) read in the list of events
+							     2) for each event, create a new button with text field equal to the name of the event
+							     3) add that button to the vector of buttons so we can access it later on
+							     4) add the button to the home panel
+							     5) update the homepanel */
+							    
+								String tempString = new String();
+								// create a panel to house the buttons of events
+								int maxSize = Math.max(events.size(), attendingEvents.size());
+								System.out.println("Max size between attending and invited is: " + maxSize);
+//								System.out.println("Obtained events user created: " + events);
+							    for(int i = 0; i < maxSize; i++) {
+
+
+							    	if (i<events.size()){
+//							    		System.out.println("Checking if user created any events");
+							        tempString = events.get(i);// get each event.
+
+									String [] temp1 = tempString.split("&");// split each event into place & time based on "&"
+
+									
+									// specify button properties
+									JButton button = new JButton(temp1[2]);
+									button.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+									button.setForeground(Color.WHITE);
+									button.setBackground(new Color(71,181,250));
+									button.setContentAreaFilled(false);
+									button.setOpaque(true);
+									button.setBorderPainted(false);
+									button.requestFocus();		
+									Border newborder2 = BorderFactory.createCompoundBorder();
+									button.setBorder(newborder2);		
+									button.setBounds(x, y, 280, 40);
+									button.addActionListener(new ActionListener() {
+										public void actionPerformed(ActionEvent e) { // action performed when Sign Up button is pressed.
+											// take user to sign up field
+											
+											Vector<String> eventdetailz = new Vector<String>();
+											try {
+												eventdetailz=theClient.eventDetails(temp1[2]);
+											} catch (Exception e1) {
+												// TODO Auto-generated catch block
+												e1.printStackTrace();
+											}
+											eventLocationDispla.setText(eventdetailz.get(1));
+											eventTimeDispla.setText(eventdetailz.get(0));
+											eventNameDispla.setText(temp1[2]);
+											ModifyEvent.setVisible(true);
+											HomePanel.setVisible(false);
+										}
+									});
+									y = y+43;
+									buttonsPanel.setPreferredSize(new Dimension((int) buttonsPanel.getPreferredSize().getWidth(),
+						                    (int)(buttonsPanel.getPreferredSize().getHeight()+43)));
+									vectorOfButtons.add(button); //add the new button to the vector of buttons
+							        buttonsPanel.add(button, constraint); // add the button to the homepanel
+							        }
+							    	
+							    	
+							    	// now add events you are attending
+							    	if (i<attendingEvents.size()){
+							    		System.out.println("Checking if user is attending any events");
+								        String tempString2 = attendingEvents.get(i);// get each event.
+										// specify button properties
+										JButton button = new JButton(tempString2);
+										System.out.println("Obtained events attending names: " + tempString2);
+										button.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+										button.setForeground(Color.WHITE);
+										button.setBackground(UIManager.getColor("Button.select"));
+										button.setContentAreaFilled(false);
+										button.setOpaque(true);
+										button.setBorderPainted(false);
+										button.requestFocus();		
+										Border newborder2 = BorderFactory.createCompoundBorder();
+										button.setBorder(newborder2);		
+										button.setBounds(x, y, 280, 40);
+										button.addActionListener(new ActionListener() {
+											public void actionPerformed(ActionEvent e) { // action performed when Sign Up button is pressed.
+												// take user to sign up field
+												
+												Vector<String> eventdetailz = new Vector<String>();
+												try {
+													eventdetailz=theClient.eventDetails(tempString2);
+												} catch (Exception e1) {
+													// TODO Auto-generated catch block
+													e1.printStackTrace();
+												}
+												eventLocationDispla.setText(eventdetailz.get(1));
+												eventTimeDispla.setText(eventdetailz.get(0));
+												eventNameDispla.setText(tempString2);
+			                                    
+			                                    calendarCombo.setVisible(false);
+			                                    eventLocationModify.setVisible(false);
+			                                    modifyEvent.setVisible(false);
+			                                    deleteEvent.setVisible(false);
+			                                    
+												ModifyEvent.setVisible(true);
+												HomePanel.setVisible(false);
+											}
+										});
+										y = y+43;
+										buttonsPanel.setPreferredSize(new Dimension((int) buttonsPanel.getPreferredSize().getWidth(),
+							                    (int)(buttonsPanel.getPreferredSize().getHeight()+43)));
+										vectorOfButtons.add(button); //add the new button to the vector of buttons
+								        buttonsPanel.add(button, constraint); // add the button to the homepanel
+
+								        }
+							        
+							    }
 									
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
@@ -969,16 +1106,156 @@ public class ClientGUI2 {
 									notifications.setVisible(false);
 									notifications.disable();}
 									
+
+								// dynamically update the list
+								vectorOfButtons.clear();
+								buttonsPanel.removeAll();
+								buttonsPanel.setPreferredSize(null);
+								
+								// re-populate the list of events
+								Vector<String>events = theClient.eventList(currentUser); 		// obtain event list
+								attendingEvents = theClient.getAttendingUser(currentUser);
+								
+								System.out.println("OBTAINED EVENTS CREATED: " + events);
+								System.out.println("OBTAINED EVENTS ATTENDING: " + attendingEvents);
+							    // GridBagConstraint for button
+							    GridBagConstraints constraint = new GridBagConstraints();
+							    constraint.anchor = GridBagConstraints.CENTER;
+							    constraint.fill = GridBagConstraints.NONE;
+							    constraint.gridx = 0;
+							    constraint.gridy = GridBagConstraints.RELATIVE;
+							    constraint.weightx = 1.0f;
+							    constraint.weighty = 1.0f;
+
+//							    int sizeOfButtons = 50;
+							    
+							    int x = 0; int y=0;
+
+							    
+							    /* TO DYNAMICALLY ADD BUTTONS
+							     0) pre-processing : create gridbag constraints for the button
+							     1) read in the list of events
+							     2) for each event, create a new button with text field equal to the name of the event
+							     3) add that button to the vector of buttons so we can access it later on
+							     4) add the button to the home panel
+							     5) update the homepanel */
+							    
+								String tempString = new String();
+								// create a panel to house the buttons of events
+								int maxSize = Math.max(events.size(), attendingEvents.size());
+								System.out.println("Max size between attending and invited is: " + maxSize);
+//								System.out.println("Obtained events user created: " + events);
+							    for(int i = 0; i < maxSize; i++) {
+
+
+							    	if (i<events.size()){
+//							    		System.out.println("Checking if user created any events");
+							        tempString = events.get(i);// get each event.
+
+									String [] temp1 = tempString.split("&");// split each event into place & time based on "&"
+
+									
+									// specify button properties
+									JButton button = new JButton(temp1[2]);
+									button.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+									button.setForeground(Color.WHITE);
+									button.setBackground(new Color(71,181,250));
+									button.setContentAreaFilled(false);
+									button.setOpaque(true);
+									button.setBorderPainted(false);
+									button.requestFocus();		
+									Border newborder2 = BorderFactory.createCompoundBorder();
+									button.setBorder(newborder2);		
+									button.setBounds(x, y, 280, 40);
+									button.addActionListener(new ActionListener() {
+										public void actionPerformed(ActionEvent e) { // action performed when Sign Up button is pressed.
+											// take user to sign up field
+											
+											Vector<String> eventdetailz = new Vector<String>();
+											try {
+												eventdetailz=theClient.eventDetails(temp1[2]);
+											} catch (Exception e1) {
+												// TODO Auto-generated catch block
+												e1.printStackTrace();
+											}
+											eventLocationDispla.setText(eventdetailz.get(1));
+											eventTimeDispla.setText(eventdetailz.get(0));
+											eventNameDispla.setText(temp1[2]);
+											ModifyEvent.setVisible(true);
+											HomePanel.setVisible(false);
+										}
+									});
+									y = y+43;
+									buttonsPanel.setPreferredSize(new Dimension((int) buttonsPanel.getPreferredSize().getWidth(),
+						                    (int)(buttonsPanel.getPreferredSize().getHeight()+43)));
+									vectorOfButtons.add(button); //add the new button to the vector of buttons
+							        buttonsPanel.add(button, constraint); // add the button to the homepanel
+							        }
+							    	
+							    	
+							    	// now add events you are attending
+							    	if (i<attendingEvents.size()){
+							    		System.out.println("Checking if user is attending any events");
+								        String tempString2 = attendingEvents.get(i);// get each event.
+										// specify button properties
+										JButton button = new JButton(tempString2);
+										System.out.println("Obtained events attending names: " + tempString2);
+										button.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+										button.setForeground(Color.WHITE);
+										button.setBackground(UIManager.getColor("Button.select"));
+										button.setContentAreaFilled(false);
+										button.setOpaque(true);
+										button.setBorderPainted(false);
+										button.requestFocus();		
+										Border newborder2 = BorderFactory.createCompoundBorder();
+										button.setBorder(newborder2);		
+										button.setBounds(x, y, 280, 40);
+										button.addActionListener(new ActionListener() {
+											public void actionPerformed(ActionEvent e) { // action performed when Sign Up button is pressed.
+												// take user to sign up field
+												
+												Vector<String> eventdetailz = new Vector<String>();
+												try {
+													eventdetailz=theClient.eventDetails(tempString2);
+												} catch (Exception e1) {
+													// TODO Auto-generated catch block
+													e1.printStackTrace();
+												}
+												eventLocationDispla.setText(eventdetailz.get(1));
+												eventTimeDispla.setText(eventdetailz.get(0));
+												eventNameDispla.setText(tempString2);
+			                                    
+			                                    calendarCombo.setVisible(false);
+			                                    eventLocationModify.setVisible(false);
+			                                    modifyEvent.setVisible(false);
+			                                    deleteEvent.setVisible(false);
+			                                    
+												ModifyEvent.setVisible(true);
+												HomePanel.setVisible(false);
+											}
+										});
+										y = y+43;
+										buttonsPanel.setPreferredSize(new Dimension((int) buttonsPanel.getPreferredSize().getWidth(),
+							                    (int)(buttonsPanel.getPreferredSize().getHeight()+43)));
+										vectorOfButtons.add(button); //add the new button to the vector of buttons
+								        buttonsPanel.add(button, constraint); // add the button to the homepanel
+
+								        }
+							        
+							    }
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
 						}
 					});
+					
+					buttonsPanel.revalidate();
+			        buttonsPanel.repaint();
+				    HomePanel.revalidate();
+				    HomePanel.repaint();				    
 					Notifications.add(deleteNoti);
-					
-					
-					
+
 					//place the notifications in the JPanel in a scrollablePane and put them in the popup
 					
 					JScrollPane notificationsScroll = new JScrollPane(Notifications);
