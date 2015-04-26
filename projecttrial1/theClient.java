@@ -411,6 +411,39 @@ public static String updateuser (String username, String firstName, String lastN
 	
 	
 }
+
+public static void modifyEvent(String eventname, String username, Vector<String> friends, String datetime, String location) throws Exception {
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	
+	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+	  
+	  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	  
+	  // output to server details. send friends
+	  outToServer.writeBytes("modifyevent\n");
+	  outToServer.writeBytes(datetime + "\n");
+	  outToServer.writeBytes(location + "\n");	
+	  outToServer.writeBytes(username + "\n");
+	  outToServer.writeBytes(eventname + "\n");
+	 
+	//write each friend on a line
+	  if ( friends != null){
+	  for (String str : friends){
+     		outToServer.writeBytes(str + "\n");
+	  }
+	  }
+	  outToServer.writeBytes("\n");
+//	  clientSocket.close();
+	  
+}
+
+
+
+
+
+
+
 }
 
 
