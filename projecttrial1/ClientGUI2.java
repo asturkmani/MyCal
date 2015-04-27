@@ -80,7 +80,6 @@ public class ClientGUI2 {
 	private JTextField FName_modify;
 	private JTextField LName_modify;
 	private JPasswordField password_modify_profile;
-	private JTextField avg_rating;
 
 
 	/**
@@ -2126,33 +2125,6 @@ public class ClientGUI2 {
 		sendComment.setBounds(267, 326, 47, 45);
 		ModifyEvent.add(sendComment);
 		
-		JLabel Rating = new JLabel("Rating:");
-		Rating.setBounds(215, 0, 47, 16);
-		ModifyEvent.add(Rating);
-		
-		avg_rating = new JTextField();
-		avg_rating.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Vector<String> eventdetailz = new Vector<String>();
-				try {
-					eventdetailz=theClient.eventDetails(eventNameDispla.getText());
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-//				float newRating = (eventdetailz.get(2)*eventdetailz.get(3) + rating)/(eventdetailz.get(3)+1)
-//				theClient.modifyRating(eventNameDispla.getText(), rating, rating_count);
-			}
-		});
-
-		avg_rating.setText("0/5");
-		avg_rating.setEditable(false);
-		avg_rating.setBounds(265, 0, 49, 16);
-		avg_rating.setBorder(null);
-		avg_rating.setBackground(new Color(250, 248, 245));
-		ModifyEvent.add(avg_rating);
-		avg_rating.setColumns(10);
-		
 		
 		//================================================================================
 		// Log In Panel Actions
@@ -2292,8 +2264,6 @@ public class ClientGUI2 {
 								CommentsPanel.revalidate();
 								CommentsPanel.repaint();
 								
-//								float avg_rate = eventdetailz.get(4)
-								avg_rating.setText(eventdetailz.get(3) + "/5");
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(temp1[2]);
