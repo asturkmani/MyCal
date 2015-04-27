@@ -8,20 +8,36 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.TimerTask;
 import java.util.Vector;
 
 //import SendEmail;
 
 public class Server {
-
+	static PrintWriter writer;
+	
+	
     private int port = 6780;
     private ServerSocket serverSocket;
 
     public Server() throws ClassNotFoundException {}
 
     public void acceptConnections() {
-        try
+        ///instantiate a write to write to the log file
+    	try {
+    		writer = new PrintWriter("MyCalLog.txt", "UTF-8");
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+    	
+    	try
         {
             serverSocket = new ServerSocket(port);
 //            serverSocket.setSoTimeout(6000);
@@ -37,7 +53,7 @@ public class Server {
             try
             {
                 String timeStamp = new SimpleDateFormat("HH_mm_ss").format(Calendar.getInstance().getTime());
-//                System.out.println(timeStamp);
+//                writer.println(timeStamp);
                 String[] temp = timeStamp.split("_");
                 // check if the time is around between 6-7 am
                 if(Integer.parseInt(temp[0])==6) {
@@ -51,10 +67,12 @@ public class Server {
                 
                 
                 Socket newConnection = serverSocket.accept();
-                System.out.println("accepted connection from client, opening new thread" );
+                writer.println("Accepted connection from client, opening new thread" );
 				//now each client gets a threads that deals with its connection and requests //
                 ServerThread st = new ServerThread(newConnection);
                 new Thread(st).start();
+
+               
 				//now the server will continue waiting for other requests and the current user will be serviced
 				// by the created thread //
                 
@@ -65,6 +83,9 @@ public class Server {
 //                System.err.println("server accept failed");
             }
         }
+        
+      
+        
     }
 
     public static void main(String args[]) throws Exception {
@@ -72,13 +93,16 @@ public class Server {
         Server server = null;
         try {
             server = new Server();
+           
         } catch (ClassNotFoundException e) {
-            //   System.out.println("unable to load JDBC driver");
+            //   writer.println("unable to load JDBC driver");
             e.printStackTrace();
             System.exit(1);
         }
 
         server.acceptConnections();
+   
+       
     }
 
     class ServerThread implements Runnable {
@@ -111,8 +135,8 @@ public class Server {
                    
                    verb = inFromClient.readLine().toLowerCase(); //the client side sends a keyword based on the desired operation
                    
-                   System.out.println("Received data from server, client requested to: " + verb);
-                   System.out.println("........................................................");
+                   writer.println("Received data from server, client requested to: " + verb);
+                   writer.println("........................................................");
                    
                    Vector<String> input = new Vector<String>(); //new vector to store the data (e.g. username password email first name)
                    											//the content depends on the operation (e.g. vector for login will be of size 2)
@@ -120,7 +144,7 @@ public class Server {
                    
                    String clientSentence = new String(); //create a string to take input
                	
-                   System.out.println("Reading input from client..");
+                   writer.println("Reading input from client");
                    clientSentence = inFromClient.readLine(); //read first time (in the case of login this would be username)
                    											//also happens to be username for the signup case
                    											//in future milestone we would have different cases
@@ -129,7 +153,7 @@ public class Server {
                    									//notice in the client side the last piece of data is sent with
                    									//two line breaks, this makes the last readLine an empty string
                    {
-                   System.out.println("........................................................");
+                   writer.println("........................................................");
                        
                    	input.add(clientSentence);
                    	clientSentence = inFromClient.readLine(); //at the last iteration this readLine would be an empty string
@@ -148,20 +172,20 @@ public class Server {
            		}
            		
            		try {
-           			System.out.println("Creating connection with local database on jdbc:mysql://localhost:3306/mydb");
+           			writer.println("Creating connection with local database on jdbc:mysql://localhost:3306/mydb");
            			conn = DriverManager
            			.getConnection("jdbc:mysql://localhost:3306/mydb","root",""); //mydb is the name of our database
            		
            		}
            		 catch (SQLException e) {		
-            			System.out.println("Couldn't open connection with local database on jdbc:mysql://localhost:3306/mydb");
-            			System.out.println("Exiting...");
+            			writer.println("Couldn't open connection with local database on jdbc:mysql://localhost:3306/mydb");
+            			writer.println("Exiting...");
             			e.printStackTrace();
             			return;
             		}
             		
                    String returnz = null; 		//returnz is the reply that the server will send out (either success or fail)
-                  // System.out.println(verb);
+                  // writer.println(verb);
                    
                    
                    switch(verb)			//based on the verb we select the operation
@@ -170,13 +194,13 @@ public class Server {
                    case "login": 	//login operation, call the login function
                    	
                 	   try {
-                		   System.out.println("Received request to log in user with details: " + input);
+                		   writer.println("Received request to log in user with username: " + input.get(0));
                 		   returnz=login(input, conn);
-                		   System.out.println("log in: " + returnz);
+                		   writer.println("log in: " + returnz);
                 	   }
                 	   catch (SQLException e){
-                		   System.out.println("Log in failed, sql exception thrown");
-                		   System.out.println("Exiting...");
+                		   writer.println("Log in failed, sql exception thrown");
+                		   writer.println("Exiting...");
                 		   e.printStackTrace();
                 	   }
                    break;
@@ -185,45 +209,45 @@ public class Server {
                    case "signup": 
                 	   
                 	   try {
-                		   System.out.println("Received request to sign up user with details: " + input);
+                		   writer.println("Received request to sign up user with username: " + input.get(0));
                 	   returnz=signup(input, conn);	//signup operation, call the signup function
                 	   }
                 	   catch (SQLException e){
-                		   System.out.println("Sign up failed, sql exception thrown!");
-                		   System.out.println("Exiting...");
+                		   writer.println("Sign up failed, sql exception thrown!");
+                		   writer.println("Exiting...");
                 		   e.printStackTrace();
                 	   }
                    break;
                    case "updateuser": 
                 	   
                 	   try {
-                		   System.out.println("Received request to update user with details: " + input);
+                		   writer.println("Received request to update user with username: " + input.get(0));
                 	   returnz=updateuser(input, conn);	//signup operation, call the signup function
                 	   }
                 	   catch (SQLException e){
-                		   System.out.println("Update failed, sql exception thrown!");
-                		   System.out.println("Exiting...");
+                		   writer.println("Update failed, sql exception thrown!");
+                		   writer.println("Exiting...");
                 		   e.printStackTrace();
                 	   }
                    break;
                    case "addfriend":
-                	   System.out.println("Received request to add friend with details: " + input);
+                	   writer.println("Received request to add friend");
                 		   returnz=addfriend(input, conn);
                    	break;
                    	
                    case "friendlist":
                    	Vector<String> friendlist = new Vector<String>();
                    	try {
-                   		System.out.println("Received request to retrieve friend list of user with details: " + input);
+                   		writer.println("Received request to retrieve friend list of user: " + input.get(0));
 						friendlist=friendlist(input, conn);
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
-						 System.out.println("Retrieval failed, sql exception thrown!");
-              		     System.out.println("Exiting...");
+						 writer.println("Retrieval failed, sql exception thrown!");
+              		     writer.println("Exiting...");
 						e.printStackTrace();
 					}
                    	//outToClient2.writeObject(friendlist);
-                   	System.out.println("Friend retrieval successful, sending list of friends to client");
+                   	writer.println("Friend retrieval successful, sending list of friends to client");
                    	for (String str : friendlist){
                    		outToClient.writeBytes(str + "\n");
 	                   	}
@@ -233,18 +257,18 @@ public class Server {
 
                    case "deleteevent":
                 	   try {
-                		   System.out.println("Received request to delete event with details: " + input);
+                		   writer.println("Received request to delete event with event name: " + input.get(0));
 						returnz=deleteevent(input, conn);
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
-						System.out.println("Deletion failed, sql exception thrown!");
-             		     System.out.println("Exiting...");
+						writer.println("Deletion failed, sql exception thrown!");
+             		     writer.println("Exiting...");
 						e1.printStackTrace();
 					}
 
                    case "deletefriend":
                    {
-                	   System.out.println("Received request to delete friend with details: " + input);
+                	   writer.println("Received request to delete friend");
 						returnz=deletefriend(input, conn);
 						break;
 					}
@@ -253,6 +277,8 @@ public class Server {
                    
                    case "declineevent":
                    {
+                	   
+                	   writer.println("Received request to decline an event from user:" + input.get(0));
                 	  try {
 						returnz=declineEvent(input, conn);
 					} catch (SQLException e) {
@@ -264,6 +290,8 @@ public class Server {
                    
                    case "acceptevent":
                    {
+                	   writer.println("Received request to accept an event from user:" + input.get(0));
+              	 
                 	  try {
 						returnz=acceptEvent(input, conn);
 					} catch (SQLException e) {
@@ -276,11 +304,11 @@ public class Server {
                    {
                 	   
 						try {
-							System.out.println("Received request to modify event with details: " + input);
+							writer.println("Received request to modify eventname : " + input.get(0));
 							returnz=modifyevent(input, conn);
 						} catch (SQLException e) {
-							System.out.println("Modification failed, sql exception thrown!");
-	             		     System.out.println("Exiting...");
+							writer.println("Modification failed, sql exception thrown!");
+	             		     writer.println("Exiting...");
 							e.printStackTrace();
 						}
 						break;
@@ -289,15 +317,15 @@ public class Server {
                 
                 	   Vector<String> details = new Vector<String>();
                      	try {
-                     		System.out.println("Received request to get details of user with details: " + input);
+                     		writer.println("Received request to get details of username: " + input.get(0));
   						details=details(input, conn);
   					} catch (SQLException e) {
   						// TODO Auto-generated catch block
-  						System.out.println("Retrieval failed, sql exception thrown!");
-            		     System.out.println("Exiting...");
+  						writer.println("Retrieval failed, sql exception thrown!");
+            		     writer.println("Exiting...");
   						e.printStackTrace();
   					}
-                     	System.out.println("Retrieval successful, sending out details to client...");
+                     	writer.println("Retrieval successful, sending out details to client...");
                      	for (String str : details){
                      		System.out.print("From sqL: " + str);
                      		outToClient.writeBytes(str + "\n");
@@ -310,14 +338,14 @@ public class Server {
                    case "getinvited":
                 	   Vector<String> invited = new Vector<String>();
                      	try {
-                     		System.out.println("Received request to get list of invited users to event with details: " + input);
+                     		writer.println("Received request to get list of invited users to eventname: " + input.get(0));
                      	invited=getinvited(input, conn);
   					} catch (SQLException e) {
-  						System.out.println("Retrieval failed, sql exception thrown!");
-           		     System.out.println("Exiting...");
+  						writer.println("Retrieval failed, sql exception thrown!");
+           		     writer.println("Exiting...");
   						e.printStackTrace();
   					}
-                     	System.out.println("Retrieval successful, sending out details to client...");
+                     	writer.println("Retrieval successful, sending out details to client...");
                      	for (String strz : invited){
                      		outToClient.writeBytes(strz + "\n");
                      	}
@@ -329,14 +357,14 @@ public class Server {
                    case "getattending":
                 	   Vector<String> attending = new Vector<String>();
                      	try {
-                     		System.out.println("Received request to get list of attending users to event with details: " + input);
+                     		writer.println("Received request to get list of attending users to eventname: " + input.get(0));
                      	attending=getAttending(input, conn);
   					} catch (SQLException e) {
-  						System.out.println("Retrieval failed, sql exception thrown!");
-           		     System.out.println("Exiting...");
+  						writer.println("Retrieval failed, sql exception thrown!");
+           		     writer.println("Exiting...");
   						e.printStackTrace();
   					}
-                     	System.out.println("Retrieval successful, sending out details to client...");
+                     	writer.println("Retrieval successful, sending out details to client...");
                      	for (String strz : attending){
                      		outToClient.writeBytes(strz + "\n");
                      	}
@@ -346,16 +374,16 @@ public class Server {
             
                 
                    case "eventdetails":
-                	   System.out.println("Received request to get event details with details: " + input);
+                	   writer.println("Received request to get event details with eventname: " + input.get(0));
                 	   Vector<String> detailz = new Vector<String>();
                      	try {
                      	detailz=eventdetails(input, conn);
   					} catch (SQLException e) {
-  						System.out.println("Retrieval failed, sql exception thrown!");
-  	           		     System.out.println("Exiting...");
+  						writer.println("Retrieval failed, sql exception thrown!");
+  	           		     writer.println("Exiting...");
   						e.printStackTrace();
   					}
-                     	System.out.println("Retrieval successful, sending out details to client...");
+                     	writer.println("Retrieval successful, sending out details to client...");
                      	for (String strz : detailz){
                      		outToClient.writeBytes(strz + "\n");
                      	}
@@ -363,16 +391,16 @@ public class Server {
                      	break;
 
                    case "getcommentusers":
-                	   System.out.println("Received request to get user comments on event with details: " + input);
+                	   writer.println("Received request to get user comments on eventname: " + input.get(0));
                 	   Vector<String> users = new Vector<String>();
                      	try {
                      	users=getcommentusers(input, conn);
   					} catch (SQLException e) {
-  						System.out.println("Retrieval failed, sql exception thrown!");
- 	           		     System.out.println("Exiting...");
+  						writer.println("Retrieval failed, sql exception thrown!");
+ 	           		     writer.println("Exiting...");
   						e.printStackTrace();
   					}
-                     	System.out.println("Retrieval successful, sending out details to client...");
+                     	writer.println("Retrieval successful, sending out details to client...");
                      	for (String strz : users){
                      		outToClient.writeBytes(strz + "\n");
                      	}
@@ -381,23 +409,22 @@ public class Server {
                      	
                      	
                    case "addcomment":
-                	   System.out.println("Received request to add comment on event with details: " + input);
+                	   writer.println("Received request to add comment on eventname: " + input.get(0));
             		   returnz=addcomment(input, conn);
                	break;  	
 
                    case "eventlist":
-                	   System.out.println("Received request to get list of events of user with details: " + input);
+                	   writer.println("Received request to get list of events of username: " + input.get(0));
                       	Vector<String> eventlist = new Vector<String>();
                       	try {
    						eventlist=eventlist(input, conn);
    					} catch (SQLException e) {
-   						// TODO Auto-generated catch block
-   						System.out.println("Retrieval failed, sql exception thrown!");
-	           		     System.out.println("Exiting...");
+   						writer.println("Retrieval failed, sql exception thrown!");
+	           		     writer.println("Exiting...");
    						e.printStackTrace();
    					}
                       	
-                      	System.out.println("Retrieval successful, sending out details to client...");
+                      	writer.println("Retrieval successful, sending out details to client...");
                       	for (String str : eventlist){
                       		outToClient.writeBytes(str + "\n");
           		           	}
@@ -407,12 +434,13 @@ public class Server {
                       	break;
 
                    case "createevent":
+                	   writer.println("Received request to create event with name: " + input.get(0));
+              		 
                 	   try{
-                		   System.out.println("Received request to create event with details: " + input);
-                		   returnz=createevent(input, conn);
+                		    returnz=createevent(input, conn);
                 	   } catch (SQLException e) {
-                		   System.out.println("Retrieval failed, sql exception thrown!");
-  	           		     System.out.println("Exiting...");
+                		   writer.println("Retrieval failed, sql exception thrown!");
+  	           		     writer.println("Exiting...");
    						e.printStackTrace();
    					}
                 	   break;
@@ -421,6 +449,8 @@ public class Server {
                 	   
                 	   
                    case "getinviteduser":
+                	   writer.println("Received request to get list of events username: " + input.get(0) + "is invited to");
+                  	 
                 	   Vector<String> eventlistuser = new Vector<String>();
                       	try {
    						eventlistuser=getInvitedUser(input, conn);
@@ -438,6 +468,8 @@ public class Server {
 
                       	
                    case "getattendinguser":
+                	   writer.println("Received request to get list of events username: " + input.get(0) + "is attending");
+                    	 
                 	   Vector<String> eventlistuserA = new Vector<String>();
                       	try {
    						eventlistuserA=getAttendingUser(input, conn);
@@ -458,9 +490,9 @@ public class Server {
 													//so they are supposed to be fool-proof. but in case
                    break;
                    }
-                   System.out.println("Replying to server before closing socket");
+                   writer.println("Replying to server before closing socket");
                    outToClient.writeBytes(returnz + "\n"); //send back the response, followed by a line break 
-                   System.out.println(".........................................");
+                   writer.println(".........................................");
                    
                    
                    
@@ -469,16 +501,21 @@ public class Server {
             }
             catch (IOException k)
             {
-                System.out.println(k);
+                writer.println(k);
             }
             try
             {
-                System.out.println("closing socket");
-                System.out.println(".........................................");
-                System.out.println(".........................................");
+                writer.println("closing socket");
+                writer.println(".........................................");
+                writer.println(".........................................");
                 inFromClient.close();
                 outToClient.close();
                 socket.close();
+                writer.println("*******************************");
+                writer.println("CLOSING SESSION - END OF LOG");
+                writer.println("*******************************");
+                writer.close();
+          
             } 
             catch (IOException e)
             {
@@ -491,7 +528,7 @@ public class Server {
     // Create functions here.
    public static String login(Vector<String> data, Connection conn) throws SQLException {
 	   
-	   System.out.println("Executing log in server functions: ");
+	   writer.println("Executing log in server functions: ");
 	   PreparedStatement stmt;	//using prepared statement to protect from SQL injection
 	   ResultSet rs;
 	   stmt = conn.prepareStatement("select username from user where username = ? AND password = ?"); //this sql query
@@ -510,7 +547,7 @@ public class Server {
    public static Vector<String> details(Vector<String> data, Connection conn) throws SQLException {
 			PreparedStatement stmt;
 			ResultSet rs;
-//			System.out.println("Input to server details function is:" + data.get(0));
+//			writer.println("Input to server details function is:" + data.get(0));
 			stmt = conn.prepareStatement("select * from user where username = ?");
 			stmt.setString(1,data.get(0));
 			
@@ -534,7 +571,7 @@ public class Server {
 
    public static String signup(Vector<String> data, Connection conn) throws SQLException {  
 	   
-	   System.out.println("Server sign up function running.. ");
+	   writer.println("Server sign up function running.. ");
 	   PreparedStatement stmtCheck;	//using prepared statement to protect from SQL injection
 	   ResultSet rs;
 	   stmtCheck = conn.prepareStatement("select username from user where username = ?"); //this sql query
@@ -552,12 +589,12 @@ public class Server {
 		   stmt.setString(5, data.get(4));//last name
 		   stmt.setString(6, data.get(5));//date of birth (should be written with caution, sql is very picky here)
 		   stmt.execute(); //execute this statement (note we used execute not execute query because we are inserting) 
-		   System.out.println("Successfully signed up the user: ");
+		   writer.println("Successfully signed up the user: ");
 		   return "success"; //always return this because we wouldn't reach this if we got an SQL exception
 		   
 		}
 		else{
-			System.out.println("Coulnd't sign up user, user already exists in database.");
+			writer.println("Coulnd't sign up user, user already exists in database.");
 			return "fail";
 			}
 	}
@@ -715,7 +752,7 @@ public class Server {
 	//   add the invitees to a vector
 	   while(invitedRS.next()){
 		   invited.add(invitedRS.getString(2));
-		  // System.out.println("DEBUG!!" +  invitedRS.getString(2));
+		  // writer.println("DEBUG!!" +  invitedRS.getString(2));
 			
 	   }
 
@@ -738,7 +775,7 @@ public class Server {
 	//   add the invitees to a vector
 	   while(invitedRS.next()){
 		   attending.add(invitedRS.getString(1));
-		  // System.out.println("DEBUG!!" +  invitedRS.getString(2));
+		  // writer.println("DEBUG!!" +  invitedRS.getString(2));
 			
 	   }
 
@@ -826,7 +863,7 @@ public class Server {
  public static String deletefriend(Vector<String> data, Connection conn){
 	 PreparedStatement stmt1,stmt2;
 	   
-	 System.out.println("starting deletefriend on server");
+	 writer.println("starting deletefriend on server");
 	   try {
 		stmt1=conn.prepareStatement("delete from friends_with where user1=? and user2=?");
 		stmt1.setString(1, data.get(0));
@@ -843,7 +880,7 @@ public class Server {
 		return "fail";
 	}
 
-		 System.out.println("finishing deletefriend on server");
+		 writer.println("finishing deletefriend on server");
 	   return "success";
 
 	 
@@ -851,8 +888,8 @@ public class Server {
 
 
  public static String updateuser(Vector<String> data, Connection conn) throws SQLException {   
-	 System.out.println("beginning updateuser on server ");
-	 System.out.println(data);
+	 writer.println("beginning updateuser on server ");
+	 writer.println(data);
 	 
 	 PreparedStatement stmt;	//using prepared statement to protect from SQL injection
 	   stmt = conn.prepareStatement("update user set password=?, email=?, first_name=?, family_name=?, dob=? where username = ?"); //this sql query
@@ -874,7 +911,7 @@ public class Server {
  
  public static String modifyevent(Vector<String> data, Connection conn) throws SQLException {
 	 
-	 System.out.println("MODIFY SHITTT STARTED OMG" + data);
+	 writer.println("MODIFY SHITTT STARTED OMG" + data);
 	 	PreparedStatement stmt1; //stmt creates the event in the 'event' entity
 	 
 	 	stmt1=conn.prepareStatement("update event set `when`=?, `where`=? where name = ?");
@@ -908,7 +945,7 @@ public class Server {
 	//   add the events to a vector
 	   while(invitedRS.next()){
 		   events.add(invitedRS.getString(1));
-		  // System.out.println("DEBUG!!" +  invitedRS.getString(2));
+		  // writer.println("DEBUG!!" +  invitedRS.getString(2));
 			
 	   }
 
@@ -930,7 +967,7 @@ public class Server {
 	//   add the events to a vector
 	   while(invitedRS.next()){
 		   events.add(invitedRS.getString(1));
-		  // System.out.println("DEBUG!!" +  invitedRS.getString(2));
+		  // writer.println("DEBUG!!" +  invitedRS.getString(2));
 			
 	   }
 

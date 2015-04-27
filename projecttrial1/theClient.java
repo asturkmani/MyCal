@@ -505,7 +505,6 @@ public static Vector<String> getInvitedUser(String username) throws Exception{
 	  
   }
 
-  clientSocket.close();
   return eventlistuser;
 }
 
@@ -615,6 +614,13 @@ public static Vector<String> todayEvents() throws Exception{
 
   return emails;
 }
+
+
+
+
+
+
+
 }
 
 
