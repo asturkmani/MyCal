@@ -817,7 +817,10 @@ public class ClientGUI2 {
 					int maxSize = Math.max(events.size(), attendingEvents.size());
 					System.out.println("Max size between attending and invited is: " + maxSize);
 //					System.out.println("Obtained events user created: " + events);
+
+					CommentsPanel.removeAll();
 				    for(int i = 0; i < maxSize; i++) {
+				    	
 
 
 				    	if (i<events.size()){
@@ -853,6 +856,7 @@ public class ClientGUI2 {
 								}
 								
 								try {
+//									CommentsPanel.removeAll();
 									comments = theClient.getComment(temp1[2]);
 								} catch (Exception e1) {
 									// TODO Auto-generated catch block
@@ -861,7 +865,7 @@ public class ClientGUI2 {
 								System.out.println("get comment for: " + temp1[2]);
 								System.out.println("Comments are: " + comments);
 								
-								CommentsPanel.removeAll();
+
 								//fill out comments
 								for (int i=0;i<comments.size();i++){
 									if(i%2 == 0){
@@ -873,8 +877,12 @@ public class ClientGUI2 {
 										CommentsPanel.add(temp);
 									}
 								}
-									CommentsPanel.repaint();
-									CommentsPanel.revalidate();
+								CommentsPanel.revalidate();
+								CommentsPanel.repaint();
+								CommentsPanel.revalidate();
+								ModifyEvent.revalidate();
+								ModifyEvent.repaint();
+								ModifyEvent.revalidate();
 									
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
@@ -932,7 +940,7 @@ public class ClientGUI2 {
 									
 									
 									//fill in comments
-									CommentsPanel.removeAll();
+//									CommentsPanel.removeAll();
 									for (int i=0;i<comments.size();i++){
 										if(i%2 == 0){
 											JTextArea temp = new JTextArea();
@@ -943,8 +951,12 @@ public class ClientGUI2 {
 											CommentsPanel.add(temp);
 										}
 									}
+									CommentsPanel.revalidate();
 									CommentsPanel.repaint();
 									CommentsPanel.revalidate();
+									ModifyEvent.revalidate();
+									ModifyEvent.repaint();
+									ModifyEvent.revalidate();
 									
 									eventLocationDispla.setText(eventdetailz.get(1));
 									eventTimeDispla.setText(eventdetailz.get(0));
@@ -971,6 +983,7 @@ public class ClientGUI2 {
 				    buttonsPanel.revalidate();
 				    buttonsPanel.repaint();
 					buttonsPanel.revalidate();
+					
 					HomePanel.revalidate();
 					HomePanel.repaint();
 				    HomePanel.revalidate();
@@ -1079,6 +1092,7 @@ public class ClientGUI2 {
 								int maxSize = Math.max(events.size(), attendingEvents.size());
 								System.out.println("Max size between attending and invited is: " + maxSize);
 //								System.out.println("Obtained events user created: " + events);
+								CommentsPanel.removeAll();
 							    for(int i = 0; i < maxSize; i++) {
 
 
@@ -1106,12 +1120,50 @@ public class ClientGUI2 {
 											// take user to sign up field
 											
 											Vector<String> eventdetailz = new Vector<String>();
+											Vector<String> comments = new Vector<String>();
 											try {
 												eventdetailz=theClient.eventDetails(temp1[2]);
 											} catch (Exception e1) {
 												// TODO Auto-generated catch block
 												e1.printStackTrace();
 											}
+											
+											try {
+//												CommentsPanel.removeAll();
+												comments = theClient.getComment(temp1[2]);
+											} catch (Exception e1) {
+												// TODO Auto-generated catch block
+												e1.printStackTrace();
+											}
+											System.out.println("get comment for: " + temp1[2]);
+											System.out.println("Comments are: " + comments);
+											
+
+											//fill out comments
+											for (int i=0;i<comments.size();i++){
+												if(i%2 == 0){
+													JTextArea temp = new JTextArea();
+													temp.setText(comments.get(i) +": " + comments.get(i+1));
+													System.out.println("users" +comments.get(i));
+													temp.setEditable(false);
+													temp.setVisible(true);
+													CommentsPanel.add(temp);
+												}
+											}
+											CommentsPanel.revalidate();
+											CommentsPanel.repaint();
+											CommentsPanel.revalidate();
+											ModifyEvent.revalidate();
+											ModifyEvent.repaint();
+											ModifyEvent.revalidate();
+												
+											eventLocationDispla.setText(eventdetailz.get(1));
+											eventTimeDispla.setText(eventdetailz.get(0));
+											eventNameDispla.setText(temp1[2]);
+											ModifyEvent.setVisible(true);
+											HomePanel.setVisible(false);
+
+											
 											eventLocationDispla.setText(eventdetailz.get(1));
 											eventTimeDispla.setText(eventdetailz.get(0));
 											eventNameDispla.setText(temp1[2]);
@@ -1149,12 +1201,49 @@ public class ClientGUI2 {
 												// take user to sign up field
 												
 												Vector<String> eventdetailz = new Vector<String>();
+												Vector<String> comments = new Vector<String>();
 												try {
 													eventdetailz=theClient.eventDetails(tempString2);
 												} catch (Exception e1) {
 													// TODO Auto-generated catch block
 													e1.printStackTrace();
 												}
+												try {
+//													CommentsPanel.removeAll();
+													comments = theClient.getComment(tempString2);
+												} catch (Exception e1) {
+													// TODO Auto-generated catch block
+													e1.printStackTrace();
+												}
+												System.out.println("get comment for: " + tempString2);
+												System.out.println("Comments are: " + comments);
+												
+
+												//fill out comments
+												for (int i=0;i<comments.size();i++){
+													if(i%2 == 0){
+														JTextArea temp = new JTextArea();
+														temp.setText(comments.get(i) +": " + comments.get(i+1));
+														System.out.println("users" +comments.get(i));
+														temp.setEditable(false);
+														temp.setVisible(true);
+														CommentsPanel.add(temp);
+													}
+												}
+												CommentsPanel.revalidate();
+												CommentsPanel.repaint();
+												CommentsPanel.revalidate();
+												ModifyEvent.revalidate();
+												ModifyEvent.repaint();
+												ModifyEvent.revalidate();
+													
+												eventLocationDispla.setText(eventdetailz.get(1));
+												eventTimeDispla.setText(eventdetailz.get(0));
+												eventNameDispla.setText(tempString2);
+												ModifyEvent.setVisible(true);
+												HomePanel.setVisible(false);
+
+												
 												eventLocationDispla.setText(eventdetailz.get(1));
 												eventTimeDispla.setText(eventdetailz.get(0));
 												eventNameDispla.setText(tempString2);
@@ -1275,12 +1364,48 @@ public class ClientGUI2 {
 											// take user to sign up field
 											
 											Vector<String> eventdetailz = new Vector<String>();
+											Vector<String> comments = new Vector<String>();
 											try {
 												eventdetailz=theClient.eventDetails(temp1[2]);
 											} catch (Exception e1) {
 												// TODO Auto-generated catch block
 												e1.printStackTrace();
 											}
+											try {
+//												CommentsPanel.removeAll();
+												comments = theClient.getComment(temp1[2]);
+											} catch (Exception e1) {
+												// TODO Auto-generated catch block
+												e1.printStackTrace();
+											}
+											System.out.println("get comment for: " + temp1[2]);
+											System.out.println("Comments are: " + comments);
+											
+
+											//fill out comments
+											for (int i=0;i<comments.size();i++){
+												if(i%2 == 0){
+													JTextArea temp = new JTextArea();
+													temp.setText(comments.get(i) +": " + comments.get(i+1));
+													System.out.println("users" +comments.get(i));
+													temp.setEditable(false);
+													temp.setVisible(true);
+													CommentsPanel.add(temp);
+												}
+											}
+											CommentsPanel.revalidate();
+											CommentsPanel.repaint();
+											CommentsPanel.revalidate();
+											ModifyEvent.revalidate();
+											ModifyEvent.repaint();
+											ModifyEvent.revalidate();
+												
+											eventLocationDispla.setText(eventdetailz.get(1));
+											eventTimeDispla.setText(eventdetailz.get(0));
+											eventNameDispla.setText(temp1[2]);
+											ModifyEvent.setVisible(true);
+											HomePanel.setVisible(false);
+
 											eventLocationDispla.setText(eventdetailz.get(1));
 											eventTimeDispla.setText(eventdetailz.get(0));
 											eventNameDispla.setText(temp1[2]);
@@ -1318,12 +1443,48 @@ public class ClientGUI2 {
 												// take user to sign up field
 												
 												Vector<String> eventdetailz = new Vector<String>();
+												Vector<String> comments = new Vector<String>();
 												try {
 													eventdetailz=theClient.eventDetails(tempString2);
 												} catch (Exception e1) {
 													// TODO Auto-generated catch block
 													e1.printStackTrace();
 												}
+												try {
+//													CommentsPanel.removeAll();
+													comments = theClient.getComment(tempString2);
+												} catch (Exception e1) {
+													// TODO Auto-generated catch block
+													e1.printStackTrace();
+												}
+												System.out.println("get comment for: " + tempString2);
+												System.out.println("Comments are: " + comments);
+												
+
+												//fill out comments
+												for (int i=0;i<comments.size();i++){
+													if(i%2 == 0){
+														JTextArea temp = new JTextArea();
+														temp.setText(comments.get(i) +": " + comments.get(i+1));
+														System.out.println("users" +comments.get(i));
+														temp.setEditable(false);
+														temp.setVisible(true);
+														CommentsPanel.add(temp);
+													}
+												}
+												CommentsPanel.revalidate();
+												CommentsPanel.repaint();
+												CommentsPanel.revalidate();
+												ModifyEvent.revalidate();
+												ModifyEvent.repaint();
+												ModifyEvent.revalidate();
+													
+												eventLocationDispla.setText(eventdetailz.get(1));
+												eventTimeDispla.setText(eventdetailz.get(0));
+												eventNameDispla.setText(tempString2);
+												ModifyEvent.setVisible(true);
+												HomePanel.setVisible(false);
+
 												eventLocationDispla.setText(eventdetailz.get(1));
 												eventTimeDispla.setText(eventdetailz.get(0));
 												eventNameDispla.setText(tempString2);
@@ -1697,12 +1858,48 @@ public class ClientGUI2 {
 								// take user to sign up field
 								
 								Vector<String> eventdetailz = new Vector<String>();
+								Vector<String> comments = new Vector<String>();
 								try {
 									eventdetailz=theClient.eventDetails(temp1[2]);
 								} catch (Exception e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
+								try {
+//									CommentsPanel.removeAll();
+									comments = theClient.getComment(temp1[2]);
+								} catch (Exception e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								System.out.println("get comment for: " + temp1[2]);
+								System.out.println("Comments are: " + comments);
+								
+
+								//fill out comments
+								for (int i=0;i<comments.size();i++){
+									if(i%2 == 0){
+										JTextArea temp = new JTextArea();
+										temp.setText(comments.get(i) +": " + comments.get(i+1));
+										System.out.println("users" +comments.get(i));
+										temp.setEditable(false);
+										temp.setVisible(true);
+										CommentsPanel.add(temp);
+									}
+								}
+								CommentsPanel.revalidate();
+								CommentsPanel.repaint();
+								CommentsPanel.revalidate();
+								ModifyEvent.revalidate();
+								ModifyEvent.repaint();
+								ModifyEvent.revalidate();
+									
+								eventLocationDispla.setText(eventdetailz.get(1));
+								eventTimeDispla.setText(eventdetailz.get(0));
+								eventNameDispla.setText(temp1[2]);
+								ModifyEvent.setVisible(true);
+								HomePanel.setVisible(false);
+
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(temp1[2]);
@@ -1740,12 +1937,48 @@ public class ClientGUI2 {
 									// take user to sign up field
 									
 									Vector<String> eventdetailz = new Vector<String>();
+									Vector<String> comments = new Vector<String>();
 									try {
 										eventdetailz=theClient.eventDetails(tempString2);
 									} catch (Exception e1) {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
+									try {
+//										CommentsPanel.removeAll();
+										comments = theClient.getComment(tempString2);
+									} catch (Exception e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									System.out.println("get comment for: " + tempString2);
+									System.out.println("Comments are: " + comments);
+									
+
+									//fill out comments
+									for (int i=0;i<comments.size();i++){
+										if(i%2 == 0){
+											JTextArea temp = new JTextArea();
+											temp.setText(comments.get(i) +": " + comments.get(i+1));
+											System.out.println("users" +comments.get(i));
+											temp.setEditable(false);
+											temp.setVisible(true);
+											CommentsPanel.add(temp);
+										}
+									}
+									CommentsPanel.revalidate();
+									CommentsPanel.repaint();
+									CommentsPanel.revalidate();
+									ModifyEvent.revalidate();
+									ModifyEvent.repaint();
+									ModifyEvent.revalidate();
+										
+									eventLocationDispla.setText(eventdetailz.get(1));
+									eventTimeDispla.setText(eventdetailz.get(0));
+									eventNameDispla.setText(tempString2);
+									ModifyEvent.setVisible(true);
+									HomePanel.setVisible(false);
+
 									eventLocationDispla.setText(eventdetailz.get(1));
 									eventTimeDispla.setText(eventdetailz.get(0));
 									eventNameDispla.setText(tempString2);
@@ -1860,12 +2093,48 @@ public class ClientGUI2 {
 							// take user to sign up field
 							
 							Vector<String> eventdetailz = new Vector<String>();
+							Vector<String> comments = new Vector<String>();
 							try {
 								eventdetailz=theClient.eventDetails(temp1[2]);
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
+							try {
+//								CommentsPanel.removeAll();
+								comments = theClient.getComment(temp1[2]);
+							} catch (Exception e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							System.out.println("get comment for: " + temp1[2]);
+							System.out.println("Comments are: " + comments);
+							
+
+							//fill out comments
+							for (int i=0;i<comments.size();i++){
+								if(i%2 == 0){
+									JTextArea temp = new JTextArea();
+									temp.setText(comments.get(i) +": " + comments.get(i+1));
+									System.out.println("users" +comments.get(i));
+									temp.setEditable(false);
+									temp.setVisible(true);
+									CommentsPanel.add(temp);
+								}
+							}
+							CommentsPanel.revalidate();
+							CommentsPanel.repaint();
+							CommentsPanel.revalidate();
+							ModifyEvent.revalidate();
+							ModifyEvent.repaint();
+							ModifyEvent.revalidate();
+								
+							eventLocationDispla.setText(eventdetailz.get(1));
+							eventTimeDispla.setText(eventdetailz.get(0));
+							eventNameDispla.setText(temp1[2]);
+							ModifyEvent.setVisible(true);
+							HomePanel.setVisible(false);
+
 							eventLocationDispla.setText(eventdetailz.get(1));
 							eventTimeDispla.setText(eventdetailz.get(0));
 							eventNameDispla.setText(temp1[2]);
@@ -1904,12 +2173,48 @@ public class ClientGUI2 {
 								// take user to sign up field
 								
 								Vector<String> eventdetailz = new Vector<String>();
+								Vector<String> comments = new Vector<String>();
 								try {
 									eventdetailz=theClient.eventDetails(tempString2);
 								} catch (Exception e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
+								try {
+//									CommentsPanel.removeAll();
+									comments = theClient.getComment(tempString2);
+								} catch (Exception e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								System.out.println("get comment for: " + tempString2);
+								System.out.println("Comments are: " + comments);
+								
+
+								//fill out comments
+								for (int i=0;i<comments.size();i++){
+									if(i%2 == 0){
+										JTextArea temp = new JTextArea();
+										temp.setText(comments.get(i) +": " + comments.get(i+1));
+										System.out.println("users" +comments.get(i));
+										temp.setEditable(false);
+										temp.setVisible(true);
+										CommentsPanel.add(temp);
+									}
+								}
+								CommentsPanel.revalidate();
+								CommentsPanel.repaint();
+								CommentsPanel.revalidate();
+								ModifyEvent.revalidate();
+								ModifyEvent.repaint();
+								ModifyEvent.revalidate();
+									
+								eventLocationDispla.setText(eventdetailz.get(1));
+								eventTimeDispla.setText(eventdetailz.get(0));
+								eventNameDispla.setText(tempString2);
+								ModifyEvent.setVisible(true);
+								HomePanel.setVisible(false);
+
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(tempString2);
@@ -2154,6 +2459,8 @@ public class ClientGUI2 {
 			if(temp){
 							
 				try {
+					
+					CommentsPanel.removeAll();
 					friends = theClient.friendList(currentUser); 	// create the list of friends
 					events = theClient.eventList(currentUser); 		// obtain event list
 					attendingEvents = theClient.getAttendingUser(currentUser);
@@ -2205,6 +2512,7 @@ public class ClientGUI2 {
 					// create a panel to house the buttons of events
 					int maxSize = Math.max(events.size(), attendingEvents.size());
 
+					CommentsPanel.removeAll();
 				    for(int i = 0; i < maxSize; i++) {
 
 				    	if (i<events.size()){
@@ -2240,13 +2548,14 @@ public class ClientGUI2 {
 								
 								Vector<String> comments = new Vector<String>();
 								try {
+//									CommentsPanel.removeAll();
 									comments = theClient.getComment(eventNameDispla.getText());
 								} catch (Exception e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 								
-								CommentsPanel.removeAll();
+								
 								for (int i=0;i<comments.size();i++){
 									// if it is a user
 									if( (i%2) == 0){
@@ -2260,9 +2569,13 @@ public class ClientGUI2 {
 										
 									}
 								}
-								
 								CommentsPanel.revalidate();
 								CommentsPanel.repaint();
+								CommentsPanel.revalidate();
+								ModifyEvent.revalidate();
+								ModifyEvent.repaint();
+								ModifyEvent.revalidate();
+								
 								
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
@@ -2332,9 +2645,13 @@ public class ClientGUI2 {
 											
 										}
 									}
-									
 									CommentsPanel.revalidate();
 									CommentsPanel.repaint();
+									CommentsPanel.revalidate();
+									ModifyEvent.revalidate();
+									ModifyEvent.repaint();
+									ModifyEvent.revalidate();
+									
 									
 									eventLocationDispla.setText(eventdetailz.get(1));
 									eventTimeDispla.setText(eventdetailz.get(0));

@@ -7,8 +7,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Vector;
 
 //import SendEmail;
@@ -36,6 +38,10 @@ public class Server {
         while (true) {
             try
             {
+            	
+            	// FIX EMAIL ISSUES:::::::
+            	
+            	
                 String timeStamp = new SimpleDateFormat("HH_mm_ss").format(Calendar.getInstance().getTime());
 //                System.out.println(timeStamp);
                 String[] temp = timeStamp.split("_");
@@ -778,7 +784,7 @@ public class Server {
 	   Vector<String> users = new Vector<String>();
 	  
 	   PreparedStatement stmt;
-	   stmt=conn.prepareStatement("select * from comments where event=?");
+	   stmt=conn.prepareStatement("select * from comments where event=? order by commentime");/*ORDER BY commenttime*/
 	   stmt.setString(1, data.get(0));
 	   
 	   ResultSet usersRS;
@@ -804,6 +810,7 @@ public class Server {
  public static String addcomment(Vector<String> data, Connection conn){
 			
 	 	PreparedStatement stmt1;
+
 	   
 	   try {
 		
@@ -811,6 +818,7 @@ public class Server {
 		   stmt1.setString(1, data.get(0));
 		   stmt1.setString(2, data.get(1));
 		   stmt1.setString(3, data.get(2)); 
+		   stmt1.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
 		   stmt1.execute();
 		   
 		   
