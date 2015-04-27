@@ -152,7 +152,9 @@ public static void createEvent(String eventname, String username, Vector<String>
 	  }
 	  }
 	  outToServer.writeBytes("\n");
-//	  clientSocket.close();
+	  
+	  inFromServer.readLine();
+	  clientSocket.close();
 	  
 }
 
@@ -230,6 +232,7 @@ public static void deleteEvent(String event) throws Exception{
 	  
 	  outToServer.writeBytes("DELETEEVENT\n"); //added the keyword or "verb"
 	  outToServer.writeBytes(event + "\n\n"); //send the username
+	  inFromServer.readLine();
 	  clientSocket.close();
 	
 	
@@ -347,7 +350,7 @@ public static Vector<String> eventDetails(String eventname) throws Exception{
 	  
   }
   
-
+  clientSocket.close();
 	  return detailz;
 	
 }
@@ -377,7 +380,7 @@ public static Vector<String> getComment(String eventname) throws Exception{
 	  response = inFromServer.readLine();
 	  
   }
-
+  clientSocket.close();
 	return result;
 	
 	
@@ -398,7 +401,8 @@ public static void addComment (String username, String eventname, String comment
 	  outToServer.writeBytes(username + "\n");	
 	  outToServer.writeBytes(eventname + "\n\n");
 	 // clientSocket.close();
-	  
+	  inFromServer.readLine();
+	  clientSocket.close();
 	
 }
 
@@ -475,6 +479,9 @@ public static void modifyEvent(String eventname, String username, Vector<String>
 	  outToServer.writeBytes("\n");
 //	  clientSocket.close();
 	  
+	  inFromServer.readLine();
+	  clientSocket.close();
+	  
 }
 
 
@@ -534,7 +541,7 @@ public static Vector<String> getAttendingUser(String username) throws Exception{
 	  response = inFromServer.readLine();
 	  
   }
-
+  clientSocket.close();
   return eventlistuser;
 }
 

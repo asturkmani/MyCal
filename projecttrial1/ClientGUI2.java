@@ -173,8 +173,9 @@ public class ClientGUI2 {
 		scrollPane.setBounds(12, 98, 302, 226);
 		ModifyEvent.add(scrollPane);
 		
-		JPanel CommentsPanel = new JPanel(new GridLayout(0,2));
+		JPanel CommentsPanel = new JPanel(new GridLayout(0,1));
 		scrollPane.setViewportView(CommentsPanel);
+		CommentsPanel.setVisible(true);
 		CommentsPanel.setBackground(Color.WHITE);
 		
 		JTextArea newComment = new JTextArea("Add a comment...");
@@ -607,6 +608,7 @@ public class ClientGUI2 {
 			public void mouseClicked(MouseEvent e) {
 				ModifyEvent.setVisible(false);
 				HomePanel.setVisible(true);
+				CommentsPanel.removeAll();
 			}
 		});
 		goBack.setIcon(new ImageIcon(ClientGUI2.class.getResource("/org/freixas/jcalendar/images/Back16.gif")));
@@ -859,18 +861,20 @@ public class ClientGUI2 {
 								System.out.println("get comment for: " + temp1[2]);
 								System.out.println("Comments are: " + comments);
 								
+								CommentsPanel.removeAll();
 								//fill out comments
 								for (int i=0;i<comments.size();i++){
 									if(i%2 == 0){
 										JTextArea temp = new JTextArea();
 										temp.setText(comments.get(i) +": " + comments.get(i+1));
-//										System.out.println("users" +comments.get(i));
+										System.out.println("users" +comments.get(i));
 										temp.setEditable(false);
 										temp.setVisible(true);
 										CommentsPanel.add(temp);
 									}
 								}
-									
+									CommentsPanel.repaint();
+									CommentsPanel.revalidate();
 									
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
@@ -928,6 +932,7 @@ public class ClientGUI2 {
 									
 									
 									//fill in comments
+									CommentsPanel.removeAll();
 									for (int i=0;i<comments.size();i++){
 										if(i%2 == 0){
 											JTextArea temp = new JTextArea();
@@ -938,7 +943,9 @@ public class ClientGUI2 {
 											CommentsPanel.add(temp);
 										}
 									}
-										
+									CommentsPanel.repaint();
+									CommentsPanel.revalidate();
+									
 									eventLocationDispla.setText(eventdetailz.get(1));
 									eventTimeDispla.setText(eventdetailz.get(0));
 									eventNameDispla.setText(tempString2);
@@ -2229,6 +2236,34 @@ public class ClientGUI2 {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
+								
+								
+								Vector<String> comments = new Vector<String>();
+								try {
+									comments = theClient.getComment(eventNameDispla.getText());
+								} catch (Exception e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								
+								CommentsPanel.removeAll();
+								for (int i=0;i<comments.size();i++){
+									// if it is a user
+									if( (i%2) == 0){
+									
+										//else it is the users comment
+										JTextArea comment = new JTextArea();
+										comment.setVisible(true);
+									
+										comment.setText(comments.get(i)+": "+ comments.get(i+1));
+										CommentsPanel.add(comment);
+										
+									}
+								}
+								
+								CommentsPanel.revalidate();
+								CommentsPanel.repaint();
+								
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(temp1[2]);
@@ -2274,16 +2309,36 @@ public class ClientGUI2 {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
+									
+									Vector<String> comments = new Vector<String>();
+									
+									try {
+										comments = theClient.getComment(tempString2);
+									} catch (Exception e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									
+									for (int i=0;i<comments.size();i++){
+										// if it is a user
+										if( (i%2) == 0){
+										
+											//else it is the users comment
+											JTextArea comment = new JTextArea();
+											comment.setVisible(true);
+										
+											comment.setText(comments.get(i)+": "+ comments.get(i+1));
+											CommentsPanel.add(comment);
+											
+										}
+									}
+									
+									CommentsPanel.revalidate();
+									CommentsPanel.repaint();
+									
 									eventLocationDispla.setText(eventdetailz.get(1));
 									eventTimeDispla.setText(eventdetailz.get(0));
 									eventNameDispla.setText(tempString2);
-									
-									calendarCombo.setVisible(false);
-									eventLocationModify.setVisible(false); 
-									modifyEvent.setVisible(false);
-									deleteEvent.setVisible(false);
-									
-									
 									ModifyEvent.setVisible(true);
 									HomePanel.setVisible(false);
 								}
