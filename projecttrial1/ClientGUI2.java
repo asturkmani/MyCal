@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JCheckBox;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JPopupMenu;
@@ -166,6 +167,32 @@ public class ClientGUI2 {
 		editProfileDetails.setBounds(62, 111, 93, 171);
 		editProfileDetails.setVisible(false);
 		profilePanel.add(editProfileDetails);
+		
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(12, 98, 302, 226);
+		ModifyEvent.add(scrollPane);
+		
+		JPanel CommentsPanel = new JPanel(new GridLayout(0,2));
+		scrollPane.setViewportView(CommentsPanel);
+		CommentsPanel.setBackground(Color.WHITE);
+		
+		JTextArea newComment = new JTextArea("Add a comment...");
+		newComment.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				newComment.setText("");
+				newComment.setForeground(Color.DARK_GRAY);
+			}
+		});
+		newComment.setForeground(Color.LIGHT_GRAY);
+		newComment.setBackground(Color.WHITE);
+		newComment.setBounds(12, 326, 250, 45);
+		newComment.setVisible(true);
+		Border border = BorderFactory.createLineBorder(Color.DARK_GRAY, 1);
+
+		newComment.setBorder(border);
+		ModifyEvent.add(newComment);
 		
 		DOB_modify = new JTextField();
 		editProfileDetails.add(DOB_modify);
@@ -684,6 +711,14 @@ public class ClientGUI2 {
 				eventLocation.setForeground(Color.DARK_GRAY);
 			}
 		});
+		
+		eventLocation.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				eventLocation.setText("");
+				eventLocation.setForeground(Color.DARK_GRAY);
+			}
+		});
 		eventLocation.setText("Where?");
 		eventLocation.setForeground(new Color(211, 211, 211));
 		eventLocation.setBounds(205, 42, 95, 46);
@@ -807,12 +842,36 @@ public class ClientGUI2 {
 								// take user to sign up field
 								
 								Vector<String> eventdetailz = new Vector<String>();
+								Vector<String> comments = new Vector<String>();
 								try {
 									eventdetailz=theClient.eventDetails(temp1[2]);
 								} catch (Exception e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
+								
+								try {
+									comments = theClient.getComment(temp1[2]);
+								} catch (Exception e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								System.out.println("get comment for: " + temp1[2]);
+								System.out.println("Comments are: " + comments);
+								
+								//fill out comments
+								for (int i=0;i<comments.size();i++){
+									if(i%2 == 0){
+										JTextArea temp = new JTextArea();
+										temp.setText(comments.get(i) +": " + comments.get(i+1));
+//										System.out.println("users" +comments.get(i));
+										temp.setEditable(false);
+										temp.setVisible(true);
+										CommentsPanel.add(temp);
+									}
+								}
+									
+									
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(temp1[2]);
@@ -850,12 +909,36 @@ public class ClientGUI2 {
 									// take user to sign up field
 									
 									Vector<String> eventdetailz = new Vector<String>();
+									Vector<String> comments = new Vector<String>();
 									try {
 										eventdetailz=theClient.eventDetails(tempString2);
 									} catch (Exception e1) {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
+									
+									try {
+										comments = theClient.getComment(tempString2);
+									} catch (Exception e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									System.out.println("get comment for: " + tempString2);
+									System.out.println("Comments are: " + comments);
+									
+									
+									//fill in comments
+									for (int i=0;i<comments.size();i++){
+										if(i%2 == 0){
+											JTextArea temp = new JTextArea();
+											temp.setText(comments.get(i) +": " + comments.get(i+1));
+//											System.out.println("users" +comments.get(i));
+											temp.setEditable(false);
+											temp.setVisible(true);
+											CommentsPanel.add(temp);
+										}
+									}
+										
 									eventLocationDispla.setText(eventdetailz.get(1));
 									eventTimeDispla.setText(eventdetailz.get(0));
 									eventNameDispla.setText(tempString2);
@@ -878,16 +961,24 @@ public class ClientGUI2 {
 					        }
 				        
 				    }
-
+				    buttonsPanel.revalidate();
+				    buttonsPanel.repaint();
+					buttonsPanel.revalidate();
+					HomePanel.revalidate();
+					HomePanel.repaint();
+				    HomePanel.revalidate();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
-				buttonsPanel.revalidate();
-		        buttonsPanel.repaint();
-			    HomePanel.revalidate();
-			    HomePanel.repaint();
+				 buttonsPanel.revalidate();
+				    buttonsPanel.repaint();
+					buttonsPanel.revalidate();
+					HomePanel.revalidate();
+					HomePanel.repaint();
+				    HomePanel.revalidate();
+			    
 			}
 			
 		});
@@ -935,7 +1026,7 @@ public class ClientGUI2 {
 								}
 								
 								//check if there are anymore notifications, if not hide the notifications sign
-								showNotifications.hide();
+								showNotifications.setVisible(false);
 								Vector<String> tempCheck = theClient.getInvitedUser(currentUser);
 								if(tempCheck.size() == 0){
 									notifications.setVisible(false);
@@ -1079,6 +1170,11 @@ public class ClientGUI2 {
 								        }
 							        
 							    }
+							    HomePanel.repaint();
+							    HomePanel.revalidate();
+							    buttonsPanel.repaint();
+							    buttonsPanel.revalidate();
+							    
 									
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
@@ -1100,7 +1196,7 @@ public class ClientGUI2 {
 									if(decisions.get(i).isSelected() )
 										theClient.declineEvent(currentUser, events.get(i).getText()); 
 								}
-								showNotifications.hide();
+								showNotifications.setVisible(false);
 								Vector<String> tempCheck = theClient.getInvitedUser(currentUser);
 								if(tempCheck.size() == 0){
 									notifications.setVisible(false);
@@ -1243,6 +1339,10 @@ public class ClientGUI2 {
 								        }
 							        
 							    }
+							    buttonsPanel.repaint();
+								buttonsPanel.revalidate();
+								HomePanel.repaint();
+							    HomePanel.revalidate();
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -1250,10 +1350,10 @@ public class ClientGUI2 {
 						}
 					});
 					
+					buttonsPanel.repaint();
 					buttonsPanel.revalidate();
-			        buttonsPanel.repaint();
-				    HomePanel.revalidate();
-				    HomePanel.repaint();				    
+					HomePanel.repaint();
+				    HomePanel.revalidate();				    
 					Notifications.add(deleteNoti);
 
 					//place the notifications in the JPanel in a scrollablePane and put them in the popup
@@ -1443,6 +1543,26 @@ public class ClientGUI2 {
 		password_modify.setBounds(6, 222, 51, 18);
 		profilePanel.add(password_modify);
 
+		
+		JButton signOut = new JButton("Sign Out");
+		signOut.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				HomePanel.setVisible(false);
+				profilePanel.setVisible(false);
+				LogInPanel.setVisible(true);
+			}
+		});
+		signOut.setOpaque(true);
+		signOut.setForeground(Color.WHITE);
+		signOut.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+		signOut.setBorderPainted(false);
+		signOut.setBorder(UIManager.getBorder("Button.border"));
+		signOut.setBackground(UIManager.getColor("Button.select"));
+		signOut.setBounds(6, 405, 308, 47);
+		profilePanel.add(signOut);
+		
 		
 		
 		calendarCombo.setTodayFont(new Font("Dialog", Font.PLAIN, 14));
@@ -1647,10 +1767,10 @@ public class ClientGUI2 {
 					e1.printStackTrace();
 				}
 				
+				buttonsPanel.repaint();
 				buttonsPanel.revalidate();
-		        buttonsPanel.repaint();
+				HomePanel.repaint();
 			    HomePanel.revalidate();
-			    HomePanel.repaint();
 			}
 			
 		});
@@ -1812,10 +1932,10 @@ public class ClientGUI2 {
 				e1.printStackTrace();
 			}
 			
+			buttonsPanel.repaint();
 			buttonsPanel.revalidate();
-	        buttonsPanel.repaint();
+			HomePanel.repaint();
 		    HomePanel.revalidate();
-		    HomePanel.repaint();
 		    
 		    ModifyEvent.setVisible(false);
 		    HomePanel.setVisible(true);
@@ -1832,7 +1952,7 @@ public class ClientGUI2 {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// create panel to house invitees
-				JPanel invitees = new JPanel();
+				JPanel invitees = new JPanel(new GridLayout(0, 1));
 				invitees.setBackground(new Color(255,0,0));
 				
 				try {
@@ -1840,20 +1960,18 @@ public class ClientGUI2 {
 					
 					//if no one is attending
 					if( inviteesList.size() == 0){
-						JLabel invited = new JLabel("No invitees"); 
+						JLabel invited = new JLabel("None"); 
 						
 //						invited.setPreferredSize(new Dimension(60, 20));
 						
 						invited.setBackground(new Color(255,0,0));
-
+						invited.setPreferredSize(new Dimension(100, 20));
 						
 						invited.setOpaque(true);
 						invited.setForeground(Color.WHITE);
 						invited.setFont(new Font("Lucia Grande",Font.BOLD,14));
 						
 						//add new friend to the JPanel
-						invitees.setPreferredSize(new Dimension((int) invited.getPreferredSize().getWidth()+10,
-			                    (int)(invitees.getPreferredSize().getHeight()+23)));
 						invitees.add(invited);
 					}
 					
@@ -1862,7 +1980,7 @@ public class ClientGUI2 {
 						
 						JLabel invited = new JLabel(inviteesList.get(i)); 
 						
-//						invited.setPreferredSize(new Dimension(60, 20));
+						invited.setPreferredSize(new Dimension(100, 20));
 						
 						invited.setBackground(new Color(255,0,0));
 
@@ -1872,10 +1990,7 @@ public class ClientGUI2 {
 						invited.setFont(new Font("Lucia Grande",Font.BOLD,14));
 						
 						//add new friend to the JPanel
-						invitees.setPreferredSize(new Dimension((int) invited.getPreferredSize().getWidth()+10,
-			                    (int)(invitees.getPreferredSize().getHeight()+23)));
 						invitees.add(invited);
-
 					}
 					//create scrollpane to house textarea
 
@@ -1886,23 +2001,24 @@ public class ClientGUI2 {
 				inviteesScroll.setBorder(null);
 				inviteesScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 				
-				JScrollPane attendeesScroll = new JScrollPane(invitees);
+//				JScrollPane attendeesScroll = new JScrollPane(invitees);
 
-				attendeesScroll.getViewport().setBorder(null);
-				attendeesScroll.setViewportBorder(null);
-				attendeesScroll.setBorder(null);
-				attendeesScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//				attendeesScroll.getViewport().setBorder(null);
+//				attendeesScroll.setViewportBorder(null);
+//				attendeesScroll.setBorder(null);
+//				attendeesScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 				
 				//place scrollable textarea in the popup menu
 				JPopupMenu inviteesPopup = new JPopupMenu();
 				inviteesPopup.add(inviteesScroll);
 				
-				JPopupMenu attendeesPopup = new JPopupMenu();
-				attendeesPopup.add(attendeesScroll);
+//				JPopupMenu attendeesPopup = new JPopupMenu();
+//				attendeesPopup.add(attendeesScroll);
 				
+				inviteesPopup.setVisible(true);
 				inviteesPopup.show(viewInvitees, 0, 20);
-				attendeesPopup.show(viewAttendees , 0, 20);
+//				attendeesPopup.show(viewInvitees , 0, 20);
 
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -1920,7 +2036,7 @@ public class ClientGUI2 {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// create panel to house invitees
-				JPanel attendees = new JPanel();
+				JPanel attendees = new JPanel(new GridLayout(0,1));
 				attendees.setBackground(Color.GREEN);
 				try {
 					
@@ -1932,7 +2048,7 @@ public class ClientGUI2 {
 					if(attendeesList.size() == 0){
 						JLabel attending = new JLabel("No attendees");
 
-//						attending.setPreferredSize(new Dimension(60, 20));
+						attending.setPreferredSize(new Dimension(100, 20));
 
 						attending.setBackground(Color.GREEN);
 						
@@ -1940,28 +2056,21 @@ public class ClientGUI2 {
 						attending.setForeground(Color.WHITE);
 						attending.setFont(new Font("Lucia Grande",Font.BOLD,14));
 						
-						//add new friend to the JPanel
-						
-						attendees.setPreferredSize(new Dimension((int) attending.getPreferredSize().getWidth()+10,
-			                    (int)(attending.getPreferredSize().getHeight()+23)));
 						attendees.add(attending);
+						//add new friend to the JPanel
 					}
 					for (int i=0;i<attendeesList.size();i++){
 						
 						JLabel attending = new JLabel(attendeesList.get(i));
 
-//						attending.setPreferredSize(new Dimension(60, 20));
+						attending.setPreferredSize(new Dimension(100, 20));
 
 						attending.setBackground(Color.GREEN);
-						
 						attending.setOpaque(true);
 						attending.setForeground(Color.WHITE);
 						attending.setFont(new Font("Lucia Grande",Font.BOLD,14));
 						
 						//add new friend to the JPanel
-						
-						attendees.setPreferredSize(new Dimension((int) attending.getPreferredSize().getWidth()+10,
-			                    (int)(attending.getPreferredSize().getHeight()+23)));
 						attendees.add(attending);
 					}
 					//create scrollpane to house textarea
@@ -1977,6 +2086,7 @@ public class ClientGUI2 {
 				
 				JPopupMenu attendeesPopup = new JPopupMenu();
 				attendeesPopup.add(attendeesScroll);
+				attendeesPopup.setVisible(true);
 				attendeesPopup.show(viewAttendees, 0, 20);
 
 				} catch (Exception e1) {
@@ -1990,6 +2100,23 @@ public class ClientGUI2 {
 		viewAttendees.setBounds(197, 56, 103, 16);
 		ModifyEvent.add(viewAttendees);
 		
+		JLabel sendComment = new JLabel("");
+		sendComment.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					theClient.addComment(currentUser, eventNameDispla.getText(), newComment.getText());
+					newComment.setText("");
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		sendComment.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/send.png"));
+		sendComment.setVisible(true);
+		sendComment.setBounds(267, 326, 47, 45);
+		ModifyEvent.add(sendComment);
 		
 		
 		//================================================================================
@@ -2155,6 +2282,7 @@ public class ClientGUI2 {
 									eventLocationModify.setVisible(false); 
 									modifyEvent.setVisible(false);
 									deleteEvent.setVisible(false);
+									
 									
 									ModifyEvent.setVisible(true);
 									HomePanel.setVisible(false);
