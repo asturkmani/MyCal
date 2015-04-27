@@ -336,7 +336,7 @@ public class ClientGUI2 {
 		LogInPanel.add(passwordLogIn);
 		
 		JLabel Icon = new JLabel("");
-		Icon.setIcon(new ImageIcon(ClientGUI2.class.getResource("/images/calendar-icon.png")));
+		Icon.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/calendar-icon.png"));
 		Icon.setBounds(70, 178, 256, 256);
 		LogInPanel.add(Icon);
 		
@@ -671,7 +671,7 @@ public class ClientGUI2 {
 				
 			}
 		});
-		goToProfile.setIcon(new ImageIcon(ClientGUI2.class.getResource("/images/user.png")));
+		goToProfile.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/user.png"));
 		goToProfile.setBounds(18, 6, 35, 35);
 		HomePanel.add(goToProfile);
 
@@ -1565,7 +1565,7 @@ public class ClientGUI2 {
 				
 			}
 		});
-		notifications.setIcon(new ImageIcon(ClientGUI2.class.getResource("/images/notifications.png")));
+		notifications.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/notifications.png"));
 		notifications.setBounds(280, 6, 35, 35);
 		notifications.setVisible(false);
 		notifications.disable();
@@ -1580,7 +1580,7 @@ public class ClientGUI2 {
 				profilePanel.setVisible(false);
 			}
 		});
-		goToHome.setIcon(new ImageIcon(ClientGUI2.class.getResource("/images/home.jpeg")));
+		goToHome.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/home.jpeg"));
 		goToHome.setBounds(6, 6, 34, 34);
 		profilePanel.add(goToHome);
 		
@@ -1709,7 +1709,7 @@ public class ClientGUI2 {
 				
 			}
 		});
-		editDetials.setIcon(new ImageIcon(ClientGUI2.class.getResource("/images/cog.png")));
+		editDetials.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/cog.png"));
 		editDetials.setBounds(46, 6, 34, 34);
 		profilePanel.add(editDetials);
 		
@@ -2467,7 +2467,7 @@ public class ClientGUI2 {
 				}
 			}
 		});
-		sendComment.setIcon(new ImageIcon(ClientGUI2.class.getResource("/images/send.png")));
+		sendComment.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/send.png"));
 		sendComment.setVisible(true);
 		sendComment.setBounds(267, 326, 47, 45);
 		ModifyEvent.add(sendComment);

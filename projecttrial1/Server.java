@@ -282,7 +282,6 @@ public class Server {
                    {
                    
                    case "login": 	//login operation, call the login function
-                   {
                    	
                 	   try {
                 		   bw = new BufferedWriter(fw);
@@ -298,12 +297,11 @@ public class Server {
                 		   bw.close();
                 		   e.printStackTrace();
                 	   }
-                   }
                    break;
                    
                          	
                    case "signup": 
-                   {  
+                	   
                 	   try {
                 		   bw = new BufferedWriter(fw);
                 		   System.out.println("Received request to sign up user: ");
@@ -317,10 +315,9 @@ public class Server {
                 		   bw.close();
                 		   e.printStackTrace();
                 	   }
-                   }
                    break;
                    case "updateuser": 
-                   { 
+                	   
                 	   try {
                 		   bw = new BufferedWriter(fw);
                 		   System.out.println("Received request to update user details");
@@ -334,10 +331,8 @@ public class Server {
                 		   bw.close();
                 		   e.printStackTrace();
                 	   }
-                   }
                    break;
-                   case "addfriend":
-                   {
+                   case "addfriend":{
                 	   bw = new BufferedWriter(fw);
                 	   System.out.println("Received request to add friend");
                 	   bw.close();
@@ -354,7 +349,6 @@ public class Server {
                    	break;
                    	
                    case "friendlist":
-                   {
                    	Vector<String> friendlist = new Vector<String>();
                    	try {
                    		System.out.println("Received request to retrieve friend list of user");
@@ -372,11 +366,9 @@ public class Server {
 	                   	}
                    	
                    	returnz="stopz"; //here this signals the client to stop reading because we dont know how long the list of friends is
-                   }
-                   break;
+                   	break;
 
                    case "deleteevent":
-                   {
                 	   try {
                 		   System.out.println("Received request to delete event");
 						returnz=deleteevent(input, conn);
@@ -386,8 +378,6 @@ public class Server {
              		     System.out.println("Exiting...");
 						e1.printStackTrace();
 					}
-                   }
-                	   break;
 
                    case "deletefriend":
                    {
@@ -447,7 +437,7 @@ public class Server {
 						}
 						break;
 					}
-                   case "getdetails":{
+                   case "getdetails":
                 
                 	   Vector<String> details = new Vector<String>();
                      	try {
@@ -465,13 +455,11 @@ public class Server {
                      		outToClient.writeBytes(str + "\n");
                      	}
                      	returnz="stopz";
-                   }
                      	break;
                    
             
                      	
                    case "getinvited":
-                   {
                 	   Vector<String> invited = new Vector<String>();
                      	try {
                      		System.out.println("Received request to get list of invited users to event with details: " + input);
@@ -486,13 +474,11 @@ public class Server {
                      		outToClient.writeBytes(strz + "\n");
                      	}
                      	returnz="stopz";
-                   }
-                   break;
+                     	break;
                      	
                      	
                      	
                    case "getattending":
-                   {
                 	   Vector<String> attending = new Vector<String>();
                      	try {
                      		System.out.println("Received request to get list of attending users to event with details: " + input);
@@ -507,13 +493,11 @@ public class Server {
                      		outToClient.writeBytes(strz + "\n");
                      	}
                      	returnz="stopz";
-                   }
                      	break;
                      	
             
                 
                    case "eventdetails":
-                   {
                 	   System.out.println("Received request to get event details with details: " + input);
                 	   Vector<String> detailz = new Vector<String>();
                      	try {
@@ -528,11 +512,9 @@ public class Server {
                      		outToClient.writeBytes(strz + "\n");
                      	}
                      	returnz="stopz";
-                   }
                      	break;
 
                    case "getcommentusers":
-                   {
                 	   System.out.println("Received request to get user comments on event with details: " + input);
                 	   Vector<String> users = new Vector<String>();
                      	try {
@@ -547,19 +529,15 @@ public class Server {
                      		outToClient.writeBytes(strz + "\n");
                      	}
                      	returnz="stopz";
-                   }
                      	break;
                      	
                      	
                    case "addcomment":
-                   {
                 	   System.out.println("Received request to add comment on event with details: " + input);
             		   returnz=addcomment(input, conn);
-                   }
                	break;  	
 
                    case "eventlist":
-                   {
                 	   System.out.println("Received request to get list of events of user with details: " + input);
                       	Vector<String> eventlist = new Vector<String>();
                       	try {
@@ -577,11 +555,10 @@ public class Server {
           		           	}
                 
                       	returnz="stopz"; //here this signals the client to stop reading because we dont know how long the list of friends is
-                   }
+
                       	break;
 
                    case "createevent":
-                   {
                 	   try{
                 		   System.out.println("Received request to create event with details: " + input);
                 		   returnz=createevent(input, conn);
@@ -590,14 +567,12 @@ public class Server {
   	           		     System.out.println("Exiting...");
    						e.printStackTrace();
    					}
-                   }
                 	   break;
                 	   
                 	   
                 	   
                 	   
                    case "getinviteduser":
-                   {
                 	   Vector<String> eventlistuser = new Vector<String>();
                       	try {
    						eventlistuser=getInvitedUser(input, conn);
@@ -610,12 +585,11 @@ public class Server {
           		           	}
                 
                       	returnz="stopz"; //here this signals the client to stop reading because we dont know how long the list of events is
-                   }
+
                       	break;
 
                       	
                    case "getattendinguser":
-                   {
                 	   Vector<String> eventlistuserA = new Vector<String>();
                       	try {
    						eventlistuserA=getAttendingUser(input, conn);
@@ -628,7 +602,7 @@ public class Server {
           		           	}
                 
                       	returnz="stopz"; //here this signals the client to stop reading because we dont know how long the list of events is
-                   }
+
                       	break;
                 	   
                 	   
@@ -882,13 +856,6 @@ public class Server {
 			
 			   PreparedStatement stmt;
 		 	   stmt=conn.prepareStatement("delete from event where name=?");
-		 	  stmt.setString(1, data.get(0));
-		 	  
-		 	
-		 	 stmt.execute();
-		 	 
-//		 	PreparedStatement stmt;
-		 	   stmt=conn.prepareStatement("delete from event where eventname=?");
 		 	  stmt.setString(1, data.get(0));
 		 	  
 		 	

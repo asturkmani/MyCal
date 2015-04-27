@@ -401,8 +401,6 @@ public static void addComment (String username, String eventname, String comment
 	  outToServer.writeBytes(comment + "\n");
 	  outToServer.writeBytes(username + "\n");	
 	  outToServer.writeBytes(eventname + "\n\n");
-	  
-	  
 	 // clientSocket.close();
 	  inFromServer.readLine();
 	  clientSocket.close();
