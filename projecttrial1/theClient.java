@@ -455,6 +455,28 @@ public static String updateuser (String username, String firstName, String lastN
 	
 }
 
+public static void modifyRating(String eventname, String rating, String rating_count) throws Exception {
+	
+	Socket clientSocket = new Socket("localhost", 6780);
+	
+	  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+	  
+	  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	  
+	  // output to server details. send friends
+	  outToServer.writeBytes("modifyrating\n");
+	  outToServer.writeBytes(rating + "\n");
+	  outToServer.writeBytes(rating_count + "\n");
+	  outToServer.writeBytes(eventname + "\n");
+	 
+	  outToServer.writeBytes("\n");
+//	  clientSocket.close();
+	  
+	  inFromServer.readLine();
+	  clientSocket.close();
+	  
+}
+
 public static void modifyEvent(String eventname, String username, Vector<String> friends, String datetime, String location) throws Exception {
 	
 	Socket clientSocket = new Socket("localhost", 6780);
