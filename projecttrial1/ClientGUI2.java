@@ -12,9 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.ListSelectionModel;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -24,9 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -168,14 +164,9 @@ public class ClientGUI2 {
 		scrollPane.setBounds(12, 98, 302, 226);
 		ModifyEvent.add(scrollPane);
 		
-		JPanel CommentsPanel = new JPanel(new GridLayout(0,1));
-//		CommentsPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+		JPanel CommentsPanel = new JPanel(new GridLayout(0,2));
 		scrollPane.setViewportView(CommentsPanel);
 		CommentsPanel.setBackground(Color.WHITE);
-		CommentsPanel.setPreferredSize(new Dimension(50,30));
-//		final int maxGap = 20;
-//		JComboBox horGapComboBox;
-//	    JComboBox verGapComboBox;
 		
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(null);
@@ -613,8 +604,6 @@ public class ClientGUI2 {
 		goBack.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
-				CommentsPanel.removeAll();
 				ModifyEvent.setVisible(false);
 				HomePanel.setVisible(true);
 			}
@@ -854,12 +843,6 @@ public class ClientGUI2 {
 								Vector<String> comments = new Vector<String>();
 								try {
 									eventdetailz=theClient.eventDetails(temp1[2]);
-								} catch (Exception e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-								
-								try {
 									comments = theClient.getComment(temp1[2]);
 									System.out.println("get comment for: " + temp1[2]);
 									System.out.println("Comments are: " + comments);
@@ -867,30 +850,21 @@ public class ClientGUI2 {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
-
 								
 								//fill in comments
-								CommentsPanel.removeAll();
 								for (int i=0;i<comments.size();i++){
 									if(i%2 == 0){
-
 										JLabel temp = new JLabel();
 										temp.setText(comments.get(i));
 										System.out.println("comments:" + comments.get(i));
-//										temp.setEditable(false);
-										temp.setVisible(true);
-										temp.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+										temp.setVisible(false);
 										CommentsPanel.add(temp);
 									}
 									else{
-
-									    
 										JTextArea temp = new JTextArea();
 										temp.setText(comments.get(i));
 										System.out.println("users" +comments.get(i));
 										temp.setEditable(false);
-										temp.setVisible(true);
-										temp.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 										CommentsPanel.add(temp);
 									}
 								}
@@ -935,29 +909,21 @@ public class ClientGUI2 {
 									Vector<String> comments = new Vector<String>();
 									try {
 										eventdetailz=theClient.eventDetails(tempString2);
-										
-									} catch (Exception e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
-									
-									try {
 										comments = theClient.getComment(tempString2);
+										System.out.println("get comment for: " + tempString2);
+										System.out.println("Comments are: " + comments);
 									} catch (Exception e1) {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
-									System.out.println("get comment for: " + tempString2);
-									System.out.println("Comments are: " + comments);
 									
-									CommentsPanel.removeAll();
 									//fill in comments
 									for (int i=0;i<comments.size();i++){
 										if(i%2 == 0){
 											JLabel temp = new JLabel();
 											temp.setText(comments.get(i));
 											System.out.println("comments:" + comments.get(i));
-											temp.setVisible(true);
+											temp.setVisible(false);
 											CommentsPanel.add(temp);
 										}
 										else{
@@ -965,7 +931,6 @@ public class ClientGUI2 {
 											temp.setText(comments.get(i));
 											System.out.println("users" +comments.get(i));
 											temp.setEditable(false);
-											temp.setVisible(true);
 											CommentsPanel.add(temp);
 										}
 									}
@@ -2133,35 +2098,7 @@ public class ClientGUI2 {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
-				Vector<String> comments = new Vector<String>();
-				try {
-					comments = theClient.getComment(eventNameDispla.getText());
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				CommentsPanel.removeAll();
-				for (int i=0;i<comments.size();i++){
-					// if it is a user
-					if( (i%2) == 0){
-					
-						//else it is the users comment
-						JTextArea comment = new JTextArea();
-						comment.setVisible(true);
-					
-						comment.setText(comments.get(i)+": "+ comments.get(i+1));
-						CommentsPanel.add(comment);
-						
-					}
-				}
-				
-				CommentsPanel.revalidate();
-				CommentsPanel.repaint();
 			}
-			
-			
 		});
 		sendComment.setIcon(new ImageIcon("/Users/asturkmani/Documents/workspace/MyCal/src/send.png"));
 		sendComment.setBounds(267, 326, 47, 45);
@@ -2283,29 +2220,6 @@ public class ClientGUI2 {
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(temp1[2]);
 								
-								Vector<String> comments = new Vector<String>();
-								
-								try {
-									comments = theClient.getComment(temp1[2]);
-								} catch (Exception e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-								
-								for (int i=0;i<comments.size();i++){
-									// if it is a user
-									if( (i%2) == 0){
-									
-										//else it is the users comment
-										JTextArea comment = new JTextArea();
-										comment.setVisible(true);
-									
-										comment.setText(comments.get(i)+": "+ comments.get(i+1));
-										CommentsPanel.add(comment);
-										
-									}
-								}
-								
 								// NEED TO LOAD COMMENTS BEFORE SETTING THIS TO VISIBLE:
 								
 								ModifyEvent.setVisible(true);
@@ -2317,7 +2231,7 @@ public class ClientGUI2 {
 			                    (int)(buttonsPanel.getPreferredSize().getHeight()+43)));
 						vectorOfButtons.add(button); //add the new button to the vector of buttons
 				        buttonsPanel.add(button, constraint); // add the button to the homepanel
-				    	}
+				    }
 				    	// now add events you are attending
 				    	if (i<attendingEvents.size()){
 				    		System.out.println("Checking if user is attending any events");
@@ -2350,7 +2264,6 @@ public class ClientGUI2 {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
-									System.out.println("details obtained are: " +eventdetailz);
 									eventLocationDispla.setText(eventdetailz.get(1));
 									eventTimeDispla.setText(eventdetailz.get(0));
 									eventNameDispla.setText(tempString2);
@@ -2359,33 +2272,6 @@ public class ClientGUI2 {
 									eventLocationModify.setVisible(false); 
 									modifyEvent.setVisible(false);
 									deleteEvent.setVisible(false);
-									
-									
-									Vector<String> comments = new Vector<String>();
-									
-									try {
-										comments = theClient.getComment(tempString2);
-									} catch (Exception e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
-									CommentsPanel.removeAll();
-									for (int i=0;i<comments.size();i++){
-										// if it is a user
-										if( (i%2) == 0){
-											JLabel commenter = new JLabel();
-											commenter.setText(comments.get(i));
-											commenter.setVisible(true);
-											CommentsPanel.add(commenter);
-										}
-										else{
-											//else it is the users comment
-											JTextArea comment = new JTextArea();
-											comment.setVisible(true);
-											comment.setText(comments.get(i));
-											
-										}
-									}
 									
 									ModifyEvent.setVisible(true);
 									HomePanel.setVisible(false);
