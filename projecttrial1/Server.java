@@ -12,98 +12,71 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Vector;
 
-//import SendEmail;
-
 public class Server {
 
+	Boolean sentTodaysEmail = false;
     private int port = 6780;
     private ServerSocket serverSocket;
 
     public Server() throws ClassNotFoundException {}
 
-    public void acceptConnections() {
+    public void acceptConnections() throws IOException {
         try
         {
-        	
-
-        	File file = new File("ServerLog.txt");
-          	 
-			// if file doesnt exists, then create it
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-
             System.out.println(".................................................................." );
             System.out.println("Opened Server Socket" );
-			bw.close();
+
 			
             serverSocket = new ServerSocket(port);
 //            serverSocket.setSoTimeout(6000);
         }
         catch (IOException e)
         {
-        	try {
-				File file = new File("ServerLog.txt");
-				 
-				// if file doesnt exists, then create it
-				if (!file.exists()) {
-					file.createNewFile();
-				}
-				FileWriter fw = new FileWriter(file.getAbsoluteFile());
-				BufferedWriter bw = new BufferedWriter(fw);
 
-				System.out.println("ServerSocket instantiation failure" );
-				bw.close();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			
             System.err.println("ServerSocket instantiation failure");
             e.printStackTrace();
             System.exit(0);
         }
+        PrintStream out;
+		try {
+			File file = new File("ServerLog.txt");
+         	 
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			out = new PrintStream(new FileOutputStream("ServerLog.txt"));
+			System.setOut(out);
+	    	
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 
         while (true) {
             try
             {
             	
-            	// FIX EMAIL ISSUES:::::::
-            	
-            	
+  	
                 String timeStamp = new SimpleDateFormat("HH_mm_ss").format(Calendar.getInstance().getTime());
 //                System.out.println(timeStamp);
                 String[] temp = timeStamp.split("_");
                 // check if the time is around between 6-7 am
-                if(Integer.parseInt(temp[0])==6) {
-                	try {
-        				File file = new File("ServerLog.txt");
-        				 
-        				// if file doesnt exists, then create it
-        				if (!file.exists()) {
-        					file.createNewFile();
-        				}
-        				FileWriter fw = new FileWriter(file.getAbsoluteFile());
-        				BufferedWriter bw = new BufferedWriter(fw);
-
-        				System.out.println("Sending email notification to clients" );
-        				bw.close();
-        			} catch (IOException e1) {
-        				// TODO Auto-generated catch block
-        				e1.printStackTrace();
-        			}
+                if(Integer.parseInt(temp[0])==07) {
                 	
-                	SendEmail.sendGMail(null);
+                	//if it is 7 am, and you haven't sent todays email, send it
+                	if(!sentTodaysEmail){
+	                	sentTodaysEmail = true; //mark that you have sent todays email
+	        				System.out.println("Sending email notification to clients" );
+	
+	        				String[] data = {"nurturkmani5@gmail.com","Test","EMAIL BODY"};
+	                	SendEmail.sendGMail(data);
+                	}
+                }else{
+                	// if it is not 7 am, reset boolean to false so next time 7 am comes, you send the email
+                	sentTodaysEmail=false;
                 }
-                // timeout every 15 minutes so we can send an update email to the subscribers with a summary of upcoming events.
-                serverSocket.setSoTimeout(900000);
-            	
 
-                
-                
                 Socket newConnection = serverSocket.accept();
                 File file = new File("ServerLog.txt");
            	 
@@ -111,11 +84,11 @@ public class Server {
     			if (!file.exists()) {
     				file.createNewFile();
     			}
-    			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-                BufferedWriter bw = new BufferedWriter(fw);
+    			  
+                  
 
                 System.out.println("accepted connection from client, opening new thread..." );
-    			bw.close();
+
 				//now each client gets a threads that deals with its connection and requests //
                 ServerThread st = new ServerThread(newConnection);
                 new Thread(st).start();
@@ -144,12 +117,12 @@ public class Server {
 				if (!file.exists()) {
 					file.createNewFile();
 				}
-				FileWriter fw = new FileWriter(file.getAbsoluteFile());
-				BufferedWriter bw = new BufferedWriter(fw);
+				  
+				  
 
 				System.out.println("Unable to write to JDBC Server" );
 				System.out.println("Server closing...");
-				bw.close();
+				  
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -165,11 +138,11 @@ public class Server {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
+			  
+			  
 
 			System.out.println("Accepting client connections" );
-			bw.close();
+			  
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -213,22 +186,22 @@ public class Server {
        			if (!file.exists()) {
        				file.createNewFile();
        			}
-       			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-                   BufferedWriter bw = new BufferedWriter(fw);
+       			  
+                     
                    
                    System.out.println("Received data from server, client requested to: " + verb);
                    System.out.println("........................................................");
                    
-                   bw.close();
+                     
                    Vector<String> input = new Vector<String>(); //new vector to store the data (e.g. username password email first name)
                    											//the content depends on the operation (e.g. vector for login will be of size 2)
                    
                    
                    String clientSentence = new String(); //create a string to take input
                	
-                   bw = new BufferedWriter(fw);
+                     
                    System.out.println("Reading input from client..");
-                   bw.close();
+                     
                    clientSentence = inFromClient.readLine(); //read first time (in the case of login this would be username)
                    											//also happens to be username for the signup case
                    											//in future milestone we would have different cases
@@ -237,9 +210,9 @@ public class Server {
                    									//notice in the client side the last piece of data is sent with
                    									//two line breaks, this makes the last readLine an empty string
                    {
-                	   bw = new BufferedWriter(fw);
+                	     
                    System.out.println("........................................................");
-                   bw.close();
+                     
                        
                    	input.add(clientSentence);
                    	clientSentence = inFromClient.readLine(); //at the last iteration this readLine would be an empty string
@@ -258,18 +231,18 @@ public class Server {
            		}
            		
            		try {
-           		 bw = new BufferedWriter(fw);
+           		   
            			System.out.println("Creating connection with local database on jdbc:mysql://localhost:3306/mydb");
-           			bw.close();
+           			  
            			conn = DriverManager
            			.getConnection("jdbc:mysql://localhost:3306/mydb","root",""); //mydb is the name of our database
            		
            		}
            		 catch (SQLException e) {
-           			 bw = new BufferedWriter(fw);
+           			   
             			System.out.println("Couldn't open connection with local database on jdbc:mysql://localhost:3306/mydb");
             			System.out.println("Exiting...");
-            			bw.close();
+            			  
             			e.printStackTrace();
             			return;
             		}
@@ -284,17 +257,17 @@ public class Server {
                    case "login": 	//login operation, call the login function
                    	
                 	   try {
-                		   bw = new BufferedWriter(fw);
+                		     
                 		   System.out.println("Received request to log in user: ");
                 		   returnz=login(input, conn);
                 		   System.out.println("log in: " + returnz);
-                		   bw.close();
+                		     
                 	   }
                 	   catch (SQLException e){
-                		   bw = new BufferedWriter(fw);
+                		     
                 		   System.out.println("Log in failed, sql exception thrown");
                 		   System.out.println("Exiting...");
-                		   bw.close();
+                		     
                 		   e.printStackTrace();
                 	   }
                    break;
@@ -303,44 +276,44 @@ public class Server {
                    case "signup": 
                 	   
                 	   try {
-                		   bw = new BufferedWriter(fw);
+                		     
                 		   System.out.println("Received request to sign up user: ");
-                		   bw.close();
+                		     
                 	   returnz=signup(input, conn);	//signup operation, call the signup function
                 	   }
                 	   catch (SQLException e){
-                		   bw = new BufferedWriter(fw);
+                		     
                 		   System.out.println("Sign up failed, sql exception thrown!");
                 		   System.out.println("Exiting...");
-                		   bw.close();
+                		     
                 		   e.printStackTrace();
                 	   }
                    break;
                    case "updateuser": 
                 	   
                 	   try {
-                		   bw = new BufferedWriter(fw);
+                		     
                 		   System.out.println("Received request to update user details");
-                		   bw.close();
+                		     
                 	   returnz=updateuser(input, conn);	//signup operation, call the signup function
                 	   }
                 	   catch (SQLException e){
-                		   bw = new BufferedWriter(fw);
+                		     
                 		   System.out.println("Update failed, sql exception thrown!");
                 		   System.out.println("Exiting...");
-                		   bw.close();
+                		     
                 		   e.printStackTrace();
                 	   }
                    break;
                    case "addfriend":{
-                	   bw = new BufferedWriter(fw);
+                	     
                 	   System.out.println("Received request to add friend");
-                	   bw.close();
+                	     
                 		   returnz=addfriend(input, conn);
                 		   if(returnz.equals("success") ){
-                			   bw = new BufferedWriter(fw);
+                			     
                 			   System.out.println("Adding friend successful");
-                			   bw.close();
+                			     
                 		   }
                 		   else{
                 			   System.out.println("Adding friend unsuccessful");
@@ -378,6 +351,7 @@ public class Server {
              		     System.out.println("Exiting...");
 						e1.printStackTrace();
 					}
+                	   break;
 
                    case "deletefriend":
                    {
@@ -635,15 +609,15 @@ public class Server {
     			if (!file.exists()) {
     				file.createNewFile();
     			}
-    			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-                BufferedWriter bw = new BufferedWriter(fw);
+    			  
+                  
                 System.out.println("closing socket");
                 System.out.println(".........................................");
                 System.out.println(".........................................");
                 inFromClient.close();
                 outToClient.close();
                 socket.close();
-                bw.close();
+                  
             } 
             catch (IOException e)
             {
@@ -655,23 +629,10 @@ public class Server {
     // Create functions here.
    public static String login(Vector<String> data, Connection conn) throws SQLException {
 	   
-	   File file = new File("ServerLog.txt");
-     	 
-		// if file doesnt exists, then create it
-		try {
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-      BufferedWriter bw = new BufferedWriter(fw);
+	     
       
    System.out.println("Executing log in server functions: ");
-   
-   bw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 	   
 	   PreparedStatement stmt;	//using prepared statement to protect from SQL injection
 	   ResultSet rs;
@@ -850,16 +811,25 @@ public class Server {
  }
  
  public static String deleteevent(Vector<String> data, Connection conn) throws SQLException{
-	 
-	 
-			
-			
-			   PreparedStatement stmt;
+
+	 PreparedStatement stmt;
+	 System.out.println("Deleting event: " + data.get(0));
+ 	 
+ 	 stmt=conn.prepareStatement("delete from invited where eventname=?");
+ 	stmt.setString(1, data.get(0));
+ 	
+ 	stmt.execute();
+ 	
+ 	stmt=conn.prepareStatement("delete from comments where event=?");
+ 	stmt.setString(1, data.get(0));
+ 	
+ 	stmt.execute();
+			  
 		 	   stmt=conn.prepareStatement("delete from event where name=?");
 		 	  stmt.setString(1, data.get(0));
-		 	  
-		 	
+
 		 	 stmt.execute();
+
 
 			return "success";
 			
@@ -1161,7 +1131,9 @@ public static String modifyrating(Vector<String> data, Connection conn) throws S
  }
  
  
- 
+ public static void sendEmail(String subject, String body, String email){
+	 
+ }
  
  
  

@@ -18,7 +18,7 @@ public static void sendGMail (String [] args)
      String from = "asturkmani@gmail.com";
      String pass ="joumana!?!";
     // Recipient's email ID needs to be mentioned.
-   String to = "ast11@mail.aub.edu";
+   String to = args[0];
 
    String host = "smtp.gmail.com";
 
@@ -47,10 +47,10 @@ public static void sendGMail (String [] args)
                                new InternetAddress(to));
 
       // Set Subject: header field
-      message.setSubject("This is the Subject Line!");
+      message.setSubject(args[1]);
 
       // Now set the actual message
-      message.setText("This is actual message");
+      message.setText(args[2]);
 
       // Send message
       Transport transport = session.getTransport("smtp");
