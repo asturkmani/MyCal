@@ -43,6 +43,7 @@ import javax.swing.JSeparator;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.IOException;
 
 import javax.swing.ScrollPaneConstants;
 
@@ -80,6 +81,10 @@ public class ClientGUI2 {
 	private JTextField FName_modify;
 	private JTextField LName_modify;
 	private JPasswordField password_modify_profile;
+	private JTextField avg_rating;
+	private float rating = (float) 0.0;
+	private Integer rating_count = 0;
+	private float tempRat = 0;
 
 
 	/**
@@ -591,7 +596,7 @@ public class ClientGUI2 {
 		ModifyEvent.add(eventTimeDisplay);
 		
 		JLabel eventLocationDispla = new JLabel("");
-		eventLocationDispla.setBounds(127, 28, 173, 16);
+		eventLocationDispla.setBounds(127, 28, 135, 16);
 		ModifyEvent.add(eventLocationDispla);
 		
 		JLabel eventTimeDispla = new JLabel("");
@@ -599,7 +604,7 @@ public class ClientGUI2 {
 		ModifyEvent.add(eventTimeDispla);
 		
 		JLabel eventNameDispla = new JLabel("Event name");
-		eventNameDispla.setBounds(53, 6, 409, 35);
+		eventNameDispla.setBounds(48, 6, 223, 35);
 		ModifyEvent.add(eventNameDispla);
 		
 		JLabel goBack = new JLabel("");
@@ -887,6 +892,9 @@ public class ClientGUI2 {
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(temp1[2]);
+								rating = Float.parseFloat(eventdetailz.get(2));
+								rating_count = Integer.parseInt(eventdetailz.get(3));
+								
 								ModifyEvent.setVisible(true);
 								HomePanel.setVisible(false);
 							}
@@ -961,6 +969,8 @@ public class ClientGUI2 {
 									eventLocationDispla.setText(eventdetailz.get(1));
 									eventTimeDispla.setText(eventdetailz.get(0));
 									eventNameDispla.setText(tempString2);
+									rating = Float.parseFloat(eventdetailz.get(2));
+									rating_count = Integer.parseInt(eventdetailz.get(3));
                                     
                                     calendarCombo.setVisible(false);
                                     eventLocationModify.setVisible(false);
@@ -1160,6 +1170,8 @@ public class ClientGUI2 {
 											eventLocationDispla.setText(eventdetailz.get(1));
 											eventTimeDispla.setText(eventdetailz.get(0));
 											eventNameDispla.setText(temp1[2]);
+											rating = Float.parseFloat(eventdetailz.get(2));
+											rating_count = Integer.parseInt(eventdetailz.get(3));
 											ModifyEvent.setVisible(true);
 											HomePanel.setVisible(false);
 
@@ -1167,6 +1179,8 @@ public class ClientGUI2 {
 											eventLocationDispla.setText(eventdetailz.get(1));
 											eventTimeDispla.setText(eventdetailz.get(0));
 											eventNameDispla.setText(temp1[2]);
+											rating = Float.parseFloat(eventdetailz.get(2));
+											rating_count = Integer.parseInt(eventdetailz.get(3));
 											ModifyEvent.setVisible(true);
 											HomePanel.setVisible(false);
 										}
@@ -1240,6 +1254,8 @@ public class ClientGUI2 {
 												eventLocationDispla.setText(eventdetailz.get(1));
 												eventTimeDispla.setText(eventdetailz.get(0));
 												eventNameDispla.setText(tempString2);
+												rating = Float.parseFloat(eventdetailz.get(2));
+												rating_count = Integer.parseInt(eventdetailz.get(3));
 												ModifyEvent.setVisible(true);
 												HomePanel.setVisible(false);
 
@@ -1247,7 +1263,9 @@ public class ClientGUI2 {
 												eventLocationDispla.setText(eventdetailz.get(1));
 												eventTimeDispla.setText(eventdetailz.get(0));
 												eventNameDispla.setText(tempString2);
-			                                    
+												rating = Float.parseFloat(eventdetailz.get(2));
+												rating_count = Integer.parseInt(eventdetailz.get(3));
+												
 			                                    calendarCombo.setVisible(false);
 			                                    eventLocationModify.setVisible(false);
 			                                    modifyEvent.setVisible(false);
@@ -1403,12 +1421,16 @@ public class ClientGUI2 {
 											eventLocationDispla.setText(eventdetailz.get(1));
 											eventTimeDispla.setText(eventdetailz.get(0));
 											eventNameDispla.setText(temp1[2]);
+											rating = Float.parseFloat(eventdetailz.get(2));
+											rating_count = Integer.parseInt(eventdetailz.get(3));
 											ModifyEvent.setVisible(true);
 											HomePanel.setVisible(false);
 
 											eventLocationDispla.setText(eventdetailz.get(1));
 											eventTimeDispla.setText(eventdetailz.get(0));
 											eventNameDispla.setText(temp1[2]);
+											rating = Float.parseFloat(eventdetailz.get(2));
+											rating_count = Integer.parseInt(eventdetailz.get(3));
 											ModifyEvent.setVisible(true);
 											HomePanel.setVisible(false);
 										}
@@ -1482,13 +1504,17 @@ public class ClientGUI2 {
 												eventLocationDispla.setText(eventdetailz.get(1));
 												eventTimeDispla.setText(eventdetailz.get(0));
 												eventNameDispla.setText(tempString2);
+												rating = Float.parseFloat(eventdetailz.get(2));
+												rating_count = Integer.parseInt(eventdetailz.get(3));
 												ModifyEvent.setVisible(true);
 												HomePanel.setVisible(false);
 
 												eventLocationDispla.setText(eventdetailz.get(1));
 												eventTimeDispla.setText(eventdetailz.get(0));
 												eventNameDispla.setText(tempString2);
-			                                    
+												rating = Float.parseFloat(eventdetailz.get(2));
+												rating_count = Integer.parseInt(eventdetailz.get(3));
+												
 			                                    calendarCombo.setVisible(false);
 			                                    eventLocationModify.setVisible(false);
 			                                    modifyEvent.setVisible(false);
@@ -1897,12 +1923,16 @@ public class ClientGUI2 {
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(temp1[2]);
+								rating = Float.parseFloat(eventdetailz.get(2));
+								rating_count = Integer.parseInt(eventdetailz.get(3));
 								ModifyEvent.setVisible(true);
 								HomePanel.setVisible(false);
 
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(temp1[2]);
+								rating = Float.parseFloat(eventdetailz.get(2));
+								rating_count = Integer.parseInt(eventdetailz.get(3));
 								ModifyEvent.setVisible(true);
 								HomePanel.setVisible(false);
 							}
@@ -1976,12 +2006,16 @@ public class ClientGUI2 {
 									eventLocationDispla.setText(eventdetailz.get(1));
 									eventTimeDispla.setText(eventdetailz.get(0));
 									eventNameDispla.setText(tempString2);
+									rating = Float.parseFloat(eventdetailz.get(2));
+									rating_count = Integer.parseInt(eventdetailz.get(3));
 									ModifyEvent.setVisible(true);
 									HomePanel.setVisible(false);
 
 									eventLocationDispla.setText(eventdetailz.get(1));
 									eventTimeDispla.setText(eventdetailz.get(0));
 									eventNameDispla.setText(tempString2);
+									rating = Float.parseFloat(eventdetailz.get(2));
+									rating_count = Integer.parseInt(eventdetailz.get(3));
                                     
                                     calendarCombo.setVisible(false);
                                     eventLocationModify.setVisible(false);
@@ -2132,12 +2166,17 @@ public class ClientGUI2 {
 							eventLocationDispla.setText(eventdetailz.get(1));
 							eventTimeDispla.setText(eventdetailz.get(0));
 							eventNameDispla.setText(temp1[2]);
+							rating = Float.parseFloat(eventdetailz.get(2));
+							rating_count = Integer.parseInt(eventdetailz.get(3));
+							
 							ModifyEvent.setVisible(true);
 							HomePanel.setVisible(false);
 
 							eventLocationDispla.setText(eventdetailz.get(1));
 							eventTimeDispla.setText(eventdetailz.get(0));
 							eventNameDispla.setText(temp1[2]);
+							rating = Float.parseFloat(eventdetailz.get(2));
+							rating_count = Integer.parseInt(eventdetailz.get(3));
 							
 							ModifyEvent.setVisible(true);
 							HomePanel.setVisible(false);
@@ -2212,13 +2251,16 @@ public class ClientGUI2 {
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(tempString2);
+								rating = Float.parseFloat(eventdetailz.get(2));
+								rating_count = Integer.parseInt(eventdetailz.get(3));
 								ModifyEvent.setVisible(true);
 								HomePanel.setVisible(false);
 
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(tempString2);
-								
+								rating = Float.parseFloat(eventdetailz.get(2));
+								rating_count = Integer.parseInt(eventdetailz.get(3));
 								
 								calendarCombo.setVisible(false);
 								eventLocationModify.setVisible(false); 
@@ -2430,6 +2472,84 @@ public class ClientGUI2 {
 		sendComment.setBounds(267, 326, 47, 45);
 		ModifyEvent.add(sendComment);
 		
+		JLabel Rating_Label = new JLabel("Rating");
+		Rating_Label.setBounds(267, 6, 47, 16);
+		ModifyEvent.add(Rating_Label);
+		
+		
+		avg_rating = new JTextField();
+		avg_rating.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				avg_rating.setBackground(Color.WHITE);
+				avg_rating.setEditable(true);
+			}
+		});
+		avg_rating.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					tempRat = (rating*rating_count + Float.parseFloat(avg_rating.getText()))/(rating_count + 1);
+					theClient.modifyRating(eventNameDispla.getText(), Float.toString(tempRat), Integer.toString(rating_count+1));
+					System.out.println("ratings: on gui" + Float.toString(tempRat));
+					avg_rating.setText(Float.toString(tempRat));
+					avg_rating.repaint();
+					avg_rating.revalidate();
+					avg_rating.setEditable(false);
+					
+//					avg_rating.setText(Float.toString(tempRat));
+					rating = tempRat;
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+//		avg_rating.setEditable(false);
+		avg_rating.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				avg_rating.setBackground(Color.WHITE);
+				avg_rating.setEditable(true);
+				
+				Vector<String> eventDets  = new Vector<String>();
+				try {
+					eventDets = theClient.eventDetails(eventNameDispla.getText());
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				avg_rating.setText(eventDets.get(2));
+				rating = Float.parseFloat(eventDets.get(2));
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+//				avg_rating.setText(Float.toString(tempRat));
+//				avg_rating.setEditable(false);
+				Vector<String> eventDets  = new Vector<String>();
+				try {
+					eventDets = theClient.eventDetails(eventNameDispla.getText());
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				avg_rating.setText(eventDets.get(2));
+				rating = Float.parseFloat(eventDets.get(2));
+				
+			}
+		});
+//		avg_rating.setText(Float.toString(rating));
+		avg_rating.setBackground(new Color(250, 248, 245));
+		avg_rating.setBounds(255, 22, 35, 28);
+		ModifyEvent.add(avg_rating);
+		avg_rating.setColumns(10);
+		
+		JLabel total_rating = new JLabel("/5");
+		total_rating.setBounds(291, 22, 23, 28);
+		ModifyEvent.add(total_rating);
+		
 		
 		//================================================================================
 		// Log In Panel Actions
@@ -2580,6 +2700,8 @@ public class ClientGUI2 {
 								eventLocationDispla.setText(eventdetailz.get(1));
 								eventTimeDispla.setText(eventdetailz.get(0));
 								eventNameDispla.setText(temp1[2]);
+								rating = Float.parseFloat(eventdetailz.get(2));
+								rating_count = Integer.parseInt(eventdetailz.get(3));
 								ModifyEvent.setVisible(true);
 								HomePanel.setVisible(false);
 							}
@@ -2656,6 +2778,8 @@ public class ClientGUI2 {
 									eventLocationDispla.setText(eventdetailz.get(1));
 									eventTimeDispla.setText(eventdetailz.get(0));
 									eventNameDispla.setText(tempString2);
+									rating = Float.parseFloat(eventdetailz.get(2));
+									rating_count = Integer.parseInt(eventdetailz.get(3));
 									ModifyEvent.setVisible(true);
 									HomePanel.setVisible(false);
 								}
