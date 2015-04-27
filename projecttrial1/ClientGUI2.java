@@ -957,16 +957,21 @@ public class ClientGUI2 {
 					        }
 				        
 				    }
-
+				    buttonsPanel.repaint();
+				    buttonsPanel.revalidate();
+				    HomePanel.repaint();
+				    HomePanel.revalidate();
+				    
+				    
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
-				buttonsPanel.revalidate();
-		        buttonsPanel.repaint();
-			    HomePanel.revalidate();
+				buttonsPanel.repaint();
+			    buttonsPanel.revalidate();
 			    HomePanel.repaint();
+			    HomePanel.revalidate();
 			}
 			
 		});
@@ -1158,8 +1163,10 @@ public class ClientGUI2 {
 								        }
 							        
 							    }
-							    HomePanel.revalidate();
+							    buttonsPanel.repaint();
+							    buttonsPanel.revalidate();
 							    HomePanel.repaint();
+							    HomePanel.revalidate();
 							    
 									
 							} catch (Exception e1) {
@@ -1323,8 +1330,10 @@ public class ClientGUI2 {
 								        buttonsPanel.add(button, constraint); // add the button to the homepanel
 
 								        }
-							    	HomePanel.revalidate();
+							    	buttonsPanel.repaint();
+								    buttonsPanel.revalidate();
 								    HomePanel.repaint();
+								    HomePanel.revalidate();
 							        
 							    }
 							} catch (Exception e1) {
@@ -1334,10 +1343,10 @@ public class ClientGUI2 {
 						}
 					});
 					
-					buttonsPanel.revalidate();
-			        buttonsPanel.repaint();
-				    HomePanel.revalidate();
-				    HomePanel.repaint();				    
+					buttonsPanel.repaint();
+				    buttonsPanel.revalidate();
+				    HomePanel.repaint();
+				    HomePanel.revalidate();			    
 					Notifications.add(deleteNoti);
 
 					//place the notifications in the JPanel in a scrollablePane and put them in the popup
@@ -1716,7 +1725,9 @@ public class ClientGUI2 {
 									
 									Vector<String> eventdetailz = new Vector<String>();
 									try {
-										eventdetailz=theClient.eventDetails(tempString2);
+										System.out.println("Searching for event called: " + tempString2);
+										eventdetailz=theClient.getEventDetails(tempString2);
+										System.out.println("Received: " + eventdetailz);
 									} catch (Exception e1) {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();

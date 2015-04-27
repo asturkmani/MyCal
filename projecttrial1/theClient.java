@@ -347,7 +347,7 @@ public static Vector<String> eventDetails(String eventname) throws Exception{
 	  
   }
   
-
+  	clientSocket.close();
 	  return detailz;
 	
 }
