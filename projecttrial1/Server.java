@@ -981,7 +981,7 @@ public class Server {
 	   
 	   try {
 		
-		   stmt1=conn.prepareStatement("insert into comments values (?,?,?)");
+		   stmt1=conn.prepareStatement("insert into comments values (?,?,?,?)");
 		   stmt1.setString(1, data.get(0));
 		   stmt1.setString(2, data.get(1));
 		   stmt1.setString(3, data.get(2)); 
