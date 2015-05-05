@@ -15,8 +15,8 @@ public class SendEmail
 public static void sendGMail (String [] args)
 {    
     // Sender's email ID needs to be mentioned
-     String from = "asturkmani@gmail.com";
-     String pass ="joumana!?!";
+     String from = "****";
+     String pass ="******";
     // Recipient's email ID needs to be mentioned.
    String to = args[0];
 

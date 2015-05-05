@@ -8,8 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Vector;
 
 public class Server {
@@ -62,15 +64,68 @@ public class Server {
 //                System.out.println(timeStamp);
                 String[] temp = timeStamp.split("_");
                 // check if the time is around between 6-7 am
-                if(Integer.parseInt(temp[0])==07) {
-                	
+                if(Integer.parseInt(temp[0])==11) {
+                	   Connection conn = null; //create a connection instance
+                       
+                  		try {	
+                  			Class.forName("com.mysql.jdbc.Driver");			//regular JDBC stuff
+                  		} catch (ClassNotFoundException e) {
+                  			e.printStackTrace();
+                  			return;
+                  		}
+                  		
+                  		try {
+                  		   
+                  			System.out.println("Creating connection with local database on jdbc:mysql://localhost:3306/mydb");
+                  			  
+                  			conn = DriverManager
+                  			.getConnection("jdbc:mysql://localhost:3306/mydb","root",""); //mydb is the name of our database
+                  		
+                  		}
+                  		 catch (SQLException e) {
+                  			   
+                   			System.out.println("Couldn't open connection with local database on jdbc:mysql://localhost:3306/mydb");
+                   			System.out.println("Exiting...");
+                   			  
+                   			e.printStackTrace();
+                   			return;
+                   		}
                 	//if it is 7 am, and you haven't sent todays email, send it
                 	if(!sentTodaysEmail){
 	                	sentTodaysEmail = true; //mark that you have sent todays email
+
+	                	/////create a new vector to add the data (data being fnames, lnames, emails, eventnames)
+	                	Vector<Vector<String>> all = new Vector<Vector<String>>();
+	                	try {
+                		System.out.println("Calling todayEvents function");
+							all = todayEvents(conn);
+							System.out.println("obtained results: " + all);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+	                	
+	                	//////the "all" vector of vectors has 3 elements, v[0] is vector of firstnames,
+	                	//////v[1] is vector of lastnames, v[2] is vector of emails, and v[3] is vector of eventnames
+	                	
+	                	
+	                	String[] tempz = new String[3];
+	                	tempz[1] = "Reminder on events today";
+	                	
+	                	if (all.size()>0){
+	                		for(int i = 0; i<all.size(); i++){
+	                		// the email to send to
+	                		tempz[0] = all.get(i).get(2);
+	                		//the body of the text
+	                		tempz[2] = "Dear " + all.get(i).get(1) + ". this is to remind you that you are attending the event: " + all.get(i).get(0) + " today. Do not forget! Enjoy your time, Regards, MyCal Team";
+	                		SendEmail.sendGMail(tempz);
+	                		}
+	                	}
+	                	
 	        				System.out.println("Sending email notification to clients" );
-	
-	        				String[] data = {"nurturkmani5@gmail.com","Test","EMAIL BODY"};
-	                	SendEmail.sendGMail(data);
+	                	
+//	        				String[] data = {tempz};
+	                	
+	                	
                 	}
                 }else{
                 	// if it is not 7 am, reset boolean to false so next time 7 am comes, you send the email
@@ -837,17 +892,61 @@ public class Server {
  }
  
  
- // TAREK ADDRESS THIS FUNCTION WITH YOUR SQL MAGIC //
- // REQUIRED: A LIST WITH ALL EVENTS OCCURING "TODAY" AND ALL THE USERS' IN THOSE EVENTS' EMAILS //
- public static Vector<String> todayEvents(Vector<String> data, Connection conn) throws SQLException{
-	 Vector<String> emails = new Vector<String>();
+public static Vector<Vector<String>> todayEvents(Connection conn) throws SQLException{
 	 
-	 
-	 
-	 
-	 return emails;
- 	}
+	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	Date date = new Date();
+	String dateNow = dateFormat.format(date);
+	String[] temp22 = dateNow.split(" ");
+	dateNow = temp22[0];
+//		String finalDate = dateNow + "23:59:59";
+//		String startDate = dateNow + "00:00:00";
 
+	 Vector<String> eventnames = new Vector<String>();
+	 Vector<String> users = new Vector<String>();
+	 Vector<String> emails = new Vector<String>();
+	 Vector<Vector<String>> allz = new Vector<Vector<String>>();
+	 
+	 System.out.println("Hello world");
+	 PreparedStatement stmt;
+//	   stmt=conn.prepareStatement("select e1.name, u1.first_name, u1.family_name, u1.email from `event` e1, user u1, invited i1 where e1.`when` between '" + dateNow +"' and '" + dateNow +" 23:59:59' and i1.user=u1.username and i1.eventname=e1.name and i1.attending=true");
+	   stmt=conn.prepareStatement("select * from event");
+	   ResultSet all;
+//	   System.out.println("Hello");
+	   all=stmt.executeQuery();
+
+	   
+	   while(all.next()){
+		   String temp = all.getString(1);
+		   String[] temp2 = temp.split(" ");
+		   temp = temp2[0];
+//		   System.out.println("data date: " + temp + "system date: " + dateNow);
+		   if (temp.equals(dateNow)){
+			   //add event and creator:
+			   eventnames = new Vector<String>();
+			   eventnames.add(all.getString(4));
+			   eventnames.add(all.getString(3));
+			   PreparedStatement stmt2;
+			   stmt2=conn.prepareStatement("select email from user where username = ?");
+			   stmt2.setString(1,all.getString(3));
+			   ResultSet email = stmt2.executeQuery();
+			   while(email.next()){
+				   eventnames.add(email.getString(1));
+			   }
+			   
+			   allz.add(eventnames);
+
+		   }
+
+	   }
+
+	   
+//	   allz.add(firstnames);
+//	   allz.add(lastnames);
+//	   allz.add(emails);
+//	   allz.add(eventnames);
+	   return allz;
+ 	}
  public static Vector<String> getinvited(Vector<String> data, Connection conn) throws SQLException {
 	   // Acquire vector of invited people given an eventname
 	   Vector<String> invited = new Vector<String>();
